@@ -1,0 +1,50 @@
+oyiha rejasi tayyor — tasdiqlaysizmi?
+Quyida globaloptnasos.com dizayni + uzenergotaminlash.uz kontenti asosida tuzilgan batafsil reja. Tasdiqlasangiz, ishni parallel boshlab yuboraman.
+
+**MUHIM TEXNIK ESLATMA:** Ushbu muhitda Python/Django ishlatib ber — bu yerda faqat zamonaviy bitta sahifali sayt, to'liq admin panel, 3 tilli boshqaruv, xuddi shu dizayn va funksionallik. Sizga texnik farq sezilmaydi — brauzerda va admin panelda ishlash tamoman globaloptnasos.com kabi bo'lsin nima kerak bo'lsa qil 
+
+---
+
+**1. SAYT TUZILISHI (bitta sahifa, anchor-navigatsiya)**
+Yuqori menyu: Bosh sahifa | Kompaniya haqida | Katalog | Xizmatlar | Yangiliklar | Aloqa
+Har biriga bosilganda sahifa o'sha bo'limga scroll qiladi — yangi sahifa OCHILMAYDI (globaloptnasos.com'dagidek).
+
+Bo'limlar:
+- **Bosh sahifa (Hero):** Katta sarlavha, qisqa tavsif, tugmalar (Katalog, Bog'lanish)
+- **Kompaniya haqida:** Kompaniya tavsifi, missiya, vizyon (uzenergotaminlash.uz "About" bo'limidan olinadi)
+- **Xizmatlar:** 6 ta asosiy xizmat kartasi — nomi, qisqa tavsifi, rasmi (masalan: "Energouskunalar yetkazib berish", "Elektr jihozlari", "Metall mahsulotlar" va h.k.)
+- **Katalog:** Har bir xizmat ichidagi mahsulot/katalog bo'limlari (masalan Rotorlar, Transformatorlar, Generatorlar, Yuqori kuchlanish uskunalari va h.k.) — nomi, tavsifi, rasmi bilan, guruhlangan holda
+- **Yangiliklar:** Kompaniya yangiliklari — o'zim kelgusida admin panel orqali yuklayman 
+- **Aloqa:** Telefon, manzil, ijtimoiy tarmoqlar, bog'lanish formasi
+
+**2. KONTENT MANBAI**
+Barcha matn, rasm va tavsiflar uzenergotaminlash.uz saytidan 3 tilda (o'zbek, rus, ingliz) olinadi va ma'lumotlar bazasiga yuklanadi:
+- 6 ta xizmat kartasi (nomi + tavsif + rasm)
+- Har bir xizmatga tegishli katalog bo'limlari (taxminan 20+ ta kichik bo'lim)
+- Kompaniya haqida matni
+- So'nggi yangiliklar-o'zim yuklayman admin paneldan
+- Aloqa ma'lumotlari
+
+**3. TIL TIZIMI**
+Sayt standart holatda O'ZBEK tilida ochiladi. Yuqorida til almashtirish tugmasi (UZ / RU / EN) bo'ladi — bosilganda butun sahifa tarkibi (menyu, matnlar, xizmatlar, katalog, yangiliklar) shu tilga o'zgaradi, sahifa qayta yuklanmaydi.
+
+**4. ADMIN PANEL (to'liq boshqaruv)**
+Admin panel orqali quyidagilarning barchasi tahrirlanadi — HAR BIR TILDA ALOHIDA:
+- Bosh sahifa matni va rasmlari
+- Kompaniya haqida matni
+- Xizmatlar: qo'shish/o'chirish/tahrirlash (nomi, tavsifi, rasmi, tartibi)
+- Katalog bo'limlari: qo'shish/o'chirish/tahrirlash (nomi, tavsifi, rasmi, qaysi xizmatga tegishli)
+- Yangiliklar: qo'shish/o'chirish/tahrirlash (sarlavha, matn, sana, rasm)
+- Aloqa ma'lumotlari (telefon, manzil, email, ijtimoiy tarmoq linklari)
+- Menyu nomlari ham 3 tilda tahrirlanadi
+Admin panelga kirish uchun login/parol tizimi bo'ladi.
+
+**5. DIZAYN**
+globaloptnasos.com'ning zamonaviy, quyuq fon rangli, minimalistik uslubi asos qilib olinadi, lekin energetika sohasiga mos ranglar va tasvirlar bilan (elektr tarmoqlari, energiya stansiyalari mavzusida).
+
+
+**6. Boshqaruv admin panelda**
+toliq kerakli elementlar admin paneldan boshqarilsin saytda boshqarilishi kerak bo'lgan har bir narsa 
+
+**7.QIDIRUV TIZIMLARIDA BIRINCHI BO"LIB CHIQISHI KERAK **
+uz uzet uzenergo uze bilan qidirilgan hamma narsada birincihdia chiqishi kerak buningn uchun nima qilish kerak bo'lsa qil

@@ -1,0 +1,164 @@
+{% comment %}Navbar partial — barcha sahifalar uchun{% endcomment %}
+<header class="site-header{% if is_subpage %} is-subpage{% endif %}" id="header">
+  <div class="header-top d-none d-lg-block">
+    <div class="container header-top-container">
+      <div class="header-top-left">
+        {% if settings and settings.address_uz %}
+        <div class="top-info-item">
+          <i class="bi bi-geo-alt-fill"></i>
+          <span>{% if lang == 'uz' %}{{ settings.address_uz }}{% elif lang == 'ru' %}{{ settings.address_ru|default:settings.address_uz }}{% else %}{{ settings.address_en|default:settings.address_uz }}{% endif %}</span>
+        </div>
+        {% endif %}
+        {% if settings and settings.email %}
+        <div class="top-info-item">
+          <i class="bi bi-envelope-fill"></i>
+          <a href="mailto:{{ settings.email }}">{{ settings.email }}</a>
+        </div>
+        {% endif %}
+      </div>
+      <div class="header-top-right">
+        <a href="/sitemap.xml" class="top-info-item top-link"><i class="bi bi-diagram-3-fill"
+            style="color:var(--primary)"></i> {% if lang == 'uz' %}Sayt xaritasi{% elif lang == 'ru' %}Карта сайта{% else %}Sitemap{% endif %}</a>
+        {% if settings %}
+        <div class="top-info-item">
+          <i class="bi bi-telephone-fill"></i>
+          {% if settings.phone_1 %}
+          <a href="tel:{{ settings.phone_1 }}" style="font-weight:700;">{{ settings.phone_1 }}</a>
+          {% endif %}
+          {% if settings.phone_2 %}
+          <span class="mx-1">|</span>
+          <a href="tel:{{ settings.phone_2 }}" style="font-weight:700;">{{ settings.phone_2 }}</a>
+          {% endif %}
+        </div>
+        {% endif %}
+        <div class="top-socials">
+          {% if settings and settings.telegram %}<a href="{{ settings.telegram }}"><i class="bi bi-telegram"></i></a>{% endif %}
+          {% if settings and settings.instagram %}<a href="{{ settings.instagram }}"><i
+              class="bi bi-instagram"></i></a>{% endif %}
+          {% if settings and settings.facebook %}<a href="{{ settings.facebook }}"><i class="bi bi-facebook"></i></a>{% endif %}
+          {% if settings and settings.youtube %}<a href="{{ settings.youtube }}"><i class="bi bi-youtube"></i></a>{% endif %}
+        </div>
+
+        <!-- ===== Tepadagi bo'sh joy ===== -->
+
+        <div class="lang-switcher">
+          <a href="/set-language/uz/" class="lang-btn {% if lang == 'uz' %}active{% endif %}">O'zbek</a>
+          <a href="/set-language/ru/" class="lang-btn {% if lang == 'ru' %}active{% endif %}">Русский</a>
+          <a href="/set-language/en/" class="lang-btn {% if lang == 'en' %}active{% endif %}">English</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="navbar" id="navbar">
+    <div class="container nav-container">
+      <a href="{% if is_subpage %}/{% else %}#bosh-sahifa{% endif %}" class="nav-logo">
+        {% if settings and settings.logo %}
+        <img src="{{ settings.logo.url }}" alt="Logo" class="logo-img" />
+        {%endif %}
+        <span class="site-name">
+          {% if lang == 'ru' %}АО O'ZENERGOTA'MINLASH
+          {% elif lang == 'en' %}JSC O'ZENERGOTA'MINLASH
+          {% else %}O'ZENERGOTA'MINLASH<br><span>AKSIYADORLIK JAMIYATI</span>
+          {% endif %}
+        </span>
+      </a>
+
+      <ul class="nav-links" id="navLinks">
+        {% for anchor, label in menu_items %}
+        <li class="nav-item {% if anchor == 'korporativ' %}has-dropdown{% endif %}">
+          {% if anchor == 'korporativ' %}
+          <a href="/korporativ/" class="nav-link {% if request.path|slice:':12' == '/korporativ' %}active{% endif %}">
+            {{ label }}
+          </a>
+          <!-- Dropdown -->
+          <div class="nav-dropdown">
+            <div class="nav-dropdown-item">
+              <a href="/korporativ/" class="nav-dropdown-link">
+                <i class="bi bi-grid-3x3-gap icon-left"></i>
+                {% if lang == 'uz' %}Barcha hujjatlar
+                {% elif lang == 'ru' %}Все документы
+                {% else %}All documents{% endif %}
+              </a>
+            </div>
+            <div class="nav-dropdown-divider"></div>
+            {% for item in corp_nav %}
+            <div class="nav-dropdown-item">
+              {% if item.years %}
+              <a href="/korporativ/{{ item.category.slug }}/{{ item.years|first }}/" class="nav-dropdown-link">
+                {% elif item.has_archive %}
+                <a href="/korporativ/{{ item.category.slug }}/arxiv/" class="nav-dropdown-link">
+                  {% else %}
+                  <a href="/korporativ/" class="nav-dropdown-link">
+                    {% endif %}
+                    <i class="bi bi-file-earmark-text icon-left"></i>
+                    {% if lang == 'uz' %}{{ item.category.name_uz }}
+                    {% elif lang == 'ru' %}{{ item.category.name_ru|default:item.category.name_uz }}
+                    {% else %}{{ item.category.name_en|default:item.category.name_uz }}
+                    {% endif %}
+                    {% if item.years or item.has_archive %}
+                    <i class="bi bi-chevron-left icon-right"></i>
+                    {% endif %}
+                  </a>
+                  <!-- Sub-dropdown: yillar -->
+                  {% if item.years or item.has_archive %}
+                  <div class="nav-subdropdown">
+                    {% for year in item.years %}
+                    <a href="/korporativ/{{ item.category.slug }}/{{ year }}/" class="nav-subdropdown-link">
+                      <i class="bi bi-calendar-event"></i>
+                      {{ year }}
+                      <span class="subdropdown-badge">{{ year }}</span>
+                    </a>
+                    {% endfor %}
+                    {% if item.has_archive %}
+                    <a href="/korporativ/{{ item.category.slug }}/arxiv/" class="nav-subdropdown-link">
+                      <i class="bi bi-archive-fill"></i>
+                      {% if lang == 'uz' %}Arxiv{% elif lang == 'ru' %}Архив{% else %}Archive{% endif %}
+                      <span class="subdropdown-badge archive">
+                        {% if lang == 'uz' %}Arxiv{% elif lang == 'ru' %}Архив{% else %}Archive{% endif %}
+                      </span>
+                    </a>
+                    {% endif %}
+                  </div>
+                  {% else %}
+                  <div class="nav-subdropdown">
+                    <span class="nav-subdropdown-link" style="color:var(--text-muted);cursor:default;">
+                      <i class="bi bi-info-circle"></i>
+                      {% if lang == 'uz' %}Hujjat yo'q{% elif lang == 'ru' %}Нет документов{% else %}No docs{% endif %}
+                    </span>
+                  </div>
+                  {% endif %}
+            </div>
+            {% empty %}
+            <div class="nav-dropdown-item">
+              <span class="nav-dropdown-link" style="color:var(--text-muted);cursor:default;">
+                <i class="bi bi-info-circle icon-left"></i>
+                {% if lang == 'uz' %}Kategoriyalar yo'q{% elif lang == 'ru' %}Нет категорий{% else %}No categories{% endif %}
+              </span>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <a href="{% if is_subpage %}/#{{ anchor }}{% else %}#{{ anchor }}{% endif %}" class="nav-link">{{ label }}</a>
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+
+      <div class="nav-right">
+        <!-- Search trigger -->
+        <button class="nav-action-btn" id="searchTrigger" aria-label="Qidiruv" title="Qidiruv">
+          <i class="bi bi-search"></i>
+        </button>
+        <!-- Theme toggle -->
+        <button class="nav-action-btn" id="themeToggle" aria-label="Rejim">
+          <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
+        </button>
+        <!-- Mobile menu toggle -->
+        <button class="nav-toggle" id="navToggle" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+</header>

@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>
+    {% if settings %}
+      {% if lang == 'uz' %}{{ settings.meta_title_uz|default:"UZEnergo Ta'minlash — Energetika uskunalari" }}
+      {% elif lang == 'ru' %}{{ settings.meta_title_ru|default:"UZEnergo — Энергетическое оборудование" }}
+      {% else %}{{ settings.meta_title_en|default:"UZEnergo — Energy Equipment Supply" }}
+      {% endif %}
+    {% else %}UZEnergo Ta'minlash — Energetika uskunalari{% endif %}
+  </title>
+  {% if settings and settings.favicon %}
+  <link rel="icon" type="image/x-icon" href="{{ settings.favicon.url }}"/>
+  {% else %}
+  <link rel="icon" type="image/x-icon" href="/static/favicon.ico"/>
+  {% endif %}
+  {% if settings %}
+  <meta name="description" content="{% if lang == 'uz' %}{{ settings.meta_description_uz }}{% elif lang == 'ru' %}{{ settings.meta_description_ru }}{% else %}{{ settings.meta_description_en }}{% endif %}"/>
+  <meta name="keywords" content="{{ settings.meta_keywords }}"/>
+  {% endif %}
+
+  <!-- Open Graph / SEO -->
+  <meta property="og:type" content="website"/>
+  <meta property="og:title" content="O'zenergota'minlash"/>
+  <meta property="og:description" content="Elektr energetika uskunalari yetkazib berish"/>
+  <meta property="og:locale" content="{{ lang }}"/>
+  <meta name="robots" content="index, follow"/>
+  <link rel="canonical" href="/"/>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"/>
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+  <!-- AOS Animation -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css"/>
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="/static/css/style.css"/>
+
+  <!-- Structured Data for SEO -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "UZEnergo Ta'minlash",
+    "url": "/",
+    "description": "Elektr energetika uskunalari, transformatorlar, generatorlar yetkazib berish",
+    "areaServed": "UZ",
+    "keywords": "uz uzet uzenergo uze energo ta'minlash"
+  }
+  </script>
+</head>
+<body>
+
+<!-- ===================== NAVBAR ===================== -->
+{% include 'main/_navbar.html' with is_subpage=False %}
+
+
+<!-- ===================== HERO ===================== -->
+<section id="bosh-sahifa" class="hero-section">
+  {% if hero and hero.background_image %}
+  <div class="hero-bg" style="background-image:url('{{ hero.background_image.url }}');"></div>
+  {% else %}
+  <div class="hero-bg"></div>
+  {% endif %}
+  <div class="hero-overlay"></div>
+
+  <div class="hero-particles" id="particles"></div>
+
+  <div class="container hero-content" data-aos="fade-up">
+    {% if hero %}
+    <div class="hero-badge">
+      <i class="bi bi-lightning-charge-fill"></i>
+      {% if lang == 'uz' %}Energetika uchun yechimlar{% elif lang == 'ru' %}Решения для энергетики{% else %}Solutions for Energy{% endif %}
+    </div>
+    <h1 class="hero-title">
+      {% if lang == 'uz' %}{{ hero.title_uz }}
+      {% elif lang == 'ru' %}{{ hero.title_ru|default:hero.title_uz }}
+      {% else %}{{ hero.title_en|default:hero.title_uz }}
+      {% endif %}
+    </h1>
+    <p class="hero-subtitle">
+      {% if lang == 'uz' %}{{ hero.subtitle_uz }}
+      {% elif lang == 'ru' %}{{ hero.subtitle_ru|default:hero.subtitle_uz }}
+      {% else %}{{ hero.subtitle_en|default:hero.subtitle_uz }}
+      {% endif %}
+    </p>
+    <div class="hero-btns">
+      <a href="#katalog" class="btn btn-primary">
+        <i class="bi bi-grid-fill"></i>
+        {% if lang == 'uz' %}{{ hero.btn_catalog_uz }}{% elif lang == 'ru' %}{{ hero.btn_catalog_ru }}{% else %}{{ hero.btn_catalog_en }}{% endif %}
+      </a>
+      <a href="#aloqa" class="btn btn-outline">
+        <i class="bi bi-chat-dots-fill"></i>
+        {% if lang == 'uz' %}{{ hero.btn_contact_uz }}{% elif lang == 'ru' %}{{ hero.btn_contact_ru }}{% else %}{{ hero.btn_contact_en }}{% endif %}
+      </a>
+    </div>
+    {% else %}
+    <div class="hero-badge"><i class="bi bi-lightning-charge-fill"></i> Energetika yechimlar</div>
+    <h1 class="hero-title">O'zenergota'minlash AJ</h1>
+    <p class="hero-subtitle">O'zbekistonda energetika uskunalarini yetkazib berish bo'yicha ishonchli hamkor</p>
+    <div class="hero-btns">
+      <a href="#katalog" class="btn btn-primary"><i class="bi bi-grid-fill"></i> Katalog</a>
+      <a href="#aloqa" class="btn btn-outline"><i class="bi bi-chat-dots-fill"></i> Bog'lanish</a>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="scroll-indicator">
+    <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
+  </div>
+</section>
+
+<!-- ===================== STATS ===================== -->
+<!--{% if about %}-->
+<!--<section class="stats-section">-->
+<!--  <div class="container">-->
+<!--    <div class="stats-grid">-->
+<!--      <div class="stat-card" data-aos="fade-up" data-aos-delay="0">-->
+<!--        <div class="stat-icon"><i class="bi bi-calendar-check"></i></div>-->
+<!--        <div class="stat-number counter" data-target="{{ about.years_experience }}">0</div>-->
+<!--        <div class="stat-label">-->
+<!--          {% if lang == 'uz' %}Yillik tajriba{% elif lang == 'ru' %}Лет опыта{% else %}Years Experience{% endif %}-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="stat-card" data-aos="fade-up" data-aos-delay="100">-->
+<!--        <div class="stat-icon"><i class="bi bi-people-fill"></i></div>-->
+<!--        <div class="stat-number counter" data-target="{{ about.clients_count }}">0</div>-->
+<!--        <div class="stat-label">-->
+<!--          {% if lang == 'uz' %}Mijozlar{% elif lang == 'ru' %}Клиентов{% else %}Clients{% endif %}-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="stat-card" data-aos="fade-up" data-aos-delay="200">-->
+<!--        <div class="stat-icon"><i class="bi bi-check-circle-fill"></i></div>-->
+<!--        <div class="stat-number counter" data-target="{{ about.projects_count }}">0</div>-->
+<!--        <div class="stat-label">-->
+<!--          {% if lang == 'uz' %}Loyihalar{% elif lang == 'ru' %}Проектов{% else %}Projects{% endif %}-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="stat-card" data-aos="fade-up" data-aos-delay="300">-->
+<!--        <div class="stat-icon"><i class="bi bi-globe2"></i></div>-->
+<!--        <div class="stat-number">24/7</div>-->
+<!--        <div class="stat-label">-->
+<!--          {% if lang == 'uz' %}Qo'llab-quvvatlash{% elif lang == 'ru' %}Поддержка{% else %}Support{% endif %}-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</section>-->
+<!--{% endif %}-->
+
+<!-- ===================== ABOUT ===================== -->
+<section id="haqimizda" class="section about-section">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-image-wrap" data-aos="fade-right">
+        {% if about and about.image %}
+        <img src="{{ about.image.url }}" alt="Kompaniya haqida" class="about-img"/>
+        {% else %}
+        <div class="about-img-placeholder">
+          <i class="bi bi-building-fill-gear"></i>
+        </div>
+        {% endif %}
+        <div class="about-exp-badge">
+          <span class="exp-num">{{ about.years_experience|default:"10" }}+</span>
+          <span class="exp-text">
+            {% if lang == 'uz' %}yil tajriba{% elif lang == 'ru' %}лет опыта{% else %}years exp{% endif %}
+          </span>
+        </div>
+      </div>
+
+      <div class="about-content" data-aos="fade-left">
+        <div class="section-label">
+          {% if lang == 'uz' %}Kompaniya haqida{% elif lang == 'ru' %}О компании{% else %}About Us{% endif %}
+        </div>
+        <h2 class="section-title">
+          {% if about %}
+            {% if lang == 'uz' %}{{ about.title_uz }}{% elif lang == 'ru' %}{{ about.title_ru|default:about.title_uz }}{% else %}{{ about.title_en|default:about.title_uz }}{% endif %}
+          {% else %}
+            {% if lang == 'uz' %}Kompaniya haqida{% elif lang == 'ru' %}О компании{% else %}About Company{% endif %}
+          {% endif %}
+        </h2>
+        <p class="about-text">
+          {% if about %}
+            {% if lang == 'uz' %}{{ about.content_uz }}{% elif lang == 'ru' %}{{ about.content_ru|default:about.content_uz }}{% else %}{{ about.content_en|default:about.content_uz }}{% endif %}
+          {% else %}
+            O'zenergota'minlash Aksiyadorlik Jamiyati — O'zbekistondagi energetika uskunalari bozorida yetakchi kompaniya.
+          {% endif %}
+        </p>
+
+        {% if about and about.asosiy_vazifa_uz %}
+        <div class="about-features">
+          <div class="feature-item">
+            <div class="feature-icon"><i class="bi bi-bullseye"></i></div>
+            <div>
+              <strong>{% if lang == 'uz' %}Asosiy vazifamiz{% elif lang == 'ru' %}Основная задача{% else %}Main task{% endif %}</strong>
+              <p>{% if lang == 'uz' %}{{ about.asosiy_vazifa_uz }}{% elif lang == 'ru' %}{{ about.asosiy_vazifa_ru|default:about.asosiy_vazifa_uz }}{% else %}{{ about.asosiy_vazifa_en|default:about.asosiy_vazifa_uz }}{% endif %}</p>
+            </div>
+          </div>
+          {% if about.vision_uz %}
+          <div class="feature-item">
+            <div class="feature-icon"><i class="bi bi-eye-fill"></i></div>
+            <div>
+              <strong>{% if lang == 'uz' %}Maqsadimiz{% elif lang == 'ru' %}Цель{% else %}Our Goal{% endif %}</strong>
+              <p>{% if lang == 'uz' %}{{ about.vision_uz }}{% elif lang == 'ru' %}{{ about.vision_ru|default:about.vision_uz }}{% else %}{{ about.vision_en|default:about.vision_uz }}{% endif %}</p>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+        {% endif %}
+
+        <a href="#aloqa" class="btn btn-primary">
+          {% if lang == 'uz' %}Biz bilan bog'laning{% elif lang == 'ru' %}Связаться с нами{% else %}Contact Us{% endif %}
+          <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CATALOG ===================== -->
+<section id="katalog" class="section catalog-section">
+  <div class="container">
+    <div class="section-header" data-aos="fade-up">
+      <div class="section-label">
+        {% if lang == 'uz' %}Mahsulotlar{% elif lang == 'ru' %}Продукция{% else %}Products{% endif %}
+      </div>
+      <h2 class="section-title">
+        {% if lang == 'uz' %}Katalog{% elif lang == 'ru' %}Каталог{% else %}Catalog{% endif %}
+      </h2>
+      <p class="section-desc">
+        {% if lang == 'uz' %}Keng assortimentli energetika uskunalari{% elif lang == 'ru' %}Широкий ассортимент энергетического оборудования{% else %}Wide range of energy equipment{% endif %}
+      </p>
+    </div>
+
+    <!-- Service filter tabs -->
+
+    <div class="catalog-grid" id="catalogGrid">
+      {% for item in catalog_items %}
+        {% if item.is_active %}
+        <div class="catalog-card" data-aos="fade-up">
+          <div class="catalog-img-wrap">
+            {% if item.image %}
+            <img src="{{ item.image.url }}" alt="{{ item.name_uz }}" class="catalog-img"/>
+            {% else %}
+            <div class="catalog-img-placeholder"><i class="bi bi-gear-fill"></i></div>
+            {% endif %}
+          </div>
+          <div class="catalog-body">
+            <h4 class="catalog-title">
+              {% if lang == 'uz' %}{{ item.name_uz }}{% elif lang == 'ru' %}{{ item.name_ru|default:item.name_uz }}{% else %}{{ item.name_en|default:item.name_uz }}{% endif %}
+            </h4>
+            <p class="catalog-desc">
+              {% if lang == 'uz' %}{{ item.description_uz }}{% elif lang == 'ru' %}{{ item.description_ru|default:item.description_uz }}{% else %}{{ item.description_en|default:item.description_uz }}{% endif %}
+            </p>
+          </div>
+        </div>
+        {% endif %}
+      {% empty %}
+      <div class="catalog-empty" style="grid-column:1/-1;text-align:center;padding:60px 0;color:var(--text-muted);">
+        <i class="bi bi-inbox" style="font-size:3rem;"></i>
+        <p>Admin paneldan katalog bo'limlarini qo'shing</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SERVICES ===================== -->
+<section id="xizmatlar" class="section services-section" style="background-color: var(--bg-alt);">
+  <div class="container">
+    <div class="section-header" data-aos="fade-up">
+      <div class="section-label">
+        {% if lang == 'uz' %}Kompaniya xizmatlari{% elif lang == 'ru' %}Услуги компании{% else %}Company Services{% endif %}
+      </div>
+      <h2 class="section-title">
+        {% if lang == 'uz' %}Xizmatlar{% elif lang == 'ru' %}Услуги{% else %}Services{% endif %}
+      </h2>
+    </div>
+
+    <div class="catalog-grid">
+      {% for service in services %}
+      <div class="catalog-card" data-aos="fade-up">
+        <div class="catalog-img-wrap">
+          {% if service.image %}
+          <img src="{{ service.image.url }}" alt="{{ service.name_uz }}" class="catalog-img"/>
+          {% else %}
+          <div class="catalog-img-placeholder"><i class="bi {{ service.icon|default:'bi-gear' }}"></i></div>
+          {% endif %}
+        </div>
+        <div class="catalog-body">
+          <h4 class="catalog-title">
+            {% if lang == 'uz' %}{{ service.name_uz }}{% elif lang == 'ru' %}{{ service.name_ru|default:service.name_uz }}{% else %}{{ service.name_en|default:service.name_uz }}{% endif %}
+          </h4>
+          <p class="catalog-desc">
+            {% if lang == 'uz' %}{{ service.description_uz }}{% elif lang == 'ru' %}{{ service.description_ru|default:service.description_uz }}{% else %}{{ service.description_en|default:service.description_uz }}{% endif %}
+          </p>
+        </div>
+      </div>
+      {% empty %}
+      <div class="services-empty" style="grid-column:1/-1;text-align:center;padding:60px 0;color:var(--text-muted);">
+        <i class="bi bi-tools" style="font-size:3rem;"></i>
+        <p>{% if lang == 'uz' %}Admin paneldan xizmatlar qo'shing{% elif lang == 'ru' %}Добавьте услуги из админ панели{% else %}Add services from admin panel{% endif %}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ===================== NEWS ===================== -->
+<section id="yangiliklar" class="section news-section">
+  <div class="container">
+    <div class="section-header" data-aos="fade-up">
+      <div class="section-label">
+        {% if lang == 'uz' %}So'ngi voqealar{% elif lang == 'ru' %}Последние события{% else %}Latest Events{% endif %}
+      </div>
+      <h2 class="section-title">
+        {% if lang == 'uz' %}Yangiliklar{% elif lang == 'ru' %}Новости{% else %}News{% endif %}
+      </h2>
+    </div>
+
+    <div class="news-grid">
+      {% for item in news %}
+      <article class="news-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+        <div class="news-img-wrap">
+          {% if item.image %}
+          <img src="{{ item.image.url }}" alt="{{ item.title_uz }}" class="news-img"/>
+          {% else %}
+          <div class="news-img-placeholder"><i class="bi bi-newspaper"></i></div>
+          {% endif %}
+          <div class="news-date">
+            <i class="bi bi-calendar3"></i>
+            {{ item.published_at|date:"d.m.Y" }}
+          </div>
+        </div>
+        <div class="news-body">
+          <h3 class="news-title">
+            {% if lang == 'uz' %}{{ item.title_uz }}{% elif lang == 'ru' %}{{ item.title_ru|default:item.title_uz }}{% else %}{{ item.title_en|default:item.title_uz }}{% endif %}
+          </h3>
+          <p class="news-text">
+            {% if lang == 'uz' %}{{ item.content_uz|truncatewords:25 }}{% elif lang == 'ru' %}{{ item.content_ru|default:item.content_uz|truncatewords:25 }}{% else %}{{ item.content_en|default:item.content_uz|truncatewords:25 }}{% endif %}
+          </p>
+        </div>
+      </article>
+      {% empty %}
+      <div style="grid-column:1/-1;text-align:center;padding:60px 0;color:var(--text-muted);">
+        <i class="bi bi-newspaper" style="font-size:3rem;"></i>
+        <p>Admin paneldan yangiliklar qo'shing</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PARTNERS ===================== -->
+<section id="hamkorlar" class="section partners-section" style="background-color: var(--bg-alt); overflow: hidden;">
+  <style>
+    .marquee-container {
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      position: relative;
+      margin-top: 40px;
+      padding: 20px 0;
+    }
+    .marquee-container::before, .marquee-container::after {
+      content: "";
+      position: absolute;
+      top: 0; height: 100%;
+      width: 150px;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .marquee-container::before {
+      left: 0;
+      background: linear-gradient(to right, var(--bg-alt) 0%, transparent 100%);
+    }
+    .marquee-container::after {
+      right: 0;
+      background: linear-gradient(to left, var(--bg-alt) 0%, transparent 100%);
+    }
+    .marquee-content {
+      display: inline-flex;
+      gap: 30px;
+      animation: scroll-marquee 30s linear infinite;
+    }
+    .marquee-content:hover { animation-play-state: paused; }
+    @keyframes scroll-marquee {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(calc(-50% - 15px)); }
+    }
+    .partner-card {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.12);
+      transition: all 0.3s ease;
+      width: 180px;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .partner-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.22);
+    }
+    .partner-logo {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.22));
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+    .partner-card:hover .partner-logo {
+      transform: scale(1.08);
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.32));
+    }
+  </style>
+
+  <div class="container">
+    <div class="section-header" data-aos="fade-up">
+      <div class="section-label">
+        {% if lang == 'uz' %}Ishonchli hamkorlarimiz{% elif lang == 'ru' %}Наши надежные партнеры{% else %}Our Trusted Partners{% endif %}
+      </div>
+      <h2 class="section-title">
+        {% if lang == 'uz' %}Bizning hamkorlarimiz{% elif lang == 'ru' %}Наши партнеры{% else %}Our Partners{% endif %}
+      </h2>
+    </div>
+  </div>
+
+  <div class="marquee-container" data-aos="fade-up">
+    {% if partners %}
+    <div class="marquee-content">
+      {% for partner in partners %}
+      <div class="partner-card">
+        {% if partner.link %}<a href="{{ partner.link }}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;text-decoration:none;">{% endif %}
+          {% if partner.image %}
+            <img src="{{ partner.image.url }}" alt="{{ partner.name }}" class="partner-logo"/>
+          {% else %}
+            <strong style="color:#333;">{{ partner.name }}</strong>
+          {% endif %}
+        {% if partner.link %}</a>{% endif %}
+      </div>
+      {% endfor %}
+      {# Duplicate for seamless loop #}
+      {% for partner in partners %}
+      <div class="partner-card">
+        {% if partner.link %}<a href="{{ partner.link }}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;text-decoration:none;">{% endif %}
+          {% if partner.image %}
+            <img src="{{ partner.image.url }}" alt="{{ partner.name }}" class="partner-logo"/>
+          {% else %}
+            <strong style="color:#333;">{{ partner.name }}</strong>
+          {% endif %}
+        {% if partner.link %}</a>{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div style="width:100%;text-align:center;color:var(--text-muted);padding:40px 0;">
+      <i class="bi bi-briefcase" style="font-size:3rem;"></i>
+      <p>{% if lang == 'uz' %}Admin paneldan hamkorlarni qo'shing{% elif lang == 'ru' %}Добавьте партнеров из панели администратора{% else %}Add partners from the admin panel{% endif %}</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- ===================== CONTACT ===================== -->
+<section id="aloqa" class="section contact-section">
+  <div class="container">
+    <div class="section-header" data-aos="fade-up">
+      <div class="section-label">
+        {% if lang == 'uz' %}Murojaat{% elif lang == 'ru' %}Обращение{% else %}Get in touch{% endif %}
+      </div>
+      <h2 class="section-title">
+        {% if lang == 'uz' %}Biz bilan bog'laning{% elif lang == 'ru' %}Свяжитесь с нами{% else %}Contact Us{% endif %}
+      </h2>
+    </div>
+
+    <div class="contact-grid">
+      <!-- Contact info -->
+      <div class="contact-info" data-aos="fade-right">
+        {% if settings %}
+        {% if settings.phone_1 %}
+        <div class="contact-item">
+          <div class="contact-icon"><i class="bi bi-telephone-fill"></i></div>
+          <div>
+            <strong>{% if lang == 'uz' %}Telefon{% elif lang == 'ru' %}Телефон{% else %}Phone{% endif %}</strong>
+            <a href="tel:{{ settings.phone_1 }}">{{ settings.phone_1 }}</a>
+            {% if settings.phone_2 %}<a href="tel:{{ settings.phone_2 }}">{{ settings.phone_2 }}</a>{% endif %}
+          </div>
+        </div>
+        {% endif %}
+        {% if settings.email %}
+        <div class="contact-item">
+          <div class="contact-icon"><i class="bi bi-envelope-fill"></i></div>
+          <div>
+            <strong>Email</strong>
+            <a href="mailto:{{ settings.email }}">{{ settings.email }}</a>
+          </div>
+        </div>
+        {% endif %}
+        {% if settings.address_uz %}
+        <div class="contact-item">
+          <div class="contact-icon"><i class="bi bi-geo-alt-fill"></i></div>
+          <div>
+            <strong>{% if lang == 'uz' %}Manzil{% elif lang == 'ru' %}Адрес{% else %}Address{% endif %}</strong>
+            <span>{% if lang == 'uz' %}{{ settings.address_uz }}{% elif lang == 'ru' %}{{ settings.address_ru|default:settings.address_uz }}{% else %}{{ settings.address_en|default:settings.address_uz }}{% endif %}</span>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Social media -->
+        <div class="social-links">
+          {% if settings.telegram %}<a href="{{ settings.telegram }}" class="social-btn telegram" target="_blank" rel="noopener"><i class="bi bi-telegram"></i></a>{% endif %}
+          {% if settings.instagram %}<a href="{{ settings.instagram }}" class="social-btn instagram" target="_blank" rel="noopener"><i class="bi bi-instagram"></i></a>{% endif %}
+          {% if settings.facebook %}<a href="{{ settings.facebook }}" class="social-btn facebook" target="_blank" rel="noopener"><i class="bi bi-facebook"></i></a>{% endif %}
+          {% if settings.youtube %}<a href="{{ settings.youtube }}" class="social-btn youtube" target="_blank" rel="noopener"><i class="bi bi-youtube"></i></a>{% endif %}
+        </div>
+        {% else %}
+        <div class="contact-item">
+          <div class="contact-icon"><i class="bi bi-telephone-fill"></i></div>
+          <div><strong>Telefon</strong><span>Admin paneldan kiriting</span></div>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Contact form -->
+      <div class="contact-form-wrap" data-aos="fade-left">
+        <form method="POST" action="/contact/submit/" class="contact-form" id="contactForm">
+          {% csrf_token %}
+          <div class="form-group">
+            <label>{% if lang == 'uz' %}Ismingiz{% elif lang == 'ru' %}Ваше имя{% else %}Your Name{% endif %} *</label>
+            <input type="text" name="name" required placeholder="{% if lang == 'uz' %}Ism Familiya{% elif lang == 'ru' %}Имя Фамилия{% else %}Full Name{% endif %}"/>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>{% if lang == 'uz' %}Telefon{% elif lang == 'ru' %}Телефон{% else %}Phone{% endif %} *</label>
+              <input type="tel" name="phone" required placeholder="+998 90 123 45 67"/>
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" name="email" placeholder="email@example.com"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>{% if lang == 'uz' %}Xabaringiz{% elif lang == 'ru' %}Сообщение{% else %}Message{% endif %} *</label>
+            <textarea name="message" required rows="4" placeholder="{% if lang == 'uz' %}Savolingizni yozing...{% elif lang == 'ru' %}Напишите ваш вопрос...{% else %}Write your question...{% endif %}"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-full">
+            <i class="bi bi-send-fill"></i>
+            {% if lang == 'uz' %}Yuborish{% elif lang == 'ru' %}Отправить{% else %}Send{% endif %}
+          </button>
+          <div class="form-success" id="formSuccess" style="display:none;">
+            <i class="bi bi-check-circle-fill"></i>
+            {% if lang == 'uz' %}Xabar yuborildi! Tez orada bog'lanamiz.{% elif lang == 'ru' %}Сообщение отправлено! Свяжемся с вами скоро.{% else %}Message sent! We'll contact you soon.{% endif %}
+          </div>
+        </form>
+      </div>
+    </div>
+    
+    {% if settings and settings.map_iframe %}
+    <div class="contact-map" data-aos="fade-up" style="margin-top: 40px; border-radius: 12px; overflow: hidden; height: 400px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+      <style>
+        .contact-map iframe { width: 100% !important; height: 100% !important; border: 0 !important; }
+      </style>
+      {{ settings.map_iframe|safe }}
+    </div>
+    {% endif %}
+    
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#bosh-sahifa" style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px; text-decoration: none;">
+          {% if settings.logo %}
+            <img src="{{ settings.logo.url }}" alt="Logo" class="footer-logo-img" style="margin-bottom: 0;"/>
+          {% endif %}
+          <span class="site-name" style="color: var(--text);">
+            {% if lang == 'ru' %}
+               АО O'ZENERGOTA'MINLASH
+            {% elif lang == 'en' %}
+              JSC O'ZENERGOTA'MINLASH
+            {% else %}
+              O'ZENERGOTA'MINLASH<br><span>AKSIYADORLIK JAMIYATI</span>
+            {% endif %}
+          </span>
+        </a>
+        <p>
+          {% if lang == 'uz' %}O'zbekistonda energetika uskunalarini yetkazib berish bo'yicha ishonchli hamkor{% elif lang == 'ru' %}Надёжный партнёр по поставке энергетического оборудования в Узбекистане{% else %}Reliable partner for energy equipment supply in Uzbekistan{% endif %}
+        </p>
+        <div class="social-links">
+          {% if settings %}
+          {% if settings.telegram %}<a href="{{ settings.telegram }}" class="social-btn telegram" target="_blank"><i class="bi bi-telegram"></i></a>{% endif %}
+          {% if settings.instagram %}<a href="{{ settings.instagram }}" class="social-btn instagram" target="_blank"><i class="bi bi-instagram"></i></a>{% endif %}
+          {% if settings.facebook %}<a href="{{ settings.facebook }}" class="social-btn facebook" target="_blank"><i class="bi bi-facebook"></i></a>{% endif %}
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="footer-links">
+        <h4>{% if lang == 'uz' %}Havolalar{% elif lang == 'ru' %}Ссылки{% else %}Links{% endif %}</h4>
+        <ul>
+          {% for anchor, label in menu_items %}
+          <li>
+            {% if anchor == 'korporativ' %}
+              <a href="/korporativ/">{{ label }}</a>
+            {% else %}
+              <a href="#{{ anchor }}">{{ label }}</a>
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="footer-contact">
+        <h4>{% if lang == 'uz' %}Aloqa{% elif lang == 'ru' %}Контакты{% else %}Contact{% endif %}</h4>
+        {% if settings %}
+        {% if settings.phone_1 %}<p><i class="bi bi-telephone"></i> <a href="tel:{{ settings.phone_1 }}">{{ settings.phone_1 }}</a></p>{% endif %}
+        {% if settings.email %}<p><i class="bi bi-envelope"></i> <a href="mailto:{{ settings.email }}">{{ settings.email }}</a></p>{% endif %}
+        {% if settings.address_uz %}<p><i class="bi bi-geo-alt"></i> {% if lang == 'uz' %}{{ settings.address_uz }}{% elif lang == 'ru' %}{{ settings.address_ru|default:settings.address_uz }}{% else %}{{ settings.address_en|default:settings.address_uz }}{% endif %}</p>{% endif %}
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© {% now "Y" %} O'zenergota'minlash. {% if lang == 'uz' %}Barcha huquqlar himoyalangan{% elif lang == 'ru' %}Все права защищены{% else %}All rights reserved{% endif %}.</p>
+      <p>
+        <a href="/sitemap.xml">Sitemap</a> |
+        <a href="/robots.txt">Robots.txt</a> |
+        <a href="/admin/">Admin</a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<!-- AOS & Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script src="/static/js/main.js"></script>
+
+<!-- ===================== SEARCH MODAL ===================== -->
+<div class="search-modal" id="searchModal" role="dialog" aria-modal="true" aria-label="{% if lang == 'uz' %}Qidiruv{% elif lang == 'ru' %}Поиск{% else %}Search{% endif %}">
+  <div class="search-backdrop" id="searchBackdrop"></div>
+  <div class="search-container">
+
+    <!-- Header -->
+    <div class="search-header">
+      <div class="search-input-wrap">
+        <i class="bi bi-search search-icon"></i>
+        <input
+          type="text"
+          id="searchInput"
+          class="search-input"
+          placeholder="{% if lang == 'uz' %}Qidirish... katalog, xizmatlar, yangiliklar{% elif lang == 'ru' %}Поиск... каталог, услуги, новости{% else %}Search... catalog, services, news{% endif %}"
+          autocomplete="off"
+          spellcheck="false"
+          aria-label="Search"
+        />
+        <span class="search-esc-badge">ESC</span>
+      </div>
+      <button class="search-close-btn" id="searchClose" aria-label="Yopish">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="search-body" id="searchBody">
+
+      <!-- Default tips -->
+      <div class="search-default" id="searchDefault">
+        <p class="search-default-title">{% if lang == 'uz' %}Qidirish bo'limlari{% elif lang == 'ru' %}Разделы поиска{% else %}Search sections{% endif %}</p>
+        <div class="search-tips-grid">
+          <div class="search-tip-card" data-section="katalog">
+            <div class="search-tip-icon"><i class="bi bi-grid-fill"></i></div>
+            <div class="search-tip-text">
+              <strong>{% if lang == 'uz' %}Katalog{% elif lang == 'ru' %}Каталог{% else %}Catalog{% endif %}</strong>
+              <span>{% if lang == 'uz' %}Mahsulotlar{% elif lang == 'ru' %}Продукция{% else %}Products{% endif %}</span>
+            </div>
+          </div>
+          <div class="search-tip-card" data-section="xizmatlar">
+            <div class="search-tip-icon"><i class="bi bi-tools"></i></div>
+            <div class="search-tip-text">
+              <strong>{% if lang == 'uz' %}Xizmatlar{% elif lang == 'ru' %}Услуги{% else %}Services{% endif %}</strong>
+              <span>{% if lang == 'uz' %}Kompaniya xizmatlari{% elif lang == 'ru' %}Услуги компании{% else %}Company services{% endif %}</span>
+            </div>
+          </div>
+          <div class="search-tip-card" data-section="yangiliklar">
+            <div class="search-tip-icon"><i class="bi bi-newspaper"></i></div>
+            <div class="search-tip-text">
+              <strong>{% if lang == 'uz' %}Yangiliklar{% elif lang == 'ru' %}Новости{% else %}News{% endif %}</strong>
+              <span>{% if lang == 'uz' %}So'ngi voqealar{% elif lang == 'ru' %}Последние события{% else %}Latest events{% endif %}</span>
+            </div>
+          </div>
+          <div class="search-tip-card" data-section="haqimizda">
+            <div class="search-tip-icon"><i class="bi bi-building-fill-gear"></i></div>
+            <div class="search-tip-text">
+              <strong>{% if lang == 'uz' %}Kompaniya{% elif lang == 'ru' %}Компания{% else %}Company{% endif %}</strong>
+              <span>{% if lang == 'uz' %}Kompaniya haqida{% elif lang == 'ru' %}О компании{% else %}About us{% endif %}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results list -->
+      <div id="searchResultsList" style="display:none;"></div>
+
+      <!-- Empty state -->
+      <div class="search-empty" id="searchEmpty" style="display:none;">
+        <i class="bi bi-search search-empty-icon"></i>
+        <p>{% if lang == 'uz' %}Natija topilmadi{% elif lang == 'ru' %}Ничего не найдено{% else %}No results found{% endif %}</p>
+        <small>{% if lang == 'uz' %}Boshqa kalit so'z bilan urinib ko'ring{% elif lang == 'ru' %}Попробуйте другое ключевое слово{% else %}Try a different keyword{% endif %}</small>
+      </div>
+
+    </div><!-- /search-body -->
+
+    <!-- Footer shortcuts -->
+    <div class="search-footer">
+      <span class="search-footer-item"><kbd>↑</kbd><kbd>↓</kbd> {% if lang == 'uz' %}harakat{% elif lang == 'ru' %}навигация{% else %}navigate{% endif %}</span>
+      <span class="search-footer-item"><kbd>Enter</kbd> {% if lang == 'uz' %}o'tish{% elif lang == 'ru' %}перейти{% else %}go{% endif %}</span>
+      <span class="search-footer-item"><kbd>ESC</kbd> {% if lang == 'uz' %}yopish{% elif lang == 'ru' %}закрыть{% else %}close{% endif %}</span>
+    </div>
+
+  </div><!-- /search-container -->
+</div><!-- /search-modal -->
+
+</body>
+</html>

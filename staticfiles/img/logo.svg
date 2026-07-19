@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 52" fill="none">
+  <!-- Hexagon background -->
+  <path d="M14 10 L26 4 L38 10 L38 28 L26 34 L14 28 Z" fill="#f59e0b" opacity="0.15"/>
+  <path d="M14 10 L26 4 L38 10 L38 28 L26 34 L14 28 Z" stroke="#f59e0b" stroke-width="1.5" fill="none"/>
+  <!-- Lightning bolt -->
+  <path d="M29 8 L21 20 L26 20 L23 34 L31 19 L26.5 19 Z" fill="#f59e0b"/>
+  <!-- Company name -->
+  <text x="50" y="22" font-family="'Segoe UI', system-ui, sans-serif" font-weight="800" font-size="17" fill="#f1f5f9" letter-spacing="-0.5">UZ</text>
+  <text x="72" y="22" font-family="'Segoe UI', system-ui, sans-serif" font-weight="800" font-size="17" fill="#f59e0b" letter-spacing="-0.5">ENERGO</text>
+  <!-- Tagline -->
+  <text x="50" y="36" font-family="'Segoe UI', system-ui, sans-serif" font-weight="500" font-size="8.5" fill="#64748b" letter-spacing="2.5">TA'MINLASH</text>
+  <!-- Decorative line -->
+  <line x1="50" y1="26" x2="212" y2="26" stroke="#f59e0b" stroke-width="0.8" opacity="0.3"/>
+</svg>

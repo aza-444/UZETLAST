@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>
+    {% if lang == 'uz' %}Korporativ boshqaruv
+    {% elif lang == 'ru' %}Корпоративное управление
+    {% else %}Corporate Governance
+    {% endif %} — O'zenergota'minlash
+  </title>
+  {% if settings and settings.favicon %}
+  <link rel="icon" type="image/x-icon" href="{{ settings.favicon.url }}"/>
+  {% else %}
+  <link rel="icon" type="image/x-icon" href="/static/favicon.ico"/>
+  {% endif %}
+  <meta name="description" content="Korporativ boshqaruv hujjatlari va qarorlari"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css"/>
+  <link rel="stylesheet" href="/static/css/style.css"/>
+  <style>
+    /* Corporate page — matches main page dark theme */
+    .corp-page-hero {
+      position: relative;
+      padding: 140px 0 80px;
+      background: var(--bg-section);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .corp-page-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 80% at 10% 50%, rgba(245,158,11,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 60% at 90% 30%, rgba(59,130,246,0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .corp-page-hero-content { position: relative; z-index: 1; }
+    .corp-breadcrumb {
+      display: flex; align-items: center; gap: 8px;
+      color: var(--text-muted); font-size: 0.875rem; margin-bottom: 20px;
+    }
+    .corp-breadcrumb a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+    .corp-breadcrumb a:hover { color: var(--primary); }
+    .corp-breadcrumb i { font-size: 0.7rem; }
+    .corp-page-title {
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffffff 0%, #f8d97e 60%, #f59e0b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px; line-height: 1.2;
+    }
+    .corp-page-subtitle { color: var(--text-secondary); font-size: 1.05rem; }
+
+    /* Category cards */
+    .corp-section { padding: 80px 0; background: var(--bg-dark); }
+    .corp-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 24px; margin-top: 48px;
+    }
+    @media (max-width: 768px) { .corp-grid { grid-template-columns: 1fr; } }
+
+    .corp-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: var(--transition);
+      position: relative;
+    }
+    .corp-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+      opacity: 0; transition: var(--transition);
+    }
+    .corp-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-glow);
+    }
+    .corp-card:hover::before { opacity: 1; }
+
+    .corp-card-header {
+      padding: 24px 24px 20px;
+      display: flex; align-items: center; gap: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .corp-card-icon {
+      width: 50px; height: 50px; border-radius: 12px;
+      background: var(--primary-glow);
+      border: 1px solid rgba(245,158,11,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; color: var(--primary); flex-shrink: 0;
+    }
+    .corp-card-name {
+      color: var(--text); font-weight: 700; font-size: 1.05rem; line-height: 1.3;
+    }
+
+    .corp-card-body { padding: 16px 24px 20px; }
+    .corp-year-list { list-style: none; padding: 0; margin: 0; }
+    .corp-year-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .corp-year-item:last-child { border-bottom: none; }
+    .corp-year-link {
+      display: flex; align-items: center; gap: 10px;
+      color: var(--text-secondary); text-decoration: none; font-weight: 500;
+      font-size: 0.95rem; transition: color 0.2s;
+    }
+    .corp-year-link:hover { color: var(--primary); }
+    .corp-year-link i { color: var(--primary); font-size: 0.9rem; }
+    .corp-year-badge {
+      font-size: 0.72rem; padding: 3px 10px; border-radius: 20px;
+      background: var(--primary); color: #000; font-weight: 700;
+    }
+    .corp-year-badge.archive {
+      background: rgba(255,255,255,0.08); color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+    .corp-no-docs {
+      padding: 12px 0; color: var(--text-muted);
+      font-size: 0.875rem; display: flex; align-items: center; gap: 8px;
+    }
+    .corp-empty {
+      text-align: center; padding: 80px 0; color: var(--text-muted);
+      grid-column: 1/-1;
+    }
+    .corp-empty i { font-size: 3.5rem; display: block; margin-bottom: 16px; color: var(--primary); opacity: 0.4; }
+  </style>
+</head>
+<body>
+
+{% include 'main/_navbar.html' with is_subpage=True %}
+
+<!-- PAGE HERO -->
+<section class="corp-page-hero">
+  <div class="container corp-page-hero-content">
+    <div class="corp-breadcrumb">
+      <a href="/"><i class="bi bi-house-fill"></i> {% if lang == 'uz' %}Bosh sahifa{% elif lang == 'ru' %}Главная{% else %}Home{% endif %}</a>
+      <i class="bi bi-chevron-right"></i>
+      <span>{% if lang == 'uz' %}Korporativ boshqaruv{% elif lang == 'ru' %}Корпоративное управление{% else %}Corporate Governance{% endif %}</span>
+    </div>
+    <h1 class="corp-page-title">
+      {% if lang == 'uz' %}Korporativ boshqaruv
+      {% elif lang == 'ru' %}Корпоративное управление
+      {% else %}Corporate Governance{% endif %}
+    </h1>
+    <p class="corp-page-subtitle">
+      {% if lang == 'uz' %}Kompaniyaning korporativ hujjatlari va qarorlari
+      {% elif lang == 'ru' %}Корпоративные документы и решения компании
+      {% else %}Corporate documents and resolutions of the company{% endif %}
+    </p>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="corp-section">
+  <div class="container">
+    <div class="section-header" data-aos="fade-up">
+      <div class="section-label">
+        <i class="bi bi-folder2-open"></i>
+        {% if lang == 'uz' %}Hujjatlar{% elif lang == 'ru' %}Документы{% else %}Documents{% endif %}
+      </div>
+      <h2 class="section-title">
+        {% if lang == 'uz' %}Korporativ hujjatlar
+        {% elif lang == 'ru' %}Корпоративные документы
+        {% else %}Corporate Documents{% endif %}
+      </h2>
+      <p class="section-desc">
+        {% if lang == 'uz' %}Yil va kategoriya bo'yicha hujjatlarni tanlang
+        {% elif lang == 'ru' %}Выберите документы по году и категории
+        {% else %}Select documents by year and category{% endif %}
+      </p>
+    </div>
+
+    {% if cat_data %}
+    <div class="corp-grid">
+      {% for item in cat_data %}
+      <div class="corp-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}00">
+        <div class="corp-card-header">
+          <div class="corp-card-icon">
+            <i class="bi bi-file-earmark-text-fill"></i>
+          </div>
+          <div class="corp-card-name">
+            {% if lang == 'uz' %}{{ item.category.name_uz }}
+            {% elif lang == 'ru' %}{{ item.category.name_ru|default:item.category.name_uz }}
+            {% else %}{{ item.category.name_en|default:item.category.name_uz }}{% endif %}
+          </div>
+        </div>
+        <div class="corp-card-body">
+          <ul class="corp-year-list">
+            {% for year in item.years %}
+            <li class="corp-year-item">
+              <a href="/korporativ/{{ item.category.slug }}/{{ year }}/" class="corp-year-link">
+                <i class="bi bi-calendar-event"></i>{{ year }}
+              </a>
+              <span class="corp-year-badge">{{ year }}</span>
+            </li>
+            {% endfor %}
+            {% if item.has_archive %}
+            <li class="corp-year-item">
+              <a href="/korporativ/{{ item.category.slug }}/arxiv/" class="corp-year-link">
+                <i class="bi bi-archive-fill"></i>
+                {% if lang == 'uz' %}Arxiv{% elif lang == 'ru' %}Архив{% else %}Archive{% endif %}
+              </a>
+              <span class="corp-year-badge archive">
+                {% if lang == 'uz' %}Arxiv{% elif lang == 'ru' %}Архив{% else %}Archive{% endif %}
+              </span>
+            </li>
+            {% endif %}
+            {% if not item.years and not item.has_archive %}
+            <li class="corp-no-docs">
+              <i class="bi bi-info-circle"></i>
+              {% if lang == 'uz' %}Hujjatlar hali qo'shilmagan{% elif lang == 'ru' %}Документы ещё не добавлены{% else %}No documents added yet{% endif %}
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="corp-empty" data-aos="fade-up">
+      <i class="bi bi-folder-x"></i>
+      <h3 style="margin-bottom:8px;">{% if lang == 'uz' %}Kategoriyalar yo'q{% elif lang == 'ru' %}Нет категорий{% else %}No categories{% endif %}</h3>
+      <p>{% if lang == 'uz' %}Admin paneldan kategoriyalar qo'shing{% elif lang == 'ru' %}Добавьте категории из панели администратора{% else %}Add categories from the admin panel{% endif %}</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" style="display:flex;align-items:center;gap:10px;margin-bottom:16px;text-decoration:none;">
+          {% if settings.logo %}<img src="{{ settings.logo.url }}" alt="Logo" class="footer-logo-img" style="margin-bottom:0;"/>{% endif %}
+          <span class="site-name" style="color:var(--text);">
+            {% if lang == 'ru' %}АО O'ZENERGOTA'MINLASH
+            {% elif lang == 'en' %}JSC O'ZENERGOTA'MINLASH
+            {% else %}O'ZENERGOTA'MINLASH<br><span>AKSIYADORLIK JAMIYATI</span>{% endif %}
+          </span>
+        </a>
+        <p>{% if lang == 'uz' %}O'zbekistonda energetika uskunalarini yetkazib berish bo'yicha ishonchli hamkor{% elif lang == 'ru' %}Надёжный партнёр по поставке энергетического оборудования в Узбекистане{% else %}Reliable partner for energy equipment supply in Uzbekistan{% endif %}</p>
+      </div>
+      <div class="footer-links">
+        <h4>{% if lang == 'uz' %}Havolalar{% elif lang == 'ru' %}Ссылки{% else %}Links{% endif %}</h4>
+        <ul>
+          {% for anchor, label in menu_items %}
+          <li>{% if anchor == 'korporativ' %}<a href="/korporativ/">{{ label }}</a>{% else %}<a href="/#{{ anchor }}">{{ label }}</a>{% endif %}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="footer-contact">
+        <h4>{% if lang == 'uz' %}Aloqa{% elif lang == 'ru' %}Контакты{% else %}Contact{% endif %}</h4>
+        {% if settings %}
+        {% if settings.phone_1 %}<p><i class="bi bi-telephone"></i> <a href="tel:{{ settings.phone_1 }}">{{ settings.phone_1 }}</a></p>{% endif %}
+        {% if settings.email %}<p><i class="bi bi-envelope"></i> <a href="mailto:{{ settings.email }}">{{ settings.email }}</a></p>{% endif %}
+        {% endif %}
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© {% now "Y" %} O'zenergota'minlash. {% if lang == 'uz' %}Barcha huquqlar himoyalangan{% elif lang == 'ru' %}Все права защищены{% else %}All rights reserved{% endif %}.</p>
+      <p><a href="/sitemap.xml">Sitemap</a> | <a href="/admin/">Admin</a></p>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script src="/static/js/main.js"></script>
+</body>
+</html>

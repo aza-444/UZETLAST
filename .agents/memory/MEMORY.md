@@ -1,0 +1,1 @@
+- [Django Website Setup](django-website.md) — Django 6 site in website/ dir, port 8000, workflow "Django Website", admin creds via env vars.

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>
+    {% if lang == 'uz' %}{{ category.name_uz }}
+    {% elif lang == 'ru' %}{{ category.name_ru|default:category.name_uz }}
+    {% else %}{{ category.name_en|default:category.name_uz }}{% endif %}
+    — {% if current_year == 'arxiv' %}{% if lang == 'uz' %}Arxiv{% elif lang == 'ru' %}Архив{% else %}Archive{% endif %}{% else %}{{ current_year }}{% endif %}
+    — O'zenergota'minlash
+  </title>
+  {% if settings and settings.favicon %}
+  <link rel="icon" type="image/x-icon" href="{{ settings.favicon.url }}"/>
+  {% else %}
+  <link rel="icon" type="image/x-icon" href="/static/favicon.ico"/>
+  {% endif %}
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css"/>
+  <link rel="stylesheet" href="/static/css/style.css"/>
+  <style>
+    /* Page hero — dark theme */
+    .corp-page-hero {
+      position: relative;
+      padding: 140px 0 70px;
+      background: var(--bg-section);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .corp-page-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 80% at 10% 50%, rgba(245,158,11,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 60% at 90% 30%, rgba(59,130,246,0.05) 0%, transparent 60%);
+    }
+    .corp-page-hero-content { position: relative; z-index: 1; }
+    .corp-breadcrumb {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      color: var(--text-muted); font-size: 0.875rem; margin-bottom: 20px;
+    }
+    .corp-breadcrumb a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+    .corp-breadcrumb a:hover { color: var(--primary); }
+    .corp-breadcrumb i { font-size: 0.7rem; }
+    .corp-page-title {
+      font-size: clamp(1.6rem, 3vw, 2.6rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffffff 0%, #f8d97e 60%, #f59e0b 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; margin-bottom: 12px;
+    }
+    .corp-year-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--primary-glow); border: 1px solid rgba(245,158,11,0.2);
+      color: var(--primary); padding: 6px 16px; border-radius: 20px;
+      font-size: 0.9rem; font-weight: 700;
+    }
+
+    /* Layout */
+    .corp-docs-layout {
+      display: grid; grid-template-columns: 260px 1fr;
+      gap: 32px; padding: 60px 0 80px;
+      align-items: start;
+    }
+    @media (max-width: 900px) { .corp-docs-layout { grid-template-columns: 1fr; } }
+
+    /* Sidebar */
+    .corp-sidebar-wrap { position: sticky; top: 90px; }
+    .corp-sidebar-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); overflow: hidden;
+    }
+    .corp-sidebar-head {
+      padding: 16px 20px; font-size: 0.78rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--text-muted); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .corp-sidebar-head i { color: var(--primary); }
+    .corp-sidebar-list { list-style: none; padding: 6px; margin: 0; }
+    .corp-sidebar-link {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 14px; color: var(--text-secondary); text-decoration: none;
+      font-weight: 500; font-size: 0.9rem; border-radius: 8px;
+      border-left: 3px solid transparent; transition: var(--transition);
+    }
+    .corp-sidebar-link:hover { background: var(--primary-glow); color: var(--primary); }
+    .corp-sidebar-link.active {
+      background: var(--primary-glow); color: var(--primary);
+      border-left-color: var(--primary); font-weight: 700;
+    }
+    .corp-sidebar-link i { font-size: 0.85rem; }
+    .corp-sidebar-divider { height: 1px; background: var(--border); margin: 4px 12px; }
+    .corp-sidebar-group-label {
+      padding: 10px 20px 4px; font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted);
+    }
+
+    /* Documents */
+    .corp-docs-header { margin-bottom: 28px; }
+    .corp-docs-title {
+      font-size: clamp(1.3rem, 2.5vw, 1.9rem); font-weight: 800;
+      color: var(--text); margin-bottom: 8px;
+    }
+    .corp-docs-meta {
+      display: flex; align-items: center; gap: 16px;
+      color: var(--text-muted); font-size: 0.875rem;
+    }
+    .corp-docs-meta span { display: flex; align-items: center; gap: 5px; }
+
+    .corp-doc-list { display: flex; flex-direction: column; gap: 10px; }
+    .corp-doc-item {
+      display: flex; align-items: center; gap: 18px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 18px 22px;
+      text-decoration: none; color: var(--text);
+      transition: var(--transition); position: relative; overflow: hidden;
+    }
+    .corp-doc-item::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+      background: var(--primary); opacity: 0; transition: opacity 0.25s;
+    }
+    .corp-doc-item:hover {
+      border-color: var(--border-hover);
+      background: var(--bg-card-hover);
+      transform: translateX(4px);
+      box-shadow: var(--shadow-glow);
+    }
+    .corp-doc-item:hover::before { opacity: 1; }
+
+    .corp-doc-icon {
+      width: 48px; height: 48px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; flex-shrink: 0;
+    }
+    .corp-doc-icon.pdf  { background: rgba(220,38,38,0.1); color: #ef4444; }
+    .corp-doc-icon.doc,
+    .corp-doc-icon.docx { background: rgba(37,99,235,0.1); color: #3b82f6; }
+    .corp-doc-icon.xls,
+    .corp-doc-icon.xlsx { background: rgba(22,163,74,0.1); color: #22c55e; }
+    .corp-doc-icon.other { background: var(--primary-glow); color: var(--primary); }
+
+    .corp-doc-info { flex: 1; min-width: 0; }
+    .corp-doc-title {
+      font-weight: 600; font-size: 0.98rem; margin-bottom: 5px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      color: var(--text);
+    }
+    .corp-doc-meta-row {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.78rem; color: var(--text-muted);
+    }
+    .corp-doc-ext {
+      display: inline-block; padding: 2px 8px; border-radius: 4px;
+      font-size: 0.68rem; font-weight: 800; text-transform: uppercase;
+      background: var(--primary); color: #000;
+    }
+    .corp-doc-download {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: var(--primary-glow); border: 1px solid rgba(245,158,11,0.2);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--primary); font-size: 1rem; flex-shrink: 0;
+      transition: var(--transition);
+    }
+    .corp-doc-item:hover .corp-doc-download {
+      background: var(--primary); color: #000;
+    }
+
+    .corp-empty {
+      text-align: center; padding: 80px 20px; color: var(--text-muted);
+    }
+    .corp-empty i { font-size: 3.5rem; display: block; margin-bottom: 16px; color: var(--primary); opacity: 0.3; }
+  </style>
+</head>
+<body>
+
+{% include 'main/_navbar.html' with is_subpage=True %}
+
+<!-- PAGE HERO -->
+<section class="corp-page-hero">
+  <div class="container corp-page-hero-content">
+    <div class="corp-breadcrumb">
+      <a href="/"><i class="bi bi-house-fill"></i> {% if lang == 'uz' %}Bosh sahifa{% elif lang == 'ru' %}Главная{% else %}Home{% endif %}</a>
+      <i class="bi bi-chevron-right"></i>
+      <a href="/korporativ/">{% if lang == 'uz' %}Korporativ boshqaruv{% elif lang == 'ru' %}Корпоративное управление{% else %}Corporate Governance{% endif %}</a>
+      <i class="bi bi-chevron-right"></i>
+      <span>{% if lang == 'uz' %}{{ category.name_uz }}{% elif lang == 'ru' %}{{ category.name_ru|default:category.name_uz }}{% else %}{{ category.name_en|default:category.name_uz }}{% endif %}</span>
+    </div>
+    <h1 class="corp-page-title">
+      {% if lang == 'uz' %}{{ category.name_uz }}
+      {% elif lang == 'ru' %}{{ category.name_ru|default:category.name_uz }}
+      {% else %}{{ category.name_en|default:category.name_uz }}{% endif %}
+    </h1>
+    <div class="corp-year-tag">
+      <i class="bi bi-{% if current_year == 'arxiv' %}archive-fill{% else %}calendar-event{% endif %}"></i>
+      {% if current_year == 'arxiv' %}{% if lang == 'uz' %}Arxiv{% elif lang == 'ru' %}Архив{% else %}Archive{% endif %}{% else %}{{ current_year }}{% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- MAIN -->
+<div class="container" style="background:var(--bg-dark);">
+  <div class="corp-docs-layout">
+
+    <!-- Sidebar -->
+    <aside class="corp-sidebar-wrap" data-aos="fade-right">
+      <div class="corp-sidebar-card">
+        <div class="corp-sidebar-head">
+          <i class="bi bi-calendar3"></i>
+          {% if lang == 'uz' %}Yillar{% elif lang == 'ru' %}Годы{% else %}Years{% endif %}
+        </div>
+        <ul class="corp-sidebar-list">
+          {% for year in years %}
+          <li>
+            <a href="/korporativ/{{ category.slug }}/{{ year }}/"
+               class="corp-sidebar-link {% if current_year == year %}active{% endif %}">
+              <i class="bi bi-calendar-event"></i> {{ year }}
+            </a>
+          </li>
+          {% endfor %}
+          {% if has_archive %}
+          <li><div class="corp-sidebar-divider"></div></li>
+          <li>
+            <a href="/korporativ/{{ category.slug }}/arxiv/"
+               class="corp-sidebar-link {% if current_year == 'arxiv' %}active{% endif %}">
+              <i class="bi bi-archive-fill"></i>
+              {% if lang == 'uz' %}Arxiv{% elif lang == 'ru' %}Архив{% else %}Archive{% endif %}
+            </a>
+          </li>
+          {% endif %}
+        </ul>
+
+        {% if categories_with_url %}
+        <div class="corp-sidebar-divider" style="margin:8px 0;"></div>
+        <div class="corp-sidebar-group-label">
+          {% if lang == 'uz' %}Boshqa bo'limlar{% elif lang == 'ru' %}Другие разделы{% else %}Other sections{% endif %}
+        </div>
+        <ul class="corp-sidebar-list">
+          {% for item in categories_with_url %}
+          <li>
+            <a href="{{ item.url }}" class="corp-sidebar-link">
+              <i class="bi bi-folder2"></i>
+              {% if lang == 'uz' %}{{ item.cat.name_uz }}{% elif lang == 'ru' %}{{ item.cat.name_ru|default:item.cat.name_uz }}{% else %}{{ item.cat.name_en|default:item.cat.name_uz }}{% endif %}
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+
+      <div style="margin-top:16px;">
+        <a href="/korporativ/" class="btn btn-outline" style="width:100%;justify-content:center;">
+          <i class="bi bi-arrow-left"></i>
+          {% if lang == 'uz' %}Orqaga{% elif lang == 'ru' %}Назад{% else %}Back{% endif %}
+        </a>
+      </div>
+    </aside>
+
+    <!-- Documents -->
+    <main data-aos="fade-left" style="padding: 60px 0;">
+      <div class="corp-docs-header">
+        <h2 class="corp-docs-title">
+          {% if lang == 'uz' %}{{ category.name_uz }}{% elif lang == 'ru' %}{{ category.name_ru|default:category.name_uz }}{% else %}{{ category.name_en|default:category.name_uz }}{% endif %}
+          —
+          {% if current_year == 'arxiv' %}{% if lang == 'uz' %}Arxiv{% elif lang == 'ru' %}Архив{% else %}Archive{% endif %}{% else %}{{ current_year }}{% endif %}
+        </h2>
+        <div class="corp-docs-meta">
+          <span><i class="bi bi-file-earmark-fill"></i> {{ documents|length }} {% if lang == 'uz' %}ta hujjat{% elif lang == 'ru' %}документ(ов){% else %}document(s){% endif %}</span>
+        </div>
+      </div>
+
+      {% if documents %}
+      <div class="corp-doc-list">
+        {% for doc in documents %}
+        {% with ext=doc.file_extension %}
+        <a href="{{ doc.file.url }}?v=2" download class="corp-doc-item" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}40">
+          <div class="corp-doc-icon {{ ext|default:'other' }}">
+            {% if ext == 'pdf' %}<i class="bi bi-file-earmark-pdf-fill"></i>
+            {% elif ext == 'doc' or ext == 'docx' %}<i class="bi bi-file-earmark-word-fill"></i>
+            {% elif ext == 'xls' or ext == 'xlsx' %}<i class="bi bi-file-earmark-excel-fill"></i>
+            {% else %}<i class="bi bi-file-earmark-fill"></i>{% endif %}
+          </div>
+          <div class="corp-doc-info">
+            <div class="corp-doc-title">
+              {% if lang == 'uz' %}{{ doc.title_uz }}{% elif lang == 'ru' %}{{ doc.title_ru|default:doc.title_uz }}{% else %}{{ doc.title_en|default:doc.title_uz }}{% endif %}
+            </div>
+            <div class="corp-doc-meta-row">
+              {% if ext %}<span class="corp-doc-ext">{{ ext|upper }}</span>{% endif %}
+              <span><i class="bi bi-calendar3"></i> {{ doc.published_date|date:"d.m.Y" }}</span>
+            </div>
+          </div>
+          <div class="corp-doc-download">
+            <i class="bi bi-download"></i>
+          </div>
+        </a>
+        {% endwith %}
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="corp-empty" data-aos="fade-up">
+        <i class="bi bi-file-earmark-x"></i>
+        <h3 style="margin-bottom:8px;color:var(--text);">
+          {% if lang == 'uz' %}Hujjatlar yo'q{% elif lang == 'ru' %}Нет документов{% else %}No documents{% endif %}
+        </h3>
+        <p>{% if lang == 'uz' %}Bu bo'limda hali hujjatlar qo'shilmagan{% elif lang == 'ru' %}В этом разделе документы ещё не добавлены{% else %}No documents have been added to this section yet{% endif %}</p>
+      </div>
+      {% endif %}
+    </main>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" style="display:flex;align-items:center;gap:10px;margin-bottom:16px;text-decoration:none;">
+          {% if settings.logo %}<img src="{{ settings.logo.url }}" alt="Logo" class="footer-logo-img" style="margin-bottom:0;"/>{% endif %}
+          <span class="site-name" style="color:var(--text);">
+            {% if lang == 'ru' %}АО O'ZENERGOTA'MINLASH{% elif lang == 'en' %}JSC O'ZENERGOTA'MINLASH{% else %}O'ZENERGOTA'MINLASH<br><span>AKSIYADORLIK JAMIYATI</span>{% endif %}
+          </span>
+        </a>
+        <p>{% if lang == 'uz' %}O'zbekistonda energetika uskunalarini yetkazib berish bo'yicha ishonchli hamkor{% elif lang == 'ru' %}Надёжный партнёр по поставке энергетического оборудования в Узбекистане{% else %}Reliable partner for energy equipment supply in Uzbekistan{% endif %}</p>
+      </div>
+      <div class="footer-links">
+        <h4>{% if lang == 'uz' %}Havolalar{% elif lang == 'ru' %}Ссылки{% else %}Links{% endif %}</h4>
+        <ul>{% for anchor, label in menu_items %}<li>{% if anchor == 'korporativ' %}<a href="/korporativ/">{{ label }}</a>{% else %}<a href="/#{{ anchor }}">{{ label }}</a>{% endif %}</li>{% endfor %}</ul>
+      </div>
+      <div class="footer-contact">
+        <h4>{% if lang == 'uz' %}Aloqa{% elif lang == 'ru' %}Контакты{% else %}Contact{% endif %}</h4>
+        {% if settings %}{% if settings.phone_1 %}<p><i class="bi bi-telephone"></i> <a href="tel:{{ settings.phone_1 }}">{{ settings.phone_1 }}</a></p>{% endif %}{% if settings.email %}<p><i class="bi bi-envelope"></i> <a href="mailto:{{ settings.email }}">{{ settings.email }}</a></p>{% endif %}{% endif %}
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© {% now "Y" %} O'zenergota'minlash. {% if lang == 'uz' %}Barcha huquqlar himoyalangan{% elif lang == 'ru' %}Все права защищены{% else %}All rights reserved{% endif %}.</p>
+      <p><a href="/sitemap.xml">Sitemap</a> | <a href="/admin/">Admin</a></p>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script src="/static/js/main.js"></script>
+</body>
+</html>
