@@ -6,7 +6,9 @@
         {% if settings and settings.address_uz %}
         <div class="top-info-item">
           <i class="bi bi-geo-alt-fill"></i>
-          <span>{% if lang == 'uz' %}{{ settings.address_uz }}{% elif lang == 'ru' %}{{ settings.address_ru|default:settings.address_uz }}{% else %}{{ settings.address_en|default:settings.address_uz }}{% endif %}</span>
+          <a href="#xarita" style="color: inherit; text-decoration: none;">
+            <span>{% if lang == 'uz' %}{{ settings.address_uz }}{% elif lang == 'ru' %}{{ settings.address_ru|default:settings.address_uz }}{% else %}{{ settings.address_en|default:settings.address_uz }}{% endif %}</span>
+          </a>
         </div>
         {% endif %}
         {% if settings and settings.email %}

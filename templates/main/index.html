@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>
     {% if settings %}
-      {% if lang == 'uz' %}{{ settings.meta_title_uz|default:"UZEnergo Ta'minlash — Energetika uskunalari" }}
-      {% elif lang == 'ru' %}{{ settings.meta_title_ru|default:"UZEnergo — Энергетическое оборудование" }}
-      {% else %}{{ settings.meta_title_en|default:"UZEnergo — Energy Equipment Supply" }}
+      {% if lang == 'uz' %}{{ settings.meta_title_uz|default:"O'zenergota'minlash — Energetika uskunalari" }}
+      {% elif lang == 'ru' %}{{ settings.meta_title_ru|default:"O'zenergota'minlash — Энергетическое оборудование" }}
+      {% else %}{{ settings.meta_title_en|default:"O'zenergota'minlash — Energy Equipment Supply" }}
       {% endif %}
-    {% else %}UZEnergo Ta'minlash — Energetika uskunalari{% endif %}
+    {% else %}O'zenergota'minlash — Energetika uskunalari{% endif %}
   </title>
   {% if settings and settings.favicon %}
   <link rel="icon" type="image/x-icon" href="{{ settings.favicon.url }}"/>
@@ -39,6 +39,29 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css"/>
   <!-- Main CSS -->
   <link rel="stylesheet" href="/static/css/style.css"/>
+{% if settings %}
+<style>
+/* ── Faqat KUNDUZGI REJIM uchun admin ranglari ──
+   Qorongʻi rejim o'z original ranglarida qoladi!   */
+[data-theme="light"] {
+  --primary:        {{ settings.primary_color }};
+  --primary-hover:  {{ settings.primary_color }};
+  --primary-glow:   {{ settings.primary_color }}33;
+  --accent:         {{ settings.accent_color }};
+  --accent-hover:   {{ settings.accent_color }};
+  --bg-dark:        {{ settings.bg_color }};
+  --bg-card:        {{ settings.bg_card_color }};
+  --bg-card-hover:  {{ settings.bg_card_color }};
+  --bg-section:     {{ settings.bg_section_color }};
+  --text:           {{ settings.text_color }};
+  --text-secondary: {{ settings.text_secondary_color }};
+  --border:         {{ settings.border_color }};
+  --border-hover:   {{ settings.primary_color }}66;
+  --shadow-glow:    0 0 30px {{ settings.primary_color }}33;
+}
+</style>
+{% endif %}
+
 
   <!-- Structured Data for SEO -->
   <script type="application/ld+json">
@@ -159,7 +182,7 @@
     <div class="about-grid">
       <div class="about-image-wrap" data-aos="fade-right">
         {% if about and about.image %}
-        <img src="{{ about.image.url }}" alt="Kompaniya haqida" class="about-img"/>
+        <img src="{{ about.image.url }}" alt="Biz haqimizda" class="about-img"/>
         {% else %}
         <div class="about-img-placeholder">
           <i class="bi bi-building-fill-gear"></i>
@@ -175,13 +198,13 @@
 
       <div class="about-content" data-aos="fade-left">
         <div class="section-label">
-          {% if lang == 'uz' %}Kompaniya haqida{% elif lang == 'ru' %}О компании{% else %}About Us{% endif %}
+          {% if lang == 'uz' %}Biz haqimizda{% elif lang == 'ru' %}О нас{% else %}About Us{% endif %}
         </div>
         <h2 class="section-title">
           {% if about %}
             {% if lang == 'uz' %}{{ about.title_uz }}{% elif lang == 'ru' %}{{ about.title_ru|default:about.title_uz }}{% else %}{{ about.title_en|default:about.title_uz }}{% endif %}
           {% else %}
-            {% if lang == 'uz' %}Kompaniya haqida{% elif lang == 'ru' %}О компании{% else %}About Company{% endif %}
+            {% if lang == 'uz' %}Biz haqimizda{% elif lang == 'ru' %}О нас{% else %}About Us{% endif %}
           {% endif %}
         </h2>
         <p class="about-text">
@@ -511,7 +534,9 @@
           <div class="contact-icon"><i class="bi bi-geo-alt-fill"></i></div>
           <div>
             <strong>{% if lang == 'uz' %}Manzil{% elif lang == 'ru' %}Адрес{% else %}Address{% endif %}</strong>
-            <span>{% if lang == 'uz' %}{{ settings.address_uz }}{% elif lang == 'ru' %}{{ settings.address_ru|default:settings.address_uz }}{% else %}{{ settings.address_en|default:settings.address_uz }}{% endif %}</span>
+            <a href="#xarita" style="color: inherit; text-decoration: none;">
+              <span>{% if lang == 'uz' %}{{ settings.address_uz }}{% elif lang == 'ru' %}{{ settings.address_ru|default:settings.address_uz }}{% else %}{{ settings.address_en|default:settings.address_uz }}{% endif %}</span>
+            </a>
           </div>
         </div>
         {% endif %}
@@ -566,7 +591,7 @@
     </div>
     
     {% if settings and settings.map_iframe %}
-    <div class="contact-map" data-aos="fade-up" style="margin-top: 40px; border-radius: 12px; overflow: hidden; height: 400px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+    <div id="xarita" class="contact-map" data-aos="fade-up" style="margin-top: 40px; border-radius: 12px; overflow: hidden; height: 400px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
       <style>
         .contact-map iframe { width: 100% !important; height: 100% !important; border: 0 !important; }
       </style>
@@ -628,7 +653,7 @@
         {% if settings %}
         {% if settings.phone_1 %}<p><i class="bi bi-telephone"></i> <a href="tel:{{ settings.phone_1 }}">{{ settings.phone_1 }}</a></p>{% endif %}
         {% if settings.email %}<p><i class="bi bi-envelope"></i> <a href="mailto:{{ settings.email }}">{{ settings.email }}</a></p>{% endif %}
-        {% if settings.address_uz %}<p><i class="bi bi-geo-alt"></i> {% if lang == 'uz' %}{{ settings.address_uz }}{% elif lang == 'ru' %}{{ settings.address_ru|default:settings.address_uz }}{% else %}{{ settings.address_en|default:settings.address_uz }}{% endif %}</p>{% endif %}
+        {% if settings.address_uz %}<p><i class="bi bi-geo-alt"></i> <a href="#xarita" style="color: inherit; text-decoration: none;">{% if lang == 'uz' %}{{ settings.address_uz }}{% elif lang == 'ru' %}{{ settings.address_ru|default:settings.address_uz }}{% else %}{{ settings.address_en|default:settings.address_uz }}{% endif %}</a></p>{% endif %}
         {% endif %}
       </div>
     </div>
@@ -705,7 +730,7 @@
             <div class="search-tip-icon"><i class="bi bi-building-fill-gear"></i></div>
             <div class="search-tip-text">
               <strong>{% if lang == 'uz' %}Kompaniya{% elif lang == 'ru' %}Компания{% else %}Company{% endif %}</strong>
-              <span>{% if lang == 'uz' %}Kompaniya haqida{% elif lang == 'ru' %}О компании{% else %}About us{% endif %}</span>
+              <span>{% if lang == 'uz' %}Biz haqimizda{% elif lang == 'ru' %}О нас{% else %}About us{% endif %}</span>
             </div>
           </div>
         </div>

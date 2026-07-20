@@ -97,7 +97,7 @@ def get_menu_items(lang):
     items = {
         'uz': [
             ('bosh-sahifa', 'Bosh sahifa'),
-            ('haqimizda', 'Kompaniya haqida'),
+            ('haqimizda', 'Biz haqimizda'),
             ('katalog', 'Katalog'),
             ('xizmatlar', 'Xizmatlar'),
             ('yangiliklar', 'Yangiliklar'),
@@ -106,7 +106,7 @@ def get_menu_items(lang):
         ],
         'ru': [
             ('bosh-sahifa', 'Главная'),
-            ('haqimizda', 'О компании'),
+            ('haqimizda', 'О нас'),
             ('katalog', 'Каталог'),
             ('xizmatlar', 'Услуги'),
             ('yangiliklar', 'Новости'),
@@ -115,7 +115,7 @@ def get_menu_items(lang):
         ],
         'en': [
             ('bosh-sahifa', 'Home'),
-            ('haqimizda', 'About'),
+            ('haqimizda', 'About Us'),
             ('katalog', 'Catalog'),
             ('xizmatlar', 'Services'),
             ('yangiliklar', 'News'),

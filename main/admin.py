@@ -1,4 +1,6 @@
+# coding: utf-8
 from django.contrib import admin
+from django import forms
 from django.utils.html import format_html
 from .models import (
     SiteSettings, HeroSection, AboutSection,
@@ -7,8 +9,56 @@ from .models import (
 )
 
 
+# ─────────────────────────────────────────────────────────────
+#  Premium rang palitrasi (admin da ko'rinadigan swatches)
+# ─────────────────────────────────────────────────────────────
+PREMIUM_LIGHT_COLORS = [
+    # Primary (asosiy rang)
+    ("#f59e0b", "Amber Gold"),
+    ("#0ea5e9", "Sky Blue"),
+    ("#8b5cf6", "Violet"),
+    ("#10b981", "Emerald"),
+    ("#ef4444", "Rose Red"),
+    ("#f97316", "Orange"),
+    ("#06b6d4", "Cyan"),
+    ("#6366f1", "Indigo"),
+    ("#ec4899", "Pink"),
+    ("#14b8a6", "Teal"),
+    ("#84cc16", "Lime"),
+    ("#a855f7", "Purple"),
+]
+
+
+class ColorPreviewWidget(forms.TextInput):
+    """HTML5 color picker + hex value input"""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.attrs.update({'type': 'color', 'style': 'width:80px;height:40px;border-radius:8px;cursor:pointer;border:1px solid #ccc;'})
+
+    class Media:
+        css = {'all': []}
+        js = []
+
+
+class SiteSettingsForm(forms.ModelForm):
+    class Meta:
+        model = SiteSettings
+        fields = '__all__'
+        widgets = {
+            'primary_color': ColorPreviewWidget(),
+            'accent_color': ColorPreviewWidget(),
+            'bg_color': ColorPreviewWidget(),
+            'bg_card_color': ColorPreviewWidget(),
+            'bg_section_color': ColorPreviewWidget(),
+            'text_color': ColorPreviewWidget(),
+            'text_secondary_color': ColorPreviewWidget(),
+        }
+
+
 @admin.register(SiteSettings)
 class SiteSettingsAdmin(admin.ModelAdmin):
+    form = SiteSettingsForm
     fieldsets = (
         ('📞 Aloqa ma\'lumotlari', {
             'fields': ('phone_1', 'phone_2', 'email')
@@ -20,7 +70,7 @@ class SiteSettingsAdmin(admin.ModelAdmin):
             'fields': ('telegram', 'instagram', 'facebook', 'youtube')
         }),
         ('🔍 SEO — O\'zbek', {
-            'fields': ('meta_title_uz', 'meta_description_uz')
+            'fields': ('meta_description_uz',)
         }),
         ('🔍 SEO — Русский', {
             'classes': ('collapse',),
@@ -36,6 +86,25 @@ class SiteSettingsAdmin(admin.ModelAdmin):
         ('🖼️ Logo va Favicon', {
             'fields': ('logo', 'favicon')
         }),
+        ('🎨 Tema Ranglari — To\'liq boshqaruv', {
+            'description': (
+                'Har bir rang maydoniga bosib color picker orqali rang tanlang. '
+                'Saqlash tugmasini bosgach saytda darhol aks etadi.<br>'
+                '<strong>Tavsiya etilgan Premium ranglar:</strong> '
+                + ' '.join(
+                    f'<span title="{name}" style="display:inline-block;width:20px;height:20px;'
+                    f'background:{hex_};border-radius:4px;margin:2px;border:1px solid #ccc;'
+                    f'vertical-align:middle;" ></span> <code>{hex_}</code>'
+                    for hex_, name in PREMIUM_LIGHT_COLORS
+                )
+            ),
+            'fields': (
+                'primary_color', 'accent_color',
+                'bg_color', 'bg_card_color', 'bg_section_color',
+                'text_color', 'text_secondary_color',
+                'border_color',
+            )
+        }),
     )
 
     def has_add_permission(self, request):
@@ -43,6 +112,26 @@ class SiteSettingsAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+    def color_swatches(self, obj):
+        colors = [
+            (obj.primary_color, 'Primary'),
+            (obj.accent_color, 'Accent'),
+            (obj.bg_color, 'Background'),
+            (obj.text_color, 'Text'),
+            (obj.text_secondary_color, 'Secondary'),
+        ]
+        html = ''
+        for c, label in colors:
+            html += (
+                f'<span title="{label}: {c}" style="display:inline-block;width:28px;height:28px;'
+                f'background:{c};border-radius:6px;margin:2px;border:1px solid rgba(0,0,0,0.15);'
+                f'vertical-align:middle;"></span>'
+            )
+        return format_html(html)
+
+    color_swatches.short_description = "Ranglar"
+    color_swatches.allow_tags = True
 
 
 @admin.register(HeroSection)
@@ -190,7 +279,7 @@ class PartnerAdmin(admin.ModelAdmin):
     list_display_links = ('name',)
     list_editable = ('order', 'is_active')
     search_fields = ('name',)
-    
+
     def image_preview(self, obj):
         if obj.image:
             return format_html('<img src="{}" height="40" style="object-fit:contain;border-radius:4px;"/>', obj.image.url)

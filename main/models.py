@@ -31,8 +31,15 @@ class SiteSettings(models.Model):
     facebook = models.URLField(blank=True, verbose_name="Facebook")
     youtube = models.URLField(blank=True, verbose_name="YouTube")
     
-    # SEO
-    meta_title_uz = models.CharField(max_length=200, blank=True, verbose_name="Meta Title (UZ)")
+    # Theme colors (editable via admin)
+    primary_color = models.CharField(max_length=7, default='#f59e0b', help_text='Asosiy brand rangi (hex)', verbose_name='Primary Color')
+    accent_color = models.CharField(max_length=7, default='#0ea5e9', help_text='Ikkinchi darajali rang (hex)', verbose_name='Accent Color')
+    bg_color = models.CharField(max_length=7, default='#f8fafc', help_text='Sahifa umumiy foni (hex)', verbose_name='Sahifa foni')
+    bg_card_color = models.CharField(max_length=7, default='#ffffff', help_text='Karta/blok foni (hex)', verbose_name='Karta foni')
+    bg_section_color = models.CharField(max_length=7, default='#f1f5f9', help_text='Bo\'lim foni (alternativ, hex)', verbose_name='Bo\'lim foni')
+    text_color = models.CharField(max_length=7, default='#0f172a', help_text='Asosiy matn rangi (hex)', verbose_name='Text Color')
+    text_secondary_color = models.CharField(max_length=7, default='#475569', help_text='Ikkinchi darajali matn rangi (hex)', verbose_name='Secondary Text Color')
+    border_color = models.CharField(max_length=20, default='rgba(0,0,0,0.1)', help_text='Chegara rangi — rgba yoki hex (masalan: rgba(0,0,0,0.1))', verbose_name='Chegara rangi')
     meta_title_ru = models.CharField(max_length=200, blank=True, verbose_name="Meta Title (RU)")
     meta_title_en = models.CharField(max_length=200, blank=True, verbose_name="Meta Title (EN)")
     meta_description_uz = models.TextField(blank=True, verbose_name="Meta Description (UZ)")
@@ -59,7 +66,7 @@ class SiteSettings(models.Model):
         return getattr(self, f'address_{lang}', self.address_uz)
 
     def meta_title(self, lang='uz'):
-        return getattr(self, f'meta_title_{lang}', self.meta_title_uz)
+        return getattr(self, f'meta_title_{lang}', getattr(self, 'meta_title_ru', ''))
 
     def meta_description(self, lang='uz'):
         return getattr(self, f'meta_description_{lang}', self.meta_description_uz)
