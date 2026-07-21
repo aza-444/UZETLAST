@@ -1,4 +1,46 @@
+
 /* =============================================
+/* =============================================
+   Text Overflow & Whitespace Prevention
+   ============================================= */
+* {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+/* Prevent text overflow */
+h1, h2, h3, h4, h5, h6, p, span, div, a, li {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+}
+
+/* Ensure buttons have proper padding */
+.btn {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Fix for hero section */
+.hero-title {
+  white-space: pre-line;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.hero-subtitle {
+  white-space: pre-line;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.hero-badge {
+  white-space: nowrap;
+}
+
+
    UZEnergo Ta'minlash — Main Stylesheet
    Dark energy theme, modern & professional
    ============================================= */
@@ -54,14 +96,18 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { scroll-behavior: smooth; scroll-padding-top: var(--navbar-h); }
+html { scroll-behavior: smooth; scroll-padding-top: var(--navbar-h); font-size: 16px; }
 
 body {
-  font-family: 'Manrope', 'Segoe UI', system-ui, sans-serif;
+  font-family: 'Manrope', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: var(--bg-dark);
   color: var(--text);
   line-height: 1.7;
   overflow-x: hidden;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 a { text-decoration: none; color: inherit; }
@@ -1750,7 +1796,49 @@ nav-logo {
   }
 }
 
-/* ============================================================
+
+/* =============================================
+/* =============================================
+   Text Overflow & Whitespace Prevention
+   ============================================= */
+* {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+/* Prevent text overflow */
+h1, h2, h3, h4, h5, h6, p, span, div, a, li {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+}
+
+/* Ensure buttons have proper padding */
+.btn {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Fix for hero section */
+.hero-title {
+  white-space: pre-line;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.hero-subtitle {
+  white-space: pre-line;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.hero-badge {
+  white-space: nowrap;
+}
+
+===============
    LIGHT MODE — navbar / chrome overrides
    (base light tokens live in the first [data-theme="light"] block)
    ============================================================ */
@@ -1912,7 +2000,49 @@ nav-logo {
 [data-theme="light"] .footer .site-name { color: var(--text) !important; text-shadow: none !important; }
 [data-theme="light"] .footer .site-name span { color: var(--text-secondary) !important; text-shadow: none !important; }
 
-/* ============================================================
+
+/* =============================================
+/* =============================================
+   Text Overflow & Whitespace Prevention
+   ============================================= */
+* {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+/* Prevent text overflow */
+h1, h2, h3, h4, h5, h6, p, span, div, a, li {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+}
+
+/* Ensure buttons have proper padding */
+.btn {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Fix for hero section */
+.hero-title {
+  white-space: pre-line;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.hero-subtitle {
+  white-space: pre-line;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.hero-badge {
+  white-space: nowrap;
+}
+
+===============
    NAVBAR ACTION BUTTONS (Search + Theme)
    ============================================================ */
 .nav-action-btn {
@@ -1947,7 +2077,49 @@ nav-logo {
   color: var(--primary);
 }
 
-/* ============================================================
+
+/* =============================================
+/* =============================================
+   Text Overflow & Whitespace Prevention
+   ============================================= */
+* {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+/* Prevent text overflow */
+h1, h2, h3, h4, h5, h6, p, span, div, a, li {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+}
+
+/* Ensure buttons have proper padding */
+.btn {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Fix for hero section */
+.hero-title {
+  white-space: pre-line;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.hero-subtitle {
+  white-space: pre-line;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.hero-badge {
+  white-space: nowrap;
+}
+
+===============
    SEARCH MODAL
    ============================================================ */
 .search-modal {
@@ -2359,7 +2531,49 @@ nav-logo {
   .search-tips-grid { grid-template-columns: 1fr; }
 }
 
-/* =====================================================================
+
+/* =============================================
+/* =============================================
+   Text Overflow & Whitespace Prevention
+   ============================================= */
+* {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+/* Prevent text overflow */
+h1, h2, h3, h4, h5, h6, p, span, div, a, li {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+}
+
+/* Ensure buttons have proper padding */
+.btn {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Fix for hero section */
+.hero-title {
+  white-space: pre-line;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.hero-subtitle {
+  white-space: pre-line;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.hero-badge {
+  white-space: nowrap;
+}
+
+========================
    ⚡  ENERGETIKA SITE-WIDE MICRO-ANIMATIONS
    ===================================================================== */
 
@@ -2663,3 +2877,55 @@ nav-logo {
   background: rgba(255,255,255,0.92);
   border-color: #ffffff;
 }
+
+
+
+/* =============================================
+/* =============================================
+   Text Overflow & Whitespace Prevention
+   ============================================= */
+* {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+/* Prevent text overflow */
+h1, h2, h3, h4, h5, h6, p, span, div, a, li {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+}
+
+/* Ensure buttons have proper padding */
+.btn {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Fix for hero section */
+.hero-title {
+  white-space: pre-line;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.hero-subtitle {
+  white-space: pre-line;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.hero-badge {
+  white-space: nowrap;
+}
+
+
+   Responsive Typography
+   ============================================= */
+@media (max-width: 1400px) { html { font-size: 15px; } }
+@media (max-width: 1200px) { html { font-size: 14px; } }
+@media (max-width: 992px) { html { font-size: 13px; } }
+@media (max-width: 768px) { html { font-size: 12px; } }
+@media (max-width: 576px) { html { font-size: 11px; } }

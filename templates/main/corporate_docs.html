@@ -168,7 +168,21 @@
       background: var(--primary); color: #000;
     }
 
-    .corp-empty {
+    
+    .corp-doc-actions {
+      display: flex; gap: 8px; flex-shrink: 0;
+    }
+    .corp-doc-action-btn {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: var(--primary-glow); border: 1px solid rgba(245,158,11,0.2);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--primary); font-size: 1rem;
+      transition: var(--transition); text-decoration: none;
+    }
+    .corp-doc-action-btn:hover {
+      background: var(--primary); color: #000;
+    }
+.corp-empty {
       text-align: center; padding: 80px 20px; color: var(--text-muted);
     }
     .corp-empty i { font-size: 3.5rem; display: block; margin-bottom: 16px; color: var(--primary); opacity: 0.3; }
@@ -301,28 +315,43 @@
       <div class="corp-doc-list">
         {% for doc in documents %}
         {% with ext=doc.file_extension %}
-        <a href="{% if ext == 'pdf' %}/korporativ/hujjat/{{ doc.id }}/{% else %}{{ doc.file.url }}{% endif %}"
-           {% if ext != 'pdf' %}download{% endif %}
-           class="corp-doc-item" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}40">
-          <div class="corp-doc-icon {{ ext|default:'other' }}">
-            {% if ext == 'pdf' %}<i class="bi bi-file-earmark-pdf-fill"></i>
-            {% elif ext == 'doc' or ext == 'docx' %}<i class="bi bi-file-earmark-word-fill"></i>
-            {% elif ext == 'xls' or ext == 'xlsx' %}<i class="bi bi-file-earmark-excel-fill"></i>
-            {% else %}<i class="bi bi-file-earmark-fill"></i>{% endif %}
-          </div>
-          <div class="corp-doc-info">
-            <div class="corp-doc-title">
-              {% if lang == 'uz' %}{{ doc.title_uz }}{% elif lang == 'ru' %}{{ doc.title_ru|default:doc.title_uz }}{% else %}{{ doc.title_en|default:doc.title_uz }}{% endif %}
+        <div class="corp-doc-item-wrapper" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}40">
+          {% if ext != 'pdf' %}
+          <a href="{{ doc.file.url }}" download class="corp-doc-item">
+          {% else %}
+          <div class="corp-doc-item">
+          {% endif %}
+            <div class="corp-doc-icon {{ ext|default:'other' }}">
+              {% if ext == 'pdf' %}<i class="bi bi-file-earmark-pdf-fill"></i>
+              {% elif ext == 'doc' or ext == 'docx' %}<i class="bi bi-file-earmark-word-fill"></i>
+              {% elif ext == 'xls' or ext == 'xlsx' %}<i class="bi bi-file-earmark-excel-fill"></i>
+              {% else %}<i class="bi bi-file-earmark-fill"></i>{% endif %}
             </div>
-            <div class="corp-doc-meta-row">
-              {% if ext %}<span class="corp-doc-ext">{{ ext|upper }}</span>{% endif %}
-              <span><i class="bi bi-calendar3"></i> {{ doc.published_date|date:"d.m.Y" }}</span>
+            <div class="corp-doc-info">
+              <div class="corp-doc-title">
+                {% if lang == 'uz' %}{{ doc.title_uz }}{% elif lang == 'ru' %}{{ doc.title_ru|default:doc.title_uz }}{% else %}{{ doc.title_en|default:doc.title_uz }}{% endif %}
+              </div>
+              <div class="corp-doc-meta-row">
+                {% if ext %}<span class="corp-doc-ext">{{ ext|upper }}</span>{% endif %}
+                <span><i class="bi bi-calendar3"></i> {{ doc.published_date|date:"d.m.Y" }}</span>
+              </div>
             </div>
+            <div class="corp-doc-actions">
+              {% if ext == 'pdf' %}
+              <a href="/korporativ/hujjat/{{ doc.id }}/" class="corp-doc-action-btn" title="{% if lang == 'uz' %}Ko'rish{% elif lang == 'ru' %}Смотреть{% else %}View{% endif %}">
+                <i class="bi bi-eye-fill"></i>
+              </a>
+              {% endif %}
+              <a href="{{ doc.file.url }}" class="corp-doc-action-btn" download title="{% if lang == 'uz' %}Yuklab olish{% elif lang == 'ru' %}Скачать{% else %}Download{% endif %}">
+                <i class="bi bi-download"></i>
+              </a>
+            </div>
+          {% if ext != 'pdf' %}
+          </a>
+          {% else %}
           </div>
-          <div class="corp-doc-download">
-            <i class="bi bi-{% if ext == 'pdf' %}eye-fill{% else %}download{% endif %}"></i>
-          </div>
-        </a>
+          {% endif %}
+        </div>
         {% endwith %}
         {% endfor %}
       </div>

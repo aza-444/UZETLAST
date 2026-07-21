@@ -139,12 +139,12 @@
       </a>
     </div>
     {% else %}
-    <div class="hero-badge"><i class="bi bi-lightning-charge-fill"></i> Energetika yechimlar</div>
-    <h1 class="hero-title">O'zenergota'minlash AJ</h1>
-    <p class="hero-subtitle">O'zbekistonda energetika uskunalarini yetkazib berish bo'yicha ishonchli hamkor</p>
+    <div class="hero-badge"><i class="bi bi-lightning-charge-fill"></i> {% if lang == 'uz' %}Energetika uchun yechimlar{% elif lang == 'ru' %}Решения для энергетики{% else %}Solutions for Energy{% endif %}</div>
+    <h1 class="hero-title">{% if lang == 'uz' %}O'ZENERGOTA'MINLASH AJ{% elif lang == 'ru' %}АО O'ZENERGOTA'MINLASH{% else %}JSC O'ZENERGOTA'MINLASH{% endif %}</h1>
+    <p class="hero-subtitle">{% if lang == 'uz' %}O'zbekistonda energetika uskunalarini yetkazib berish bo'yicha ishonchli hamkor{% elif lang == 'ru' %}Надёжный партнёр по поставке энергетического оборудования в Узбекистане{% else %}Reliable partner for energy equipment supply in Uzbekistan{% endif %}</p>
     <div class="hero-btns">
-      <a href="#katalog" class="btn btn-primary"><i class="bi bi-grid-fill"></i> Katalog</a>
-      <a href="#aloqa" class="btn btn-outline"><i class="bi bi-chat-dots-fill"></i> Bog'lanish</a>
+      <a href="#katalog" class="btn btn-primary"><i class="bi bi-grid-fill"></i> {% if lang == 'uz' %}Katalog{% elif lang == 'ru' %}Каталог{% else %}Catalog{% endif %}</a>
+      <a href="#aloqa" class="btn btn-outline"><i class="bi bi-chat-dots-fill"></i> {% if lang == 'uz' %}Bog'lanish{% elif lang == 'ru' %}Связаться{% else %}Contact Us{% endif %}</a>
     </div>
     {% endif %}
   </div>
