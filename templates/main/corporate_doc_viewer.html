@@ -18,96 +18,285 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
   <link rel="stylesheet" href="/static/css/style.css"/>
   <style>
-    body {
+    html, body {
       margin: 0;
       padding: 0;
+      height: 100%;
       background: var(--bg-dark);
+      overflow: hidden;
+    }
+    body {
       display: flex;
       flex-direction: column;
-      height: 100vh;
-      overflow: hidden; /* We want the iframe to handle the scrolling */
     }
-    #header {
-      flex-shrink: 0;
-    }
+
+    /* Fixed header balandligi: navbar + desktop header-top */
     .doc-viewer-container {
       flex: 1;
       display: flex;
       flex-direction: column;
       width: 100%;
-      height: 100%;
-      background: #333; /* Dark background for PDF viewer outer area */
+      min-height: 0;
+      margin-top: calc(var(--navbar-h, 85px) + 44px);
+      height: calc(100vh - var(--navbar-h, 85px) - 44px);
+      max-height: calc(100dvh - var(--navbar-h, 85px) - 44px);
+      background: var(--bg-section);
+      position: relative;
+      z-index: 1;
     }
+    @media (max-width: 768px) {
+      .doc-viewer-container {
+        margin-top: var(--navbar-h, 85px);
+        height: calc(100vh - var(--navbar-h, 85px));
+        max-height: calc(100dvh - var(--navbar-h, 85px));
+      }
+    }
+
     .doc-toolbar {
       flex-shrink: 0;
-      padding: 10px 20px;
-      background: var(--surface);
+      padding: 10px 16px;
+      background: var(--bg-card);
       border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 20;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
     }
     .doc-toolbar-title {
       font-weight: 600;
       color: var(--text);
-      font-size: 1.1rem;
+      font-size: 0.95rem;
       display: flex;
       align-items: center;
       gap: 10px;
+      min-width: 0;
+      flex: 1;
+    }
+    .doc-toolbar-title span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .doc-ext-badge {
+      flex-shrink: 0;
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: var(--primary);
+      color: #111;
     }
     .doc-toolbar-actions {
       display: flex;
-      gap: 10px;
+      gap: 8px;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+    }
+    .btn-download, .btn-back, .btn-close {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 14px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.88rem;
+      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
+      line-height: 1.2;
+      white-space: nowrap;
     }
     .btn-download {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 14px;
       background: var(--primary);
-      color: #000;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: background 0.2s;
+      color: #111;
     }
-    .btn-download:hover {
-      background: #d97706;
-      color: #fff;
-    }
+    .btn-download:hover { filter: brightness(1.08); color: #000; }
     .btn-back {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 14px;
       background: transparent;
       color: var(--text-secondary);
       border: 1px solid var(--border);
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 0.9rem;
-      transition: all 0.2s;
     }
     .btn-back:hover {
-      background: rgba(255,255,255,0.05);
+      background: var(--primary-glow);
       color: var(--text);
+      border-color: var(--primary);
     }
-    .iframe-wrapper {
+    .btn-close {
+      background: rgba(239, 68, 68, 0.12);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+    }
+    .btn-close:hover {
+      background: rgba(239, 68, 68, 0.22);
+      color: #fecaca;
+      border-color: rgba(239, 68, 68, 0.55);
+    }
+    [data-theme="light"] .btn-close {
+      color: #dc2626;
+      background: rgba(220, 38, 38, 0.08);
+      border-color: rgba(220, 38, 38, 0.28);
+    }
+    [data-theme="light"] .btn-close:hover {
+      background: rgba(220, 38, 38, 0.14);
+      color: #b91c1c;
+    }
+
+    /* Mobile: doim ko'rinadigan yopish floating tugmasi */
+    .doc-fab-close {
+      display: none;
+      position: fixed;
+      top: calc(var(--navbar-h, 85px) + 10px);
+      right: 12px;
+      z-index: 1100;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      align-items: center;
+      justify-content: center;
+      background: rgba(239, 68, 68, 0.95);
+      color: #fff;
+      border: 2px solid rgba(255,255,255,0.35);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+      text-decoration: none;
+      font-size: 1.25rem;
+    }
+    .doc-fab-close:hover { filter: brightness(1.08); color: #fff; }
+    @media (max-width: 640px) {
+      .doc-fab-close { display: inline-flex; }
+      .doc-toolbar-title span { max-width: 42vw; }
+      .btn-back .btn-label,
+      .btn-close .btn-label,
+      .btn-download .btn-label { display: none; }
+      .btn-back, .btn-close, .btn-download { padding: 10px 12px; }
+    }
+
+    .preview-wrap {
       flex: 1;
-      width: 100%;
-      height: 100%;
+      min-height: 0;
       position: relative;
+      background: #1a1f2e;
     }
-    .iframe-wrapper iframe {
+    [data-theme="light"] .preview-wrap { background: #e8eef5; }
+    #pdfCanvasWrap {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
+      inset: 0;
+      overflow: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
     }
+    #pdfCanvasWrap canvas {
+      max-width: 100%;
+      height: auto !important;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+      background: #fff;
+    }
+    .pdf-toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      background: rgba(10,14,26,0.85);
+      backdrop-filter: blur(8px);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 0.9rem;
+    }
+    [data-theme="light"] .pdf-toolbar {
+      background: rgba(255,255,255,0.92);
+      color: #1a2433;
+      border: 1px solid rgba(26,36,51,0.1);
+    }
+    .pdf-toolbar button {
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.08);
+      color: inherit;
+      border-radius: 8px;
+      padding: 6px 12px;
+      cursor: pointer;
+    }
+    [data-theme="light"] .pdf-toolbar button {
+      border-color: rgba(26,36,51,0.12);
+      background: rgba(26,36,51,0.04);
+    }
+    #excelPreview {
+      position: absolute;
+      inset: 0;
+      overflow: auto;
+      padding: 16px;
+    }
+    #excelPreview table {
+      border-collapse: collapse;
+      width: max-content;
+      min-width: 100%;
+      background: #fff;
+      color: #111;
+      font-size: 0.85rem;
+    }
+    #excelPreview th, #excelPreview td {
+      border: 1px solid #d1d5db;
+      padding: 6px 10px;
+      white-space: nowrap;
+    }
+    #excelPreview th { background: #f3f4f6; font-weight: 700; position: sticky; top: 0; }
+    #excelSheetTabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    #excelSheetTabs button {
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 6px 12px;
+      cursor: pointer;
+    }
+    #excelSheetTabs button.active {
+      background: var(--primary);
+      color: #111;
+      border-color: var(--primary);
+      font-weight: 700;
+    }
+    #wordPreview, #imagePreview, .doc-fallback {
+      position: absolute;
+      inset: 0;
+      overflow: auto;
+      padding: 24px;
+    }
+    #wordPreview {
+      background: #fff;
+      color: #111;
+      line-height: 1.7;
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    #imagePreview { display: flex; align-items: center; justify-content: center; }
+    #imagePreview img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    .doc-fallback {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--text-secondary);
+      gap: 12px;
+    }
+    .doc-fallback i { font-size: 3.5rem; color: var(--primary); opacity: 0.7; }
     .doc-error {
       display: flex;
       flex-direction: column;
@@ -118,16 +307,20 @@
       text-align: center;
       padding: 20px;
     }
-    .doc-error i {
-      font-size: 4rem;
-      color: var(--primary);
-      margin-bottom: 20px;
-      opacity: 0.5;
+    .doc-error i { font-size: 4rem; color: var(--primary); margin-bottom: 20px; opacity: 0.5; }
+    .preview-loading {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      gap: 10px;
+      font-weight: 600;
     }
   </style>
 {% if settings %}
 <style>
-/* ── Admin panel orqali boshqariladigan ranglar ── */
 [data-theme="light"] {
   --primary:        {{ settings.primary_color }};
   --primary-hover:  {{ settings.primary_color }};
@@ -144,11 +337,6 @@
   --border-hover:   {{ settings.primary_color }}66;
   --shadow-glow:    0 0 30px {{ settings.primary_color }}33;
 }
-[data-theme="light"] .corp-page-title {
-  background: none !important;
-  -webkit-text-fill-color: var(--text) !important;
-  color: var(--text) !important;
-}
 </style>
 {% endif %}
 </head>
@@ -156,43 +344,241 @@
 
 {% include 'main/_navbar.html' with is_subpage=True %}
 
-<div class="doc-viewer-container" style="margin-top: 100px;">
+{# Floating close — mobile da doim ko'rinadi #}
+<a href="{{ back_url }}" class="doc-fab-close" id="docFabClose" title="{% if lang == 'uz' %}Yopish{% elif lang == 'ru' %}Закрыть{% else %}Close{% endif %}" aria-label="{% if lang == 'uz' %}Yopish{% elif lang == 'ru' %}Закрыть{% else %}Close{% endif %}">
+  <i class="bi bi-x-lg"></i>
+</a>
+
+<div class="doc-viewer-container" id="docViewerRoot" data-back-url="{{ back_url }}">
   <div class="doc-toolbar">
     <div class="doc-toolbar-title">
       <i class="bi bi-file-earmark-text"></i>
-      {% if lang == 'uz' %}{{ doc.title_uz }}{% elif lang == 'ru' %}{{ doc.title_ru|default:doc.title_uz }}{% else %}{{ doc.title_en|default:doc.title_uz }}{% endif %}
+      <span>{% if lang == 'uz' %}{{ doc.title_uz }}{% elif lang == 'ru' %}{{ doc.title_ru|default:doc.title_uz }}{% else %}{{ doc.title_en|default:doc.title_uz }}{% endif %}</span>
+      {% if file_ext %}<span class="doc-ext-badge">{{ file_ext|upper }}</span>{% endif %}
     </div>
     <div class="doc-toolbar-actions">
-      <a href="javascript:history.back()" class="btn-back">
-        <i class="bi bi-arrow-left"></i> {% if lang == 'uz' %}Orqaga{% elif lang == 'ru' %}Назад{% else %}Back{% endif %}
+      <a href="{{ back_url }}" class="btn-back" id="docBackBtn">
+        <i class="bi bi-arrow-left"></i>
+        <span class="btn-label">{% if lang == 'uz' %}Orqaga{% elif lang == 'ru' %}Назад{% else %}Back{% endif %}</span>
       </a>
       {% if file_exists %}
-      <a href="{{ doc.file.url }}" class="btn-download" download>
-        <i class="bi bi-download"></i> {% if lang == 'uz' %}Yuklab olish{% elif lang == 'ru' %}Скачать{% else %}Download{% endif %}
+      <a href="{% url 'document_download' doc.id %}" class="btn-download">
+        <i class="bi bi-download"></i>
+        <span class="btn-label">{% if lang == 'uz' %}Yuklab olish{% elif lang == 'ru' %}Скачать{% else %}Download{% endif %}</span>
       </a>
       {% endif %}
+      <a href="{{ back_url }}" class="btn-close" id="docCloseBtn">
+        <i class="bi bi-x-lg"></i>
+        <span class="btn-label">{% if lang == 'uz' %}Yopish{% elif lang == 'ru' %}Закрыть{% else %}Close{% endif %}</span>
+      </a>
     </div>
   </div>
 
-  <div class="iframe-wrapper">
+  <div class="preview-wrap" id="previewWrap"
+       data-kind="{{ preview_kind }}"
+       data-ext="{{ file_ext }}"
+       data-file-url="{% if file_exists %}{% url 'document_file' doc.id %}{% endif %}"
+       data-download-url="{% if file_exists %}{% url 'document_download' doc.id %}{% endif %}">
     {% if file_exists %}
-      <iframe src="{{ doc.file.url }}">
-        Sizning brauzeringiz ushbu hujjatni o'qishni qo'llab quvvatlamaydi. 
-        Iltimos, uni <a href="{{ doc.file.url }}">yuklab oling</a>.
-      </iframe>
+      <div class="preview-loading" id="previewLoading">
+        <i class="bi bi-hourglass-split"></i>
+        {% if lang == 'uz' %}Yuklanmoqda...{% elif lang == 'ru' %}Загрузка...{% else %}Loading...{% endif %}
+      </div>
+      <div id="pdfCanvasWrap" style="display:none;"></div>
+      <div id="excelPreview" style="display:none;"></div>
+      <div id="wordPreview" style="display:none;"></div>
+      <div id="imagePreview" style="display:none;"></div>
+      <div class="doc-fallback" id="docFallback" style="display:none;">
+        <i class="bi bi-file-earmark-arrow-down"></i>
+        <h3>{% if lang == 'uz' %}Brauzerda ko‘rish mumkin emas{% elif lang == 'ru' %}Просмотр в браузере недоступен{% else %}Preview not available{% endif %}</h3>
+        <p>{% if lang == 'uz' %}Faylni yuklab olib oching.{% elif lang == 'ru' %}Скачайте файл, чтобы открыть.{% else %}Download the file to open it.{% endif %}</p>
+        <a href="{% url 'document_download' doc.id %}" class="btn-download">
+          <i class="bi bi-download"></i> {% if lang == 'uz' %}Yuklab olish{% elif lang == 'ru' %}Скачать{% else %}Download{% endif %}
+        </a>
+        <a href="{{ back_url }}" class="btn-back" style="margin-top:4px;">
+          <i class="bi bi-arrow-left"></i> {% if lang == 'uz' %}Ro‘yxatga qaytish{% elif lang == 'ru' %}К списку{% else %}Back to list{% endif %}
+        </a>
+      </div>
     {% else %}
       <div class="doc-error">
         <i class="bi bi-file-earmark-x"></i>
         <h3>{% if lang == 'uz' %}Hujjat topilmadi{% elif lang == 'ru' %}Документ не найден{% else %}Document not found{% endif %}</h3>
         <p>{% if lang == 'uz' %}Kechirasiz, ushbu fayl serverda mavjud emas yoki o'chirilgan.{% elif lang == 'ru' %}Извините, этот файл не существует на сервере или был удалён.{% else %}Sorry, this file does not exist on the server or has been deleted.{% endif %}</p>
+        <a href="{{ back_url }}" class="btn-back" style="margin-top:12px;">
+          <i class="bi bi-arrow-left"></i> {% if lang == 'uz' %}Orqaga{% elif lang == 'ru' %}Назад{% else %}Back{% endif %}
+        </a>
       </div>
     {% endif %}
   </div>
 </div>
 
 <script src="/static/js/main.js"></script>
+<script>
+  (function () {
+    const root = document.getElementById('docViewerRoot');
+    const backUrl = (root && root.dataset.backUrl) || '/korporativ/';
+
+    function goBack() {
+      window.location.href = backUrl;
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        goBack();
+      }
+    });
+  })();
+</script>
+{% if file_exists %}
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
+<script type="module">
+  const wrap = document.getElementById('previewWrap');
+  const kind = wrap.dataset.kind;
+  const fileUrl = wrap.dataset.fileUrl;
+  const fileExt = (wrap.dataset.ext || '').toLowerCase();
+  const loading = document.getElementById('previewLoading');
+  const fallback = document.getElementById('docFallback');
+
+  function hideLoading() {
+    if (loading) loading.style.display = 'none';
+  }
+  function showFallback() {
+    hideLoading();
+    if (fallback) fallback.style.display = 'flex';
+  }
+
+  async function loadPdf() {
+    const pdfjs = await import('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs');
+    pdfjs.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs';
+
+    const container = document.getElementById('pdfCanvasWrap');
+    container.style.display = 'flex';
+
+    const toolbar = document.createElement('div');
+    toolbar.className = 'pdf-toolbar';
+    toolbar.innerHTML = `
+      <button type="button" id="pdfPrev" aria-label="Previous page">‹</button>
+      <span id="pdfPageInfo">1 / 1</span>
+      <button type="button" id="pdfNext" aria-label="Next page">›</button>
+      <button type="button" id="pdfZoomOut" aria-label="Zoom out">−</button>
+      <button type="button" id="pdfZoomIn" aria-label="Zoom in">+</button>
+    `;
+    container.appendChild(toolbar);
+
+    const pagesHost = document.createElement('div');
+    pagesHost.id = 'pdfPages';
+    pagesHost.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:12px;width:100%;';
+    container.appendChild(pagesHost);
+
+    const pdf = await pdfjs.getDocument(fileUrl).promise;
+    let pageNum = 1;
+    let scale = Math.min(1.35, (window.innerWidth - 48) / 800);
+
+    async function renderPage(num) {
+      const page = await pdf.getPage(num);
+      const viewport = page.getViewport({ scale });
+      pagesHost.innerHTML = '';
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      pagesHost.appendChild(canvas);
+      await page.render({ canvasContext: ctx, viewport }).promise;
+      document.getElementById('pdfPageInfo').textContent = `${num} / ${pdf.numPages}`;
+    }
+
+    document.getElementById('pdfPrev').onclick = () => {
+      if (pageNum <= 1) return;
+      pageNum -= 1;
+      renderPage(pageNum);
+    };
+    document.getElementById('pdfNext').onclick = () => {
+      if (pageNum >= pdf.numPages) return;
+      pageNum += 1;
+      renderPage(pageNum);
+    };
+    document.getElementById('pdfZoomIn').onclick = () => {
+      scale = Math.min(scale + 0.2, 3);
+      renderPage(pageNum);
+    };
+    document.getElementById('pdfZoomOut').onclick = () => {
+      scale = Math.max(scale - 0.2, 0.5);
+      renderPage(pageNum);
+    };
+
+    await renderPage(pageNum);
+    hideLoading();
+  }
+
+  async function loadExcel() {
+    if (typeof XLSX === 'undefined') throw new Error('SheetJS missing');
+    const res = await fetch(fileUrl);
+    if (!res.ok) throw new Error('Fetch failed');
+    const buf = await res.arrayBuffer();
+    const wb = XLSX.read(buf, { type: 'array' });
+    const host = document.getElementById('excelPreview');
+    host.style.display = 'block';
+    host.innerHTML = '<div id="excelSheetTabs"></div><div id="excelTable"></div>';
+
+    const tabs = document.getElementById('excelSheetTabs');
+    const tableHost = document.getElementById('excelTable');
+
+    function showSheet(name) {
+      [...tabs.querySelectorAll('button')].forEach(b => b.classList.toggle('active', b.dataset.sheet === name));
+      const html = XLSX.utils.sheet_to_html(wb.Sheets[name], { editable: false });
+      tableHost.innerHTML = html;
+    }
+
+    wb.SheetNames.forEach((name, i) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = name;
+      btn.dataset.sheet = name;
+      if (i === 0) btn.classList.add('active');
+      btn.onclick = () => showSheet(name);
+      tabs.appendChild(btn);
+    });
+    showSheet(wb.SheetNames[0]);
+    hideLoading();
+  }
+
+  async function loadWord() {
+    if (fileExt === 'doc') {
+      showFallback();
+      return;
+    }
+    if (typeof mammoth === 'undefined') throw new Error('mammoth missing');
+    const res = await fetch(fileUrl);
+    if (!res.ok) throw new Error('Fetch failed');
+    const buf = await res.arrayBuffer();
+    const result = await mammoth.convertToHtml({ arrayBuffer: buf });
+    const host = document.getElementById('wordPreview');
+    host.style.display = 'block';
+    host.innerHTML = result.value || '<p>—</p>';
+    hideLoading();
+  }
+
+  async function loadImage() {
+    const host = document.getElementById('imagePreview');
+    host.style.display = 'flex';
+    host.innerHTML = `<img src="${fileUrl}" alt="preview"/>`;
+    hideLoading();
+  }
+
+  try {
+    if (!fileUrl) showFallback();
+    else if (kind === 'pdf') await loadPdf();
+    else if (kind === 'excel') await loadExcel();
+    else if (kind === 'word') await loadWord();
+    else if (kind === 'image') await loadImage();
+    else showFallback();
+  } catch (err) {
+    console.error(err);
+    showFallback();
+  }
+</script>
+{% endif %}
 </body>
 </html>
-
-
-

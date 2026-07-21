@@ -214,30 +214,30 @@ document.addEventListener('DOMContentLoaded', function () {
         };
         return light
           ? {
-              line: hexToRgba(primary, 0.38),
-              lineHi: hexToRgba(accent, 0.3),
-              node: hexToRgba(primary, 0.95),
-              nodeGlow: hexToRgba(primary, 0.5),
+              line: hexToRgba(primary, 0.55),
+              lineHi: hexToRgba(accent, 0.48),
+              node: hexToRgba(primary, 1),
+              nodeGlow: hexToRgba(primary, 0.55),
               spark: primary,
               spark2: accent,
-              scan: hexToRgba(accent, 0.06),
-              glowMul: 5,
-              ambScale: 1,
+              scan: hexToRgba(accent, 0.1),
+              glowMul: 6,
+              ambScale: 0.55,
               nodeAlpha: 1,
-              sparkR: 14,
+              sparkR: 16,
             }
           : {
-              line: hexToRgba(primary, 0.32),
-              lineHi: hexToRgba(accent, 0.26),
-              node: hexToRgba(primary, 0.95),
-              nodeGlow: hexToRgba(primary, 0.45),
+              line: hexToRgba(primary, 0.5),
+              lineHi: hexToRgba(accent, 0.42),
+              node: hexToRgba(primary, 1),
+              nodeGlow: hexToRgba(primary, 0.55),
               spark: primary,
               spark2: accent,
-              scan: hexToRgba(accent, 0.05),
-              glowMul: 5,
-              ambScale: 1,
+              scan: hexToRgba(accent, 0.09),
+              glowMul: 6.5,
+              ambScale: 0.7,
               nodeAlpha: 1,
-              sparkR: 14,
+              sparkR: 16,
             };
       }
 

@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
+from django.http import JsonResponse, FileResponse, Http404
 from django.views.decorators.http import require_POST
+from django.views.decorators.clickjacking import xframe_options_exempt
 from django.contrib import messages
 from .models import (
     SiteSettings, HeroSection, AboutSection,
@@ -240,15 +241,47 @@ Sitemap: {scheme}://{host}/sitemap.xml
 def document_viewer(request, doc_id):
     import os
     from django.conf import settings as django_settings
+    from django.urls import reverse
 
-    doc = get_object_or_404(CorporateDocument, id=doc_id, is_active=True)
+    doc = get_object_or_404(
+        CorporateDocument.objects.select_related('category'),
+        id=doc_id,
+        is_active=True,
+    )
     lang = get_lang(request)
     settings_obj = SiteSettings.objects.first()
 
     file_exists = False
+    file_url = ''
     if doc.file and doc.file.name:
         file_path = os.path.join(django_settings.MEDIA_ROOT, doc.file.name)
         file_exists = os.path.exists(file_path)
+        if file_exists:
+            file_url = request.build_absolute_uri(doc.file.url)
+
+    ext = doc.file_extension() if file_exists else ''
+    preview_kind = 'other'
+    if ext == 'pdf':
+        preview_kind = 'pdf'
+    elif ext in ('xls', 'xlsx', 'csv'):
+        preview_kind = 'excel'
+    elif ext in ('doc', 'docx'):
+        preview_kind = 'word'
+    elif ext in ('png', 'jpg', 'jpeg', 'gif', 'webp'):
+        preview_kind = 'image'
+
+    # Ishonchli chiqish URL: kategoriya + yil (history.back ishonchsiz)
+    if doc.is_archive:
+        year_or_arxiv = 'arxiv'
+    else:
+        year_or_arxiv = str(doc.year or 'arxiv')
+    try:
+        back_url = reverse(
+            'corporate_documents',
+            args=[doc.category.slug, year_or_arxiv],
+        )
+    except Exception:
+        back_url = reverse('corporate_index')
 
     context = {
         'lang': lang,
@@ -257,6 +290,59 @@ def document_viewer(request, doc_id):
         'corp_nav': get_corporate_nav_data(),
         'doc': doc,
         'file_exists': file_exists,
+        'file_url': file_url,
+        'file_ext': ext,
+        'preview_kind': preview_kind,
+        'back_url': back_url,
         'is_subpage': True,
     }
     return render(request, 'main/corporate_doc_viewer.html', context)
+
+
+def document_download(request, doc_id):
+    """Force file download (Excel/PDF/Word) — works in all browsers."""
+    import mimetypes
+    import os
+    from django.conf import settings as django_settings
+
+    doc = get_object_or_404(CorporateDocument, id=doc_id, is_active=True)
+    if not doc.file or not doc.file.name:
+        raise Http404
+    file_path = os.path.join(django_settings.MEDIA_ROOT, doc.file.name)
+    if not os.path.exists(file_path):
+        raise Http404
+
+    content_type, _ = mimetypes.guess_type(file_path)
+    if not content_type:
+        content_type = 'application/octet-stream'
+
+    filename = os.path.basename(doc.file.name)
+    response = FileResponse(open(file_path, 'rb'), content_type=content_type)
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    return response
+
+
+@xframe_options_exempt
+def document_file(request, doc_id):
+    """Inline file stream for in-browser preview (PDF.js / SheetJS fetch)."""
+    import mimetypes
+    import os
+    from django.conf import settings as django_settings
+
+    doc = get_object_or_404(CorporateDocument, id=doc_id, is_active=True)
+    if not doc.file or not doc.file.name:
+        raise Http404
+    file_path = os.path.join(django_settings.MEDIA_ROOT, doc.file.name)
+    if not os.path.exists(file_path):
+        raise Http404
+
+    content_type, _ = mimetypes.guess_type(file_path)
+    if not content_type:
+        content_type = 'application/octet-stream'
+
+    filename = os.path.basename(doc.file.name)
+    response = FileResponse(open(file_path, 'rb'), content_type=content_type)
+    response['Content-Disposition'] = f'inline; filename="{filename}"'
+    response['X-Content-Type-Options'] = 'nosniff'
+    return response
+
