@@ -8,5 +8,6 @@ urlpatterns = [
     path('robots.txt', views.robots_txt, name='robots_txt'),
     # Korporativ boshqaruv
     path('korporativ/', views.corporate_index, name='corporate_index'),
+    path('korporativ/hujjat/<int:doc_id>/', views.document_viewer, name='document_viewer'),
     path('korporativ/<slug:cat_slug>/<str:year_or_arxiv>/', views.corporate_documents, name='corporate_documents'),
 ]

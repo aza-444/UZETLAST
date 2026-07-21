@@ -61,10 +61,15 @@ def index(request):
 def set_language(request, lang):
     if lang in ('uz', 'ru', 'en'):
         request.session['lang'] = lang
-    # Redirect back to the referring page if possible to keep context
-    next_url = request.META.get('HTTP_REFERER')
-    if not next_url:
-        next_url = '/'  # fallback to home page
+    # Faqat shu sayt ichidagi refererga qaytish (open-redirect himoyasi)
+    from django.utils.http import url_has_allowed_host_and_scheme
+    next_url = request.META.get('HTTP_REFERER', '')
+    if not next_url or not url_has_allowed_host_and_scheme(
+        next_url,
+        allowed_hosts={request.get_host()},
+        require_https=request.is_secure(),
+    ):
+        next_url = '/'
     return redirect(next_url)
 
 
@@ -167,7 +172,14 @@ def corporate_documents(request, cat_slug, year_or_arxiv):
         try:
             year_int = int(year_or_arxiv)
         except (ValueError, TypeError):
-            year_int = 2026
+            # Noto'g'ri yil — eng so'nggi yilga yo'naltirish yoki bo'sh ro'yxat
+            latest = (
+                category.documents.filter(is_active=True, is_archive=False)
+                .order_by('-year')
+                .values_list('year', flat=True)
+                .first()
+            )
+            year_int = latest if latest is not None else 0
         documents = CorporateDocument.objects.filter(
             category=category, year=year_int, is_archive=False, is_active=True
         )
@@ -226,17 +238,16 @@ Sitemap: {scheme}://{host}/sitemap.xml
     return HttpResponse(content, content_type='text/plain')
 
 def document_viewer(request, doc_id):
-    from django.shortcuts import get_object_or_404
-    doc = get_object_or_404(CorporateDocument, id=doc_id, is_active=True)
-    lang = request.session.get('lang', 'uz')
-    settings_obj = SiteSettings.objects.first()
-    
-    # Check if the document exists physically
     import os
-    from django.conf import settings
+    from django.conf import settings as django_settings
+
+    doc = get_object_or_404(CorporateDocument, id=doc_id, is_active=True)
+    lang = get_lang(request)
+    settings_obj = SiteSettings.objects.first()
+
     file_exists = False
-    if doc.file and hasattr(doc.file, 'url'):
-        file_path = os.path.join(settings.MEDIA_ROOT, doc.file.name)
+    if doc.file and doc.file.name:
+        file_path = os.path.join(django_settings.MEDIA_ROOT, doc.file.name)
         file_exists = os.path.exists(file_path)
 
     context = {
@@ -246,5 +257,6 @@ def document_viewer(request, doc_id):
         'corp_nav': get_corporate_nav_data(),
         'doc': doc,
         'file_exists': file_exists,
+        'is_subpage': True,
     }
     return render(request, 'main/corporate_doc_viewer.html', context)

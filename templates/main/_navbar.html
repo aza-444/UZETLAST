@@ -1,6 +1,6 @@
 {% comment %}Navbar partial — barcha sahifalar uchun{% endcomment %}
 <header class="site-header{% if is_subpage %} is-subpage{% endif %}" id="header">
-  <div class="header-top d-none d-lg-block">
+  <div class="header-top header-top-desktop">
     <div class="container header-top-container">
       <div class="header-top-left">
         {% if settings and settings.address_uz %}
@@ -70,7 +70,7 @@
         {% for anchor, label in menu_items %}
         <li class="nav-item {% if anchor == 'korporativ' %}has-dropdown{% endif %}">
           {% if anchor == 'korporativ' %}
-          <a href="/korporativ/" class="nav-link {% if request.path|slice:':12' == '/korporativ' %}active{% endif %}">
+          <a href="/korporativ/" class="nav-link {% if request.path == '/korporativ/' or request.path|slice:':12' == '/korporativ/' %}active{% endif %}">
             {{ label }}
           </a>
           <!-- Dropdown -->
@@ -148,6 +148,11 @@
       </ul>
 
       <div class="nav-right">
+        <div class="lang-switcher lang-switcher-mobile">
+          <a href="/set-language/uz/" class="lang-btn {% if lang == 'uz' %}active{% endif %}">UZ</a>
+          <a href="/set-language/ru/" class="lang-btn {% if lang == 'ru' %}active{% endif %}">RU</a>
+          <a href="/set-language/en/" class="lang-btn {% if lang == 'en' %}active{% endif %}">EN</a>
+        </div>
         <!-- Search trigger -->
         <button class="nav-action-btn" id="searchTrigger" aria-label="Qidiruv" title="Qidiruv">
           <i class="bi bi-search"></i>

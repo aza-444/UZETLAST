@@ -20,7 +20,7 @@ class SiteSettings(models.Model):
     
     # Address multilingual
     address_uz = models.CharField(max_length=300, blank=True, verbose_name="Manzil (UZ)")
-    address_ru = models.CharField(max_length=300, blank=True, verbose_name="Адрес (RU)")
+    address_ru = models.CharField(max_length=300, blank=True, verbose_name="Manzil (RU)")
     address_en = models.CharField(max_length=300, blank=True, verbose_name="Address (EN)")
     map_iframe = models.TextField(blank=True, verbose_name="Xarita Iframe (Google/Yandex)", help_text="Xaritani ulash uchun Iframe kodini shu yerga kiriting")
 
@@ -32,14 +32,14 @@ class SiteSettings(models.Model):
     youtube = models.URLField(blank=True, verbose_name="YouTube")
     
     # Theme colors (editable via admin)
-    primary_color = models.CharField(max_length=7, default='#ff000f', help_text='Asosiy brand rangi (hex)', verbose_name='Primary Color')
-    accent_color = models.CharField(max_length=7, default='#cc0000', help_text='Ikkinchi darajali rang (hex)', verbose_name='Accent Color')
-    bg_color = models.CharField(max_length=7, default='#ffffff', help_text='Sahifa umumiy foni (hex)', verbose_name='Sahifa foni')
-    bg_card_color = models.CharField(max_length=7, default='#f4f4f4', help_text='Karta/blok foni (hex)', verbose_name='Karta foni')
-    bg_section_color = models.CharField(max_length=7, default='#f8f9fa', help_text='Bo\'lim foni (alternativ, hex)', verbose_name='Bo\'lim foni')
-    text_color = models.CharField(max_length=7, default='#111111', help_text='Asosiy matn rangi (hex)', verbose_name='Text Color')
-    text_secondary_color = models.CharField(max_length=7, default='#555555', help_text='Ikkinchi darajali matn rangi (hex)', verbose_name='Secondary Text Color')
-    border_color = models.CharField(max_length=20, default='#e0e0e0', help_text='Chegara rangi — rgba yoki hex (masalan: rgba(0,0,0,0.1))', verbose_name='Chegara rangi')
+    primary_color = models.CharField(max_length=7, default='#e8910c', help_text='Asosiy brand rangi (hex)', verbose_name='Primary Color')
+    accent_color = models.CharField(max_length=7, default='#0284c7', help_text='Ikkinchi darajali rang (hex)', verbose_name='Accent Color')
+    bg_color = models.CharField(max_length=7, default='#f3f6fa', help_text='Sahifa umumiy foni (hex)', verbose_name='Sahifa foni')
+    bg_card_color = models.CharField(max_length=7, default='#ffffff', help_text='Karta/blok foni (hex)', verbose_name='Karta foni')
+    bg_section_color = models.CharField(max_length=7, default='#e7edf5', help_text='Bo\'lim foni (alternativ, hex)', verbose_name='Bo\'lim foni')
+    text_color = models.CharField(max_length=7, default='#0b1220', help_text='Asosiy matn rangi (hex)', verbose_name='Text Color')
+    text_secondary_color = models.CharField(max_length=7, default='#3d4f66', help_text='Ikkinchi darajali matn rangi (hex)', verbose_name='Secondary Text Color')
+    border_color = models.CharField(max_length=40, default='rgba(15,35,60,0.1)', help_text='Chegara rangi — rgba yoki hex (masalan: rgba(0,0,0,0.1))', verbose_name='Chegara rangi')
     meta_title_ru = models.CharField(max_length=200, blank=True, verbose_name="Meta Title (RU)")
     meta_title_en = models.CharField(max_length=200, blank=True, verbose_name="Meta Title (EN)")
     meta_description_uz = models.TextField(blank=True, verbose_name="Meta Description (UZ)")
@@ -63,10 +63,15 @@ class SiteSettings(models.Model):
         return "Sayt sozlamalari"
 
     def address(self, lang='uz'):
-        return getattr(self, f'address_{lang}', self.address_uz)
+        val = getattr(self, f'address_{lang}', '')
+        return val if val else self.address_uz
 
     def meta_title(self, lang='uz'):
-        return getattr(self, f'meta_title_{lang}', getattr(self, 'meta_title_ru', ''))
+        # meta_title_uz maydoni yo'q — UZ uchun aniq fallback
+        if lang == 'uz':
+            return "O'zenergota'minlash — Energetika uskunalari"
+        val = getattr(self, f'meta_title_{lang}', '') or ''
+        return val if val else (self.meta_title_ru or "O'zenergota'minlash")
 
     def meta_description(self, lang='uz'):
         return getattr(self, f'meta_description_{lang}', self.meta_description_uz)
@@ -75,23 +80,35 @@ class SiteSettings(models.Model):
 class HeroSection(models.Model):
     """Bosh sahifa hero bo'limi"""
     title_uz = models.CharField(max_length=200, verbose_name="Sarlavha (UZ)")
-    title_ru = models.CharField(max_length=200, blank=True, verbose_name="Заголовок (RU)")
+    title_ru = models.CharField(max_length=200, blank=True, verbose_name="Sarlavha (RU)")
     title_en = models.CharField(max_length=200, blank=True, verbose_name="Title (EN)")
     
     subtitle_uz = models.TextField(verbose_name="Qisqa tavsif (UZ)")
-    subtitle_ru = models.TextField(blank=True, verbose_name="Краткое описание (RU)")
+    subtitle_ru = models.TextField(blank=True, verbose_name="Qisqa tavsif (RU)")
     subtitle_en = models.TextField(blank=True, verbose_name="Short description (EN)")
     
     btn_catalog_uz = models.CharField(max_length=100, default="Katalog", verbose_name="Katalog tugmasi (UZ)")
-    btn_catalog_ru = models.CharField(max_length=100, default="Каталог", verbose_name="Кнопка каталога (RU)")
+    btn_catalog_ru = models.CharField(max_length=100, default="Каталог", verbose_name="Katalog tugmasi (RU)")
     btn_catalog_en = models.CharField(max_length=100, default="Catalog", verbose_name="Catalog button (EN)")
     
     btn_contact_uz = models.CharField(max_length=100, default="Bog'lanish", verbose_name="Bog'lanish tugmasi (UZ)")
-    btn_contact_ru = models.CharField(max_length=100, default="Связаться", verbose_name="Кнопка связи (RU)")
+    btn_contact_ru = models.CharField(max_length=100, default="Связаться", verbose_name="Bog'lanish tugmasi (RU)")
     btn_contact_en = models.CharField(max_length=100, default="Contact Us", verbose_name="Contact button (EN)")
     
     background_image = models.ImageField(upload_to='hero/', blank=True, verbose_name="Fon rasmi (Asosiy/Qorong'i)")
     background_image_light = models.ImageField(upload_to='hero/', blank=True, verbose_name="Fon rasmi (Kunduzgi rejim)")
+    background_video = models.FileField(
+        upload_to='hero/videos/',
+        blank=True,
+        verbose_name="Fon video (Qorong'i)",
+        help_text="Ixtiyoriy. Qisqa MP4/WebM (tavsiya: 3–8 soniya, <3MB). Bo'sh bo'lsa engil canvas animatsiya ishlaydi."
+    )
+    background_video_light = models.FileField(
+        upload_to='hero/videos/',
+        blank=True,
+        verbose_name="Fon video (Kunduzgi)",
+        help_text="Ixtiyoriy. Kunduzgi rejim uchun. Bo'sh bo'lsa qorong'i video yoki canvas ishlatiladi."
+    )
     is_active = models.BooleanField(default=True, verbose_name="Faol")
 
     class Meta:
@@ -119,11 +136,11 @@ class HeroSection(models.Model):
 class AboutSection(models.Model):
     """Kompaniya haqida bo'limi"""
     title_uz = models.CharField(max_length=200, default="Kompaniya haqida", verbose_name="Sarlavha (UZ)")
-    title_ru = models.CharField(max_length=200, default="О компании", verbose_name="Заголовок (RU)")
+    title_ru = models.CharField(max_length=200, default="О компании", verbose_name="Sarlavha (RU)")
     title_en = models.CharField(max_length=200, default="About Company", verbose_name="Title (EN)")
     
     content_uz = models.TextField(verbose_name="Matn (UZ)")
-    content_ru = models.TextField(blank=True, verbose_name="Текст (RU)")
+    content_ru = models.TextField(blank=True, verbose_name="Matn (RU)")
     content_en = models.TextField(blank=True, verbose_name="Text (EN)")
     
     asosiy_vazifa_uz = models.TextField(blank=True, verbose_name="Asosiy vazifa (UZ)")
@@ -131,7 +148,7 @@ class AboutSection(models.Model):
     asosiy_vazifa_en = models.TextField(blank=True, verbose_name="Asosiy vazifa (EN)")
     
     vision_uz = models.TextField(blank=True, verbose_name="Vizyon (UZ)")
-    vision_ru = models.TextField(blank=True, verbose_name="Видение (RU)")
+    vision_ru = models.TextField(blank=True, verbose_name="Vizyon (RU)")
     vision_en = models.TextField(blank=True, verbose_name="Vision (EN)")
     
     image = models.ImageField(upload_to='about/', blank=True, verbose_name="Rasm")
@@ -158,20 +175,22 @@ class AboutSection(models.Model):
         return val if val else self.content_uz
 
     def mission(self, lang='uz'):
-        return getattr(self, f'mission_{lang}', self.mission_uz)
+        val = getattr(self, f'asosiy_vazifa_{lang}', '')
+        return val if val else self.asosiy_vazifa_uz
 
     def vision(self, lang='uz'):
-        return getattr(self, f'vision_{lang}', self.vision_uz)
+        val = getattr(self, f'vision_{lang}', '')
+        return val if val else self.vision_uz
 
 
 class Service(models.Model):
     """Xizmatlar"""
     name_uz = models.CharField(max_length=200, verbose_name="Nomi (UZ)")
-    name_ru = models.CharField(max_length=200, blank=True, verbose_name="Название (RU)")
+    name_ru = models.CharField(max_length=200, blank=True, verbose_name="Nomi (RU)")
     name_en = models.CharField(max_length=200, blank=True, verbose_name="Name (EN)")
     
     description_uz = models.TextField(verbose_name="Tavsif (UZ)")
-    description_ru = models.TextField(blank=True, verbose_name="Описание (RU)")
+    description_ru = models.TextField(blank=True, verbose_name="Tavsif (RU)")
     description_en = models.TextField(blank=True, verbose_name="Description (EN)")
     
     icon = models.CharField(max_length=50, blank=True, default="bi-lightning-charge", verbose_name="Bootstrap Icon klassi")
@@ -199,11 +218,11 @@ class Service(models.Model):
 class CatalogItem(models.Model):
     """Katalog bo'limlari"""
     name_uz = models.CharField(max_length=200, verbose_name="Nomi (UZ)")
-    name_ru = models.CharField(max_length=200, blank=True, verbose_name="Название (RU)")
+    name_ru = models.CharField(max_length=200, blank=True, verbose_name="Nomi (RU)")
     name_en = models.CharField(max_length=200, blank=True, verbose_name="Name (EN)")
     
     description_uz = models.TextField(verbose_name="Tavsif (UZ)")
-    description_ru = models.TextField(blank=True, verbose_name="Описание (RU)")
+    description_ru = models.TextField(blank=True, verbose_name="Tavsif (RU)")
     description_en = models.TextField(blank=True, verbose_name="Description (EN)")
     
     image = models.ImageField(upload_to='catalog/', blank=True, verbose_name="Rasm")
@@ -230,11 +249,11 @@ class CatalogItem(models.Model):
 class News(models.Model):
     """Yangiliklar"""
     title_uz = models.CharField(max_length=300, verbose_name="Sarlavha (UZ)")
-    title_ru = models.CharField(max_length=300, blank=True, verbose_name="Заголовок (RU)")
+    title_ru = models.CharField(max_length=300, blank=True, verbose_name="Sarlavha (RU)")
     title_en = models.CharField(max_length=300, blank=True, verbose_name="Title (EN)")
     
     content_uz = models.TextField(verbose_name="Matn (UZ)")
-    content_ru = models.TextField(blank=True, verbose_name="Текст (RU)")
+    content_ru = models.TextField(blank=True, verbose_name="Matn (RU)")
     content_en = models.TextField(blank=True, verbose_name="Text (EN)")
     
     image = models.ImageField(upload_to='news/', blank=True, verbose_name="Rasm")
@@ -277,7 +296,7 @@ class News(models.Model):
 class CorporateCategory(models.Model):
     """Korporativ hujjatlar kategoriyasi (Ustav, Qarorlar, va h.k.)"""
     name_uz = models.CharField(max_length=200, verbose_name="Nomi (UZ)")
-    name_ru = models.CharField(max_length=200, blank=True, verbose_name="Название (RU)")
+    name_ru = models.CharField(max_length=200, blank=True, verbose_name="Nomi (RU)")
     name_en = models.CharField(max_length=200, blank=True, verbose_name="Name (EN)")
     slug = models.SlugField(max_length=200, unique=True, verbose_name="URL (slug)")
     order = models.PositiveIntegerField(default=0, verbose_name="Tartib")
@@ -321,7 +340,7 @@ class CorporateDocument(models.Model):
         verbose_name="Kategoriya"
     )
     title_uz = models.CharField(max_length=300, verbose_name="Sarlavha (UZ)")
-    title_ru = models.CharField(max_length=300, blank=True, verbose_name="Заголовок (RU)")
+    title_ru = models.CharField(max_length=300, blank=True, verbose_name="Sarlavha (RU)")
     title_en = models.CharField(max_length=300, blank=True, verbose_name="Title (EN)")
 
     file = models.FileField(upload_to='corporate_docs/', verbose_name="Fayl (PDF/DOC)")

@@ -24,7 +24,6 @@ if not SiteSettings.objects.exists():
         address_uz="Toshkent shahar, Shayxontohur tumani, Navoiy ko'chasi 16",
         address_ru='г. Ташкент, Шайхантахурский р-н, ул. Навои 16',
         address_en='Tashkent city, Shaykhantakhur district, Navoiy str. 16',
-        meta_title_uz="O'ZENERGOTA'MINLASH AJ — Energetika va sanoat korxonalariga ta'minot",
         meta_title_ru="O'ZENERGOTA'MINLASH AJ — Поставки для энергетики и промышленности",
         meta_title_en="UZBEKENERGO SUPPLY JSC — Energy & Industrial Supply",
         meta_description_uz=(
@@ -102,15 +101,15 @@ if not AboutSection.objects.exists():
             "The company ensures industry stability by providing timely and high-quality "
             "supplies of material and technical resources and equipment to energy enterprises."
         ),
-        mission_uz=(
+        asosiy_vazifa_uz=(
             "Jamiyatning dinamik rivojlanishi, investitsiyaviy jozibadorligini oshirish "
             "va aksiyadorlar farovonligini ta'minlash."
         ),
-        mission_ru=(
+        asosiy_vazifa_ru=(
             "Jamiyatning dinamik rivojlanishi, investitsiyaviy jozibadorligini oshirish "
             "va aksiyadorlar farovonligini ta'minlash."
         ),
-        mission_en=(
+        asosiy_vazifa_en=(
             "Dynamic development of the company, increasing its investment attractiveness "
             "and ensuring shareholder prosperity."
         ),

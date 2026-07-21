@@ -154,8 +154,15 @@ class HeroSectionAdmin(admin.ModelAdmin):
             'classes': ('collapse',),
             'fields': ('title_en', 'subtitle_en', 'btn_catalog_en', 'btn_contact_en')
         }),
-        ('🖼️ Fon rasmi', {
-            'fields': ('background_image', 'background_image_light', 'is_active')
+        ('🖼️ Fon / Video', {
+            'fields': (
+                'background_image',
+                'background_image_light',
+                'background_video',
+                'background_video_light',
+                'is_active',
+            ),
+            'description': 'Video ixtiyoriy — qisqa loop (<3MB). Yuklanmasa engil canvas energetika animatsiyasi ishlaydi.',
         }),
     )
 
