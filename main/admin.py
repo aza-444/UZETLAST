@@ -2,6 +2,7 @@
 from django.contrib import admin
 from django import forms
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from .models import (
     SiteSettings, HeroSection, AboutSection,
     Service, CatalogItem, News, ContactMessage,
@@ -149,7 +150,7 @@ class SiteSettingsAdmin(admin.ModelAdmin):
                 f'background:{c};border-radius:6px;margin:2px;border:1px solid rgba(0,0,0,0.15);'
                 f'vertical-align:middle;"></span>'
             )
-        return format_html(html)
+        return mark_safe(html)
 
     color_swatches.short_description = "Ranglar"
 

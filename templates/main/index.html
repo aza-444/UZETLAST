@@ -155,7 +155,7 @@
         </div>
         {% endif %}
         <div class="about-exp-badge">
-          <span class="exp-num">{{ about.years_experience|default:"10" }}+</span>
+          <span class="exp-num">{{ about.years_experience|default:"33" }}+</span>
           <span class="exp-text">
             {% if lang == 'uz' %}yil tajriba{% elif lang == 'ru' %}лет опыта{% else %}years exp{% endif %}
           </span>
@@ -276,6 +276,7 @@
 
     <div class="catalog-grid">
       {% for service in services %}
+      {% if service.is_active %}
       <div class="catalog-card" data-aos="fade-up">
         <div class="catalog-img-wrap">
           {% if service.image %}
@@ -293,6 +294,7 @@
           </p>
         </div>
       </div>
+      {% endif %}
       {% empty %}
       <div class="services-empty" style="grid-column:1/-1;text-align:center;padding:60px 0;color:var(--text-muted);">
         <i class="bi bi-tools" style="font-size:3rem;"></i>
@@ -315,6 +317,7 @@
     <div class="news-grid">
       {% for item in news %}
       <article class="news-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+        <a href="/yangilik/{{ item.slug }}/" style="text-decoration:none;color:inherit;display:contents;">
         <div class="news-img-wrap">
           {% if item.image %}
           <img src="{{ item.image.url }}" alt="{{ item.title_uz }}" class="news-img"/>
@@ -334,6 +337,7 @@
             {% if lang == 'uz' %}{{ item.content_uz|truncatewords:25 }}{% elif lang == 'ru' %}{{ item.content_ru|default:item.content_uz|truncatewords:25 }}{% else %}{{ item.content_en|default:item.content_uz|truncatewords:25 }}{% endif %}
           </p>
         </div>
+        </a>
       </article>
       {% empty %}
       <div style="grid-column:1/-1;text-align:center;padding:60px 0;color:var(--text-muted);">
