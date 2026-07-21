@@ -72,12 +72,31 @@ class Command(BaseCommand):
                 continue
 
             if dry_run:
-                category = CorporateCategory.objects.filter(name_uz=folder_name).first()
+                category = CorporateCategory.objects.filter(
+                    name_uz=folder_name
+                ).first()
                 cat_exists = "mavjud" if category else "YARATILADI"
             else:
+                # Get translations for this folder
+                folder_translations = {
+                    "E'lonlar": {"name_uz": "E'lonlar", "name_ru": "Объявления", "name_en": "Announcements"},
+                    "Moliyaviy hisobotlar": {"name_uz": "Moliyaviy hisobotlar", "name_ru": "Финансовые отчёты", "name_en": "Financial Reports"},
+                    "Muhim faktlar": {"name_uz": "Muhim faktlar", "name_ru": "Важные факты", "name_en": "Important Facts"},
+                    "Ustav": {"name_uz": "Ustav", "name_ru": "Устав", "name_en": "Charter"}
+                }
+                trans = folder_translations.get(folder_name, {})
                 category, was_created = CorporateCategory.objects.get_or_create(
-                    name_uz=folder_name
+                    name_uz=folder_name,
+                    defaults={"name_ru": trans.get("name_ru", folder_name), "name_en": trans.get("name_en", folder_name)}
                 )
+                # Update existing categories with translations
+                if not was_created:
+                    if trans.get("name_ru") and not category.name_ru:
+                        category.name_ru = trans.get("name_ru", folder_name)
+                    if trans.get("name_en") and not category.name_en:
+                        category.name_en = trans.get("name_en", folder_name)
+                    if not was_created:
+                        category.save()
                 cat_exists = "yaratildi" if was_created else "mavjud edi"
                 if was_created:
                     created_cats += 1
