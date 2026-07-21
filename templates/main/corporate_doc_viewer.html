@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="{{ lang }}" data-theme="dark">
 <head>
   <meta charset="UTF-8"/>
@@ -319,26 +319,7 @@
       font-weight: 600;
     }
   </style>
-{% if settings %}
-<style>
-[data-theme="light"] {
-  --primary:        {{ settings.primary_color }};
-  --primary-hover:  {{ settings.primary_color }};
-  --primary-glow:   {{ settings.primary_color }}33;
-  --accent:         {{ settings.accent_color }};
-  --accent-hover:   {{ settings.accent_color }};
-  --bg-dark:        {{ settings.bg_color }};
-  --bg-card:        {{ settings.bg_card_color }};
-  --bg-card-hover:  {{ settings.bg_card_color }};
-  --bg-section:     {{ settings.bg_section_color }};
-  --text:           {{ settings.text_color }};
-  --text-secondary: {{ settings.text_secondary_color }};
-  --border:         {{ settings.border_color }};
-  --border-hover:   {{ settings.primary_color }}66;
-  --shadow-glow:    0 0 30px {{ settings.primary_color }}33;
-}
-</style>
-{% endif %}
+
 </head>
 <body>
 

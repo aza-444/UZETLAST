@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="{{ lang }}" data-theme="dark">
 <head>
   <meta charset="UTF-8"/>
@@ -39,34 +39,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css"/>
   <!-- Main CSS -->
   <link rel="stylesheet" href="/static/css/style.css"/>
-{% if settings %}
-<style>
-:root {
-  --primary:        {{ settings.primary_color }};
-  --primary-hover:  {{ settings.primary_color }};
-  --primary-glow:   {{ settings.primary_color }}33;
-  --accent:         {{ settings.accent_color }};
-  --accent-hover:   {{ settings.accent_color }};
-  --shadow-glow:    0 0 30px {{ settings.primary_color }}33;
-}
-[data-theme="light"] {
-  --primary:        {{ settings.primary_color }};
-  --primary-hover:  {{ settings.primary_color }};
-  --primary-glow:   {{ settings.primary_color }}33;
-  --accent:         {{ settings.accent_color }};
-  --accent-hover:   {{ settings.accent_color }};
-  --bg-dark:        {{ settings.bg_color }};
-  --bg-card:        {{ settings.bg_card_color }};
-  --bg-card-hover:  {{ settings.bg_card_color }};
-  --bg-section:     {{ settings.bg_section_color }};
-  --text:           {{ settings.text_color }};
-  --text-secondary: {{ settings.text_secondary_color }};
-  --border:         {{ settings.border_color }};
-  --border-hover:   {{ settings.primary_color }}66;
-  --shadow-glow:    0 0 30px {{ settings.primary_color }}33;
-}
-</style>
-{% endif %}
+
 
 
   <!-- Structured Data for SEO -->
@@ -113,27 +86,12 @@
   <!-- Smart-grid canvas (JS) -->
   <canvas id="heroCanvas" class="hero-canvas" aria-hidden="true"></canvas>
 
-  <!-- Energy power grid lines -->
-  <div class="hero-energy-grid" aria-hidden="true"></div>
-
   <!-- Plasma glow orbs -->
   <div class="hero-plasma" aria-hidden="true">
     <div class="plasma-orb"></div>
     <div class="plasma-orb"></div>
     <div class="plasma-orb"></div>
   </div>
-
-  <!-- Electric arc power lines (SVG) -->
-  <div class="hero-arc-container" aria-hidden="true">
-    <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-      <path class="arc-line" d="M0,150 C200,80 400,300 600,200 S900,50 1100,180 S1300,320 1440,250"/>
-      <path class="arc-line" d="M0,400 C300,320 500,500 700,380 S1000,250 1200,350 S1380,500 1440,420"/>
-      <path class="arc-line" d="M0,700 C150,600 350,750 600,680 S900,580 1100,700 S1300,800 1440,730"/>
-    </svg>
-  </div>
-
-  <!-- Floating energy particles -->
-  <div class="hero-particles" id="particles" aria-hidden="true"></div>
 
   <div class="container hero-content" data-aos="fade-up">
     {% if hero %}
@@ -183,43 +141,6 @@
   </div>
 </section>
 
-{% if about %}
-<!-- ===================== STATS ===================== -->
-<section class="stats-section">
-  <div class="container">
-    <div class="stats-grid">
-      <div class="stat-card" data-aos="fade-up" data-aos-delay="0">
-        <div class="stat-icon"><i class="bi bi-calendar-check"></i></div>
-        <div class="stat-number counter" data-target="{{ about.years_experience }}">0</div>
-        <div class="stat-label">
-          {% if lang == 'uz' %}Yillik tajriba{% elif lang == 'ru' %}Лет опыта{% else %}Years Experience{% endif %}
-        </div>
-      </div>
-      <div class="stat-card" data-aos="fade-up" data-aos-delay="100">
-        <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
-        <div class="stat-number counter" data-target="{{ about.clients_count }}">0</div>
-        <div class="stat-label">
-          {% if lang == 'uz' %}Mijozlar{% elif lang == 'ru' %}Клиенты{% else %}Clients{% endif %}
-        </div>
-      </div>
-      <div class="stat-card" data-aos="fade-up" data-aos-delay="200">
-        <div class="stat-icon"><i class="bi bi-check-circle-fill"></i></div>
-        <div class="stat-number counter" data-target="{{ about.projects_count }}">0</div>
-        <div class="stat-label">
-          {% if lang == 'uz' %}Loyihalar{% elif lang == 'ru' %}Проекты{% else %}Projects{% endif %}
-        </div>
-      </div>
-      <div class="stat-card" data-aos="fade-up" data-aos-delay="300">
-        <div class="stat-icon"><i class="bi bi-lightning-charge-fill"></i></div>
-        <div class="stat-number">24/7</div>
-        <div class="stat-label">
-          {% if lang == 'uz' %}Qo'llab-quvvatlash{% elif lang == 'ru' %}Поддержка{% else %}Support{% endif %}
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-{% endif %}
 
 <!-- ===================== ABOUT ===================== -->
 <section id="haqimizda" class="section about-section">
@@ -252,13 +173,24 @@
             {% if lang == 'uz' %}Biz haqimizda{% elif lang == 'ru' %}О нас{% else %}About Us{% endif %}
           {% endif %}
         </h2>
-        <p class="about-text">
+        <p class="about-text" id="aboutText">
           {% if about %}
             {% if lang == 'uz' %}{{ about.content_uz }}{% elif lang == 'ru' %}{{ about.content_ru|default:about.content_uz }}{% else %}{{ about.content_en|default:about.content_uz }}{% endif %}
           {% else %}
             O'zenergota'minlash Aksiyadorlik Jamiyati — O'zbekistondagi energetika uskunalari bozorida yetakchi kompaniya.
           {% endif %}
         </p>
+        <button id="aboutReadMoreBtn" class="btn btn-outline read-more-btn" onclick="
+            const text = document.getElementById('aboutText');
+            text.classList.toggle('expanded');
+            if(text.classList.contains('expanded')) {
+                this.innerHTML = `{% if lang == 'uz' %}Qisqartirish{% elif lang == 'ru' %}Скрыть{% else %}Show Less{% endif %} <i class='bi bi-chevron-up'></i>`;
+            } else {
+                this.innerHTML = `{% if lang == 'uz' %}Batafsil{% elif lang == 'ru' %}Подробнее{% else %}Read More{% endif %} <i class='bi bi-chevron-down'></i>`;
+            }
+        ">
+          {% if lang == 'uz' %}Batafsil{% elif lang == 'ru' %}Подробнее{% else %}Read More{% endif %} <i class="bi bi-chevron-down"></i>
+        </button>
 
         {% if about and about.asosiy_vazifa_uz %}
         <div class="about-features">

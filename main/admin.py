@@ -235,7 +235,7 @@ class CatalogItemAdmin(admin.ModelAdmin):
 
 @admin.register(AboutSection)
 class AboutSectionAdmin(admin.ModelAdmin):
-    list_display = ('title_uz', 'years_experience', 'clients_count', 'projects_count', 'is_active')
+    list_display = ('title_uz', 'is_active')
     fieldsets = (
         ('🇺🇿 O\'zbek tili', {
             'fields': ('title_uz', 'content_uz', 'asosiy_vazifa_uz', 'vision_uz')
@@ -247,9 +247,6 @@ class AboutSectionAdmin(admin.ModelAdmin):
         ('🇬🇧 English', {
             'classes': ('collapse',),
             'fields': ('title_en', 'content_en', 'asosiy_vazifa_en', 'vision_en')
-        }),
-        ('📊 Statistika', {
-            'fields': ('years_experience', 'clients_count', 'projects_count')
         }),
         ('🖼️ Rasm', {
             'fields': ('image', 'is_active')
@@ -317,7 +314,7 @@ class PartnerAdmin(admin.ModelAdmin):
 class CorporateDocumentInline(admin.TabularInline):
     model = CorporateDocument
     extra = 1
-    fields = ('title_uz', 'year', 'is_archive', 'published_date', 'file', 'order', 'is_active')
+    fields = ('title_uz', 'title_ru', 'title_en', 'year', 'is_archive', 'published_date', 'file', 'order', 'is_active')
     ordering = ['order', '-published_date']
 
 

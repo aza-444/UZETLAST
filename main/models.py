@@ -225,10 +225,6 @@ class AboutSection(models.Model):
     
     image = models.ImageField(upload_to='about/', blank=True, verbose_name="Rasm")
     
-    # Stats
-    years_experience = models.PositiveIntegerField(default=10, verbose_name="Tajriba yillari")
-    clients_count = models.PositiveIntegerField(default=500, verbose_name="Mijozlar soni")
-    projects_count = models.PositiveIntegerField(default=1000, verbose_name="Loyihalar soni")
     is_active = models.BooleanField(default=True, verbose_name="Faol")
 
     class Meta:
