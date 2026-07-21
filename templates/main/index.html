@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="{{ lang }}" data-theme="dark">
 <head>
   <meta charset="UTF-8"/>
@@ -41,8 +41,8 @@
   <link rel="stylesheet" href="/static/css/style.css"/>
 {% if settings %}
 <style>
-/* ── Faqat KUNDUZGI REJIM uchun admin ranglari ──
-   Qorongʻi rejim o'z original ranglarida qoladi!   */
+/* — Faqat KUNDUZGI REJIM uchun admin ranglari —
+   Qorong'i rejim o'z original ranglarida qoladi!   */
 [data-theme="light"] {
   --primary:        {{ settings.primary_color }};
   --primary-hover:  {{ settings.primary_color }};
@@ -84,14 +84,50 @@
 
 <!-- ===================== HERO ===================== -->
 <section id="bosh-sahifa" class="hero-section">
-  {% if hero and hero.background_image %}
-  <div class="hero-bg" style="background-image:url('{{ hero.background_image.url }}');"></div>
+  {% if hero %}
+  <div class="hero-bg" style="--bg-image-dark: url('{% if hero.background_image %}{{ hero.background_image.url }}{% endif %}'); --bg-image-light: url('{% if hero.background_image_light %}{{ hero.background_image_light.url }}{% elif hero.background_image %}{{ hero.background_image.url }}{% endif %}');"></div>
   {% else %}
   <div class="hero-bg"></div>
   {% endif %}
   <div class="hero-overlay"></div>
 
+  <!-- Energy power grid lines -->
+  <div class="hero-energy-grid"></div>
+
+  <!-- Plasma glow orbs -->
+  <div class="hero-plasma">
+    <div class="plasma-orb"></div>
+    <div class="plasma-orb"></div>
+    <div class="plasma-orb"></div>
+  </div>
+
+  <!-- Electric arc power lines (SVG) -->
+  <div class="hero-arc-container">
+    <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <path class="arc-line" d="M0,150 C200,80 400,300 600,200 S900,50 1100,180 S1300,320 1440,250"/>
+      <path class="arc-line" d="M0,400 C300,320 500,500 700,380 S1000,250 1200,350 S1380,500 1440,420"/>
+      <path class="arc-line" d="M0,700 C150,600 350,750 600,680 S900,580 1100,700 S1300,800 1440,730"/>
+    </svg>
+  </div>
+
+  <!-- Lightning bolt effects -->
+  <div class="hero-lightning">
+    <div class="lightning-bolt"></div>
+    <div class="lightning-bolt"></div>
+    <div class="lightning-bolt"></div>
+  </div>
+
+  <!-- Floating energy particles -->
   <div class="hero-particles" id="particles"></div>
+
+  <!-- Energy meter bars (decorative right side) -->
+  <div class="hero-energy-bars">
+    <div class="energy-bar"></div>
+    <div class="energy-bar"></div>
+    <div class="energy-bar"></div>
+    <div class="energy-bar"></div>
+    <div class="energy-bar"></div>
+  </div>
 
   <div class="container hero-content" data-aos="fade-up">
     {% if hero %}
@@ -154,21 +190,21 @@
 <!--        <div class="stat-icon"><i class="bi bi-people-fill"></i></div>-->
 <!--        <div class="stat-number counter" data-target="{{ about.clients_count }}">0</div>-->
 <!--        <div class="stat-label">-->
-<!--          {% if lang == 'uz' %}Mijozlar{% elif lang == 'ru' %}Клиентов{% else %}Clients{% endif %}-->
+<!--          {% if lang == 'uz' %}Mijozlar{% elif lang == 'ru' %}Клиенты{% else %}Clients{% endif %}-->
 <!--        </div>-->
 <!--      </div>-->
 <!--      <div class="stat-card" data-aos="fade-up" data-aos-delay="200">-->
 <!--        <div class="stat-icon"><i class="bi bi-check-circle-fill"></i></div>-->
 <!--        <div class="stat-number counter" data-target="{{ about.projects_count }}">0</div>-->
 <!--        <div class="stat-label">-->
-<!--          {% if lang == 'uz' %}Loyihalar{% elif lang == 'ru' %}Проектов{% else %}Projects{% endif %}-->
+<!--          {% if lang == 'uz' %}Loyihalar{% elif lang == 'ru' %}Проекты{% else %}Projects{% endif %}-->
 <!--        </div>-->
 <!--      </div>-->
 <!--      <div class="stat-card" data-aos="fade-up" data-aos-delay="300">-->
 <!--        <div class="stat-icon"><i class="bi bi-globe2"></i></div>-->
 <!--        <div class="stat-number">24/7</div>-->
 <!--        <div class="stat-label">-->
-<!--          {% if lang == 'uz' %}Qo'llab-quvvatlash{% elif lang == 'ru' %}Поддержка{% else %}Support{% endif %}-->
+<!--          {% if lang == 'uz' %}Qo'llab-quvvatlash{% elif lang == 'ru' %}Р СџР С•Р Т‘Р Т‘Р ВµРЎР‚Р В¶Р С”Р В°{% else %}Support{% endif %}-->
 <!--        </div>-->
 <!--      </div>-->
 <!--    </div>-->
@@ -200,7 +236,7 @@
         <div class="section-label">
           {% if lang == 'uz' %}Biz haqimizda{% elif lang == 'ru' %}О нас{% else %}About Us{% endif %}
         </div>
-        <h2 class="section-title">
+        <h2 class="sec tion-title">
           {% if about %}
             {% if lang == 'uz' %}{{ about.title_uz }}{% elif lang == 'ru' %}{{ about.title_ru|default:about.title_uz }}{% else %}{{ about.title_en|default:about.title_uz }}{% endif %}
           {% else %}
@@ -220,7 +256,7 @@
           <div class="feature-item">
             <div class="feature-icon"><i class="bi bi-bullseye"></i></div>
             <div>
-              <strong>{% if lang == 'uz' %}Asosiy vazifamiz{% elif lang == 'ru' %}Основная задача{% else %}Main task{% endif %}</strong>
+              <strong>{% if lang == 'uz' %}Asosiy vazifamiz{% elif lang == 'ru' %}Наша основная задача{% else %}Main task{% endif %}</strong>
               <p>{% if lang == 'uz' %}{{ about.asosiy_vazifa_uz }}{% elif lang == 'ru' %}{{ about.asosiy_vazifa_ru|default:about.asosiy_vazifa_uz }}{% else %}{{ about.asosiy_vazifa_en|default:about.asosiy_vazifa_uz }}{% endif %}</p>
             </div>
           </div>
@@ -228,7 +264,7 @@
           <div class="feature-item">
             <div class="feature-icon"><i class="bi bi-eye-fill"></i></div>
             <div>
-              <strong>{% if lang == 'uz' %}Maqsadimiz{% elif lang == 'ru' %}Цель{% else %}Our Goal{% endif %}</strong>
+              <strong>{% if lang == 'uz' %}Maqsadimiz{% elif lang == 'ru' %}Наша цель{% else %}Our Goal{% endif %}</strong>
               <p>{% if lang == 'uz' %}{{ about.vision_uz }}{% elif lang == 'ru' %}{{ about.vision_ru|default:about.vision_uz }}{% else %}{{ about.vision_en|default:about.vision_uz }}{% endif %}</p>
             </div>
           </div>
@@ -237,7 +273,7 @@
         {% endif %}
 
         <a href="#aloqa" class="btn btn-primary">
-          {% if lang == 'uz' %}Biz bilan bog'laning{% elif lang == 'ru' %}Связаться с нами{% else %}Contact Us{% endif %}
+          {% if lang == 'uz' %}Biz bilan bog'laning{% elif lang == 'ru' %}Свяжитесь с нами{% else %}Contact Us{% endif %}
           <i class="bi bi-arrow-right"></i>
         </a>
       </div>
@@ -249,14 +285,14 @@
 <section id="katalog" class="section catalog-section">
   <div class="container">
     <div class="section-header" data-aos="fade-up">
-      <div class="section-label">
+      {# {# <div class="section-label">
         {% if lang == 'uz' %}Mahsulotlar{% elif lang == 'ru' %}Продукция{% else %}Products{% endif %}
-      </div>
+      </div> #} #}
       <h2 class="section-title">
         {% if lang == 'uz' %}Katalog{% elif lang == 'ru' %}Каталог{% else %}Catalog{% endif %}
       </h2>
       <p class="section-desc">
-        {% if lang == 'uz' %}Keng assortimentli energetika uskunalari{% elif lang == 'ru' %}Широкий ассортимент энергетического оборудования{% else %}Wide range of energy equipment{% endif %}
+        {% if lang == 'uz' %}Keng assortimentli energetika uskunalari{% elif lang == 'ru' %}Р РЃР С‘РЎР‚Р С•Р С”Р С‘Р в„– Р В°РЎРѓРЎРѓР С•РЎР‚РЎвЂљР С‘Р СР ВµР Р…РЎвЂљ РЎРЊР Р…Р ВµРЎР‚Р С–Р ВµРЎвЂљР С‘РЎвЂЎР ВµРЎРѓР С”Р С•Р С–Р С• Р С•Р В±Р С•РЎР‚РЎС“Р Т‘Р С•Р Р†Р В°Р Р…Р С‘РЎРЏ{% else %}Wide range of energy equipment{% endif %}
       </p>
     </div>
 
@@ -297,9 +333,9 @@
 <section id="xizmatlar" class="section services-section" style="background-color: var(--bg-alt);">
   <div class="container">
     <div class="section-header" data-aos="fade-up">
-      <div class="section-label">
-        {% if lang == 'uz' %}Kompaniya xizmatlari{% elif lang == 'ru' %}Услуги компании{% else %}Company Services{% endif %}
-      </div>
+      {# <div class="section-label">
+        {% if lang == 'uz' %}Kompaniya xizmatlari{% elif lang == 'ru' %}Р Р€РЎРѓР В»РЎС“Р С–Р С‘ Р С”Р С•Р СР С—Р В°Р Р…Р С‘Р С‘{% else %}Company Services{% endif %}
+      </div> #}
       <h2 class="section-title">
         {% if lang == 'uz' %}Xizmatlar{% elif lang == 'ru' %}Услуги{% else %}Services{% endif %}
       </h2>
@@ -327,7 +363,7 @@
       {% empty %}
       <div class="services-empty" style="grid-column:1/-1;text-align:center;padding:60px 0;color:var(--text-muted);">
         <i class="bi bi-tools" style="font-size:3rem;"></i>
-        <p>{% if lang == 'uz' %}Admin paneldan xizmatlar qo'shing{% elif lang == 'ru' %}Добавьте услуги из админ панели{% else %}Add services from admin panel{% endif %}</p>
+        <p>{% if lang == 'uz' %}Admin paneldan xizmatlar qo'shing{% elif lang == 'ru' %}Р вЂќР С•Р В±Р В°Р Р†РЎРЉРЎвЂљР Вµ РЎС“РЎРѓР В»РЎС“Р С–Р С‘ Р С‘Р В· Р В°Р Т‘Р СР С‘Р Р… Р С—Р В°Р Р…Р ВµР В»Р С‘{% else %}Add services from admin panel{% endif %}</p>
       </div>
       {% endfor %}
     </div>
@@ -338,9 +374,9 @@
 <section id="yangiliklar" class="section news-section">
   <div class="container">
     <div class="section-header" data-aos="fade-up">
-      <div class="section-label">
+      {# <div class="section-label">
         {% if lang == 'uz' %}So'ngi voqealar{% elif lang == 'ru' %}Последние события{% else %}Latest Events{% endif %}
-      </div>
+      </div> #}
       <h2 class="section-title">
         {% if lang == 'uz' %}Yangiliklar{% elif lang == 'ru' %}Новости{% else %}News{% endif %}
       </h2>
@@ -449,9 +485,9 @@
 
   <div class="container">
     <div class="section-header" data-aos="fade-up">
-      <div class="section-label">
+      {# <div class="section-label">
         {% if lang == 'uz' %}Ishonchli hamkorlarimiz{% elif lang == 'ru' %}Наши надежные партнеры{% else %}Our Trusted Partners{% endif %}
-      </div>
+      </div> #}
       <h2 class="section-title">
         {% if lang == 'uz' %}Bizning hamkorlarimiz{% elif lang == 'ru' %}Наши партнеры{% else %}Our Partners{% endif %}
       </h2>
@@ -488,7 +524,7 @@
     {% else %}
     <div style="width:100%;text-align:center;color:var(--text-muted);padding:40px 0;">
       <i class="bi bi-briefcase" style="font-size:3rem;"></i>
-      <p>{% if lang == 'uz' %}Admin paneldan hamkorlarni qo'shing{% elif lang == 'ru' %}Добавьте партнеров из панели администратора{% else %}Add partners from the admin panel{% endif %}</p>
+      <p>{% if lang == 'uz' %}Admin paneldan hamkorlarni qo'shing{% elif lang == 'ru' %}Р вЂќР С•Р В±Р В°Р Р†РЎРЉРЎвЂљР Вµ Р С—Р В°РЎР‚РЎвЂљР Р…Р ВµРЎР‚Р С•Р Р† Р С‘Р В· Р С—Р В°Р Р…Р ВµР В»Р С‘ Р В°Р Т‘Р СР С‘Р Р…Р С‘РЎРѓРЎвЂљРЎР‚Р В°РЎвЂљР С•РЎР‚Р В°{% else %}Add partners from the admin panel{% endif %}</p>
     </div>
     {% endif %}
   </div>
@@ -498,11 +534,11 @@
 <section id="aloqa" class="section contact-section">
   <div class="container">
     <div class="section-header" data-aos="fade-up">
-      <div class="section-label">
-        {% if lang == 'uz' %}Murojaat{% elif lang == 'ru' %}Обращение{% else %}Get in touch{% endif %}
-      </div>
+      {# <div class="section-label">
+        {% if lang == 'uz' %}Murojaat{% elif lang == 'ru' %}Обратитесь{% else %}Get in touch{% endif %}
+      </div> #}
       <h2 class="section-title">
-        {% if lang == 'uz' %}Biz bilan bog'laning{% elif lang == 'ru' %}Свяжитесь с нами{% else %}Contact Us{% endif %}
+        {% if lang == 'uz' %}Biz bilan bog'laning{% elif lang == 'ru' %}Р РЋР Р†РЎРЏР В¶Р С‘РЎвЂљР ВµРЎРѓРЎРЉ РЎРѓ Р Р…Р В°Р СР С‘{% else %}Contact Us{% endif %}
       </h2>
     </div>
 
@@ -561,8 +597,8 @@
         <form method="POST" action="/contact/submit/" class="contact-form" id="contactForm">
           {% csrf_token %}
           <div class="form-group">
-            <label>{% if lang == 'uz' %}Ismingiz{% elif lang == 'ru' %}Ваше имя{% else %}Your Name{% endif %} *</label>
-            <input type="text" name="name" required placeholder="{% if lang == 'uz' %}Ism Familiya{% elif lang == 'ru' %}Имя Фамилия{% else %}Full Name{% endif %}"/>
+            <label>{% if lang == 'uz' %}Ismingiz{% elif lang == 'ru' %}Р вЂ™Р В°РЎв‚¬Р Вµ Р С‘Р СРЎРЏ{% else %}Your Name{% endif %} *</label>
+            <input type="text" name="name" required placeholder="{% if lang == 'uz' %}Ism Familiya{% elif lang == 'ru' %}Р ВР СРЎРЏ Р В¤Р В°Р СР С‘Р В»Р С‘РЎРЏ{% else %}Full Name{% endif %}"/>
           </div>
           <div class="form-row">
             <div class="form-group">
@@ -584,7 +620,7 @@
           </button>
           <div class="form-success" id="formSuccess" style="display:none;">
             <i class="bi bi-check-circle-fill"></i>
-            {% if lang == 'uz' %}Xabar yuborildi! Tez orada bog'lanamiz.{% elif lang == 'ru' %}Сообщение отправлено! Свяжемся с вами скоро.{% else %}Message sent! We'll contact you soon.{% endif %}
+            {% if lang == 'uz' %}Xabar yuborildi! Tez orada bog'lanamiz.{% elif lang == 'ru' %}Р РЋР С•Р С•Р В±РЎвЂ°Р ВµР Р…Р С‘Р Вµ Р С•РЎвЂљР С—РЎР‚Р В°Р Р†Р В»Р ВµР Р…Р С•! Р РЋР Р†РЎРЏР В¶Р ВµР СРЎРѓРЎРЏ РЎРѓ Р Р†Р В°Р СР С‘ РЎРѓР С”Р С•РЎР‚Р С•.{% else %}Message sent! We'll contact you soon.{% endif %}
           </div>
         </form>
       </div>
@@ -613,7 +649,7 @@
           {% endif %}
           <span class="site-name" style="color: var(--text);">
             {% if lang == 'ru' %}
-               АО O'ZENERGOTA'MINLASH
+               Р С’Р С› O'ZENERGOTA'MINLASH
             {% elif lang == 'en' %}
               JSC O'ZENERGOTA'MINLASH
             {% else %}
@@ -622,7 +658,7 @@
           </span>
         </a>
         <p>
-          {% if lang == 'uz' %}O'zbekistonda energetika uskunalarini yetkazib berish bo'yicha ishonchli hamkor{% elif lang == 'ru' %}Надёжный партнёр по поставке энергетического оборудования в Узбекистане{% else %}Reliable partner for energy equipment supply in Uzbekistan{% endif %}
+          {% if lang == 'uz' %}O'zbekistonda energetika uskunalarini yetkazib berish bo'yicha ishonchli hamkor{% elif lang == 'ru' %}Р СњР В°Р Т‘РЎвЂР В¶Р Р…РЎвЂ№Р в„– Р С—Р В°РЎР‚РЎвЂљР Р…РЎвЂРЎР‚ Р С—Р С• Р С—Р С•РЎРѓРЎвЂљР В°Р Р†Р С”Р Вµ РЎРЊР Р…Р ВµРЎР‚Р С–Р ВµРЎвЂљР С‘РЎвЂЎР ВµРЎРѓР С”Р С•Р С–Р С• Р С•Р В±Р С•РЎР‚РЎС“Р Т‘Р С•Р Р†Р В°Р Р…Р С‘РЎРЏ Р Р† Р Р€Р В·Р В±Р ВµР С”Р С‘РЎРѓРЎвЂљР В°Р Р…Р Вµ{% else %}Reliable partner for energy equipment supply in Uzbekistan{% endif %}
         </p>
         <div class="social-links">
           {% if settings %}
@@ -674,7 +710,7 @@
 <script src="/static/js/main.js"></script>
 
 <!-- ===================== SEARCH MODAL ===================== -->
-<div class="search-modal" id="searchModal" role="dialog" aria-modal="true" aria-label="{% if lang == 'uz' %}Qidiruv{% elif lang == 'ru' %}Поиск{% else %}Search{% endif %}">
+<div class="search-modal" id="searchModal" role="dialog" aria-modal="true" aria-label="{% if lang == 'uz' %}Qidiruv{% elif lang == 'ru' %}Р СџР С•Р С‘РЎРѓР С”{% else %}Search{% endif %}">
   <div class="search-backdrop" id="searchBackdrop"></div>
   <div class="search-container">
 
@@ -709,14 +745,14 @@
             <div class="search-tip-icon"><i class="bi bi-grid-fill"></i></div>
             <div class="search-tip-text">
               <strong>{% if lang == 'uz' %}Katalog{% elif lang == 'ru' %}Каталог{% else %}Catalog{% endif %}</strong>
-              <span>{% if lang == 'uz' %}Mahsulotlar{% elif lang == 'ru' %}Продукция{% else %}Products{% endif %}</span>
+              <span>{% if lang == 'uz' %}Mahsulotlar{% elif lang == 'ru' %}Товары{% else %}Products{% endif %}</span>
             </div>
           </div>
           <div class="search-tip-card" data-section="xizmatlar">
             <div class="search-tip-icon"><i class="bi bi-tools"></i></div>
             <div class="search-tip-text">
-              <strong>{% if lang == 'uz' %}Xizmatlar{% elif lang == 'ru' %}Услуги{% else %}Services{% endif %}</strong>
-              <span>{% if lang == 'uz' %}Kompaniya xizmatlari{% elif lang == 'ru' %}Услуги компании{% else %}Company services{% endif %}</span>
+              <strong>{% if lang == 'uz' %}Xizmatlar{% elif lang == 'ru' %}Р Р€РЎРѓР В»РЎС“Р С–Р С‘{% else %}Services{% endif %}</strong>
+              <span>{% if lang == 'uz' %}Kompaniya xizmatlari{% elif lang == 'ru' %}Р Р€РЎРѓР В»РЎС“Р С–Р С‘ Р С”Р С•Р СР С—Р В°Р Р…Р С‘Р С‘{% else %}Company services{% endif %}</span>
             </div>
           </div>
           <div class="search-tip-card" data-section="yangiliklar">
@@ -729,8 +765,8 @@
           <div class="search-tip-card" data-section="haqimizda">
             <div class="search-tip-icon"><i class="bi bi-building-fill-gear"></i></div>
             <div class="search-tip-text">
-              <strong>{% if lang == 'uz' %}Kompaniya{% elif lang == 'ru' %}Компания{% else %}Company{% endif %}</strong>
-              <span>{% if lang == 'uz' %}Biz haqimizda{% elif lang == 'ru' %}О нас{% else %}About us{% endif %}</span>
+              <strong>{% if lang == 'uz' %}Kompaniya{% elif lang == 'ru' %}Р С™Р С•Р СР С—Р В°Р Р…Р С‘РЎРЏ{% else %}Company{% endif %}</strong>
+              <span>{% if lang == 'uz' %}Biz haqimizda{% elif lang == 'ru' %}Р С› Р Р…Р В°РЎРѓ{% else %}About us{% endif %}</span>
             </div>
           </div>
         </div>
@@ -742,7 +778,7 @@
       <!-- Empty state -->
       <div class="search-empty" id="searchEmpty" style="display:none;">
         <i class="bi bi-search search-empty-icon"></i>
-        <p>{% if lang == 'uz' %}Natija topilmadi{% elif lang == 'ru' %}Ничего не найдено{% else %}No results found{% endif %}</p>
+        <p>{% if lang == 'uz' %}Natija topilmadi{% elif lang == 'ru' %}Результаты не найдены{% else %}No results found{% endif %}</p>
         <small>{% if lang == 'uz' %}Boshqa kalit so'z bilan urinib ko'ring{% elif lang == 'ru' %}Попробуйте другое ключевое слово{% else %}Try a different keyword{% endif %}</small>
       </div>
 
@@ -750,9 +786,9 @@
 
     <!-- Footer shortcuts -->
     <div class="search-footer">
-      <span class="search-footer-item"><kbd>↑</kbd><kbd>↓</kbd> {% if lang == 'uz' %}harakat{% elif lang == 'ru' %}навигация{% else %}navigate{% endif %}</span>
-      <span class="search-footer-item"><kbd>Enter</kbd> {% if lang == 'uz' %}o'tish{% elif lang == 'ru' %}перейти{% else %}go{% endif %}</span>
-      <span class="search-footer-item"><kbd>ESC</kbd> {% if lang == 'uz' %}yopish{% elif lang == 'ru' %}закрыть{% else %}close{% endif %}</span>
+      <span class="search-footer-item"><kbd>РІвЂ вЂ</kbd><kbd>РІвЂ вЂњ</kbd> {% if lang == 'uz' %}harakat{% elif lang == 'ru' %}Р Р…Р В°Р Р†Р С‘Р С–Р В°РЎвЂ Р С‘РЎРЏ{% else %}navigate{% endif %}</span>
+      <span class="search-footer-item"><kbd>Enter</kbd> {% if lang == 'uz' %}o'tish{% elif lang == 'ru' %}Р С—Р ВµРЎР‚Р ВµР в„–РЎвЂљР С‘{% else %}go{% endif %}</span>
+      <span class="search-footer-item"><kbd>ESC</kbd> {% if lang == 'uz' %}yopish{% elif lang == 'ru' %}Р В·Р В°Р С”РЎР‚РЎвЂ№РЎвЂљРЎРЉ{% else %}close{% endif %}</span>
     </div>
 
   </div><!-- /search-container -->
@@ -760,3 +796,5 @@
 
 </body>
 </html>
+
+
