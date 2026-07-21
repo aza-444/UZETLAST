@@ -180,6 +180,21 @@ document.addEventListener('DOMContentLoaded', function () {
     const saveData = !!(navigator.connection && navigator.connection.saveData);
     const slowNet = !!(navigator.connection && /2g/.test(navigator.connection.effectiveType || ''));
 
+    // Floating particles
+    const particlesEl = document.getElementById('particles');
+    if (particlesEl && !reduceMotion) {
+      const count = window.innerWidth < 768 ? 18 : 36;
+      for (let i = 0; i < count; i++) {
+        const p = document.createElement('span');
+        p.className = 'particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.animationDuration = (6 + Math.random() * 10) + 's';
+        p.style.animationDelay = (Math.random() * 8) + 's';
+        p.style.width = p.style.height = (1.5 + Math.random() * 2.5) + 'px';
+        particlesEl.appendChild(p);
+      }
+    }
+
     // --- Canvas energy plexus (zero download, wind-farm / smart-grid style) ---
     if (canvas && !reduceMotion) {
       const ctx = canvas.getContext('2d', { alpha: true });
@@ -188,28 +203,37 @@ document.addEventListener('DOMContentLoaded', function () {
 
       function themeColors() {
         const light = document.documentElement.getAttribute('data-theme') === 'light';
+        const styles = getComputedStyle(document.documentElement);
+        const primary = (styles.getPropertyValue('--primary') || '#e8910c').trim() || '#e8910c';
+        const accent = (styles.getPropertyValue('--accent') || '#0284c7').trim() || '#0284c7';
+        const hexToRgba = (hex, a) => {
+          const h = hex.replace('#', '');
+          if (h.length !== 6) return light ? `rgba(245,158,11,${a})` : `rgba(245,158,11,${a})`;
+          const n = parseInt(h, 16);
+          return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
+        };
         return light
           ? {
-              line: 'rgba(245,158,11,0.38)',
-              lineHi: 'rgba(56,189,248,0.3)',
-              node: 'rgba(255,193,7,0.95)',
-              nodeGlow: 'rgba(245,158,11,0.5)',
-              spark: '#fbbf24',
-              spark2: '#38bdf8',
-              scan: 'rgba(56,189,248,0.06)',
+              line: hexToRgba(primary, 0.38),
+              lineHi: hexToRgba(accent, 0.3),
+              node: hexToRgba(primary, 0.95),
+              nodeGlow: hexToRgba(primary, 0.5),
+              spark: primary,
+              spark2: accent,
+              scan: hexToRgba(accent, 0.06),
               glowMul: 5,
               ambScale: 1,
               nodeAlpha: 1,
               sparkR: 14,
             }
           : {
-              line: 'rgba(245,158,11,0.32)',
-              lineHi: 'rgba(56,189,248,0.26)',
-              node: 'rgba(255,193,7,0.95)',
-              nodeGlow: 'rgba(245,158,11,0.45)',
-              spark: '#fbbf24',
-              spark2: '#38bdf8',
-              scan: 'rgba(56,189,248,0.05)',
+              line: hexToRgba(primary, 0.32),
+              lineHi: hexToRgba(accent, 0.26),
+              node: hexToRgba(primary, 0.95),
+              nodeGlow: hexToRgba(primary, 0.45),
+              spark: primary,
+              spark2: accent,
+              scan: hexToRgba(accent, 0.05),
               glowMul: 5,
               ambScale: 1,
               nodeAlpha: 1,

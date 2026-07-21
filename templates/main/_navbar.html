@@ -57,13 +57,8 @@
       <a href="{% if is_subpage %}/{% else %}#bosh-sahifa{% endif %}" class="nav-logo">
         {% if settings and settings.logo %}
         <img src="{{ settings.logo.url }}" alt="Logo" class="logo-img" />
-        {%endif %}
-        <span class="site-name">
-          {% if lang == 'ru' %}АО O'ZENERGOTA'MINLASH
-          {% elif lang == 'en' %}JSC O'ZENERGOTA'MINLASH
-          {% else %}O'ZENERGOTA'MINLASH<br><span>AKSIYADORLIK JAMIYATI</span>
-          {% endif %}
-        </span>
+        {% endif %}
+        <span class="site-name">{% include 'main/_brand_name.html' %}</span>
       </a>
 
       <ul class="nav-links" id="navLinks">

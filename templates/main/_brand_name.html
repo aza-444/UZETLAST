@@ -1,0 +1,12 @@
+{% comment %}Kompaniya nomi + tagline (admin orqali){% endcomment %}
+{% if settings %}
+  {% if lang == 'ru' %}
+    {{ settings.company_name_ru|default:"АО O'ZENERGOTA'MINLASH" }}{% if settings.company_tagline_ru %}<br><span>{{ settings.company_tagline_ru }}</span>{% endif %}
+  {% elif lang == 'en' %}
+    {{ settings.company_name_en|default:"JSC O'ZENERGOTA'MINLASH" }}{% if settings.company_tagline_en %}<br><span>{{ settings.company_tagline_en }}</span>{% endif %}
+  {% else %}
+    {{ settings.company_name_uz|default:"O'ZENERGOTA'MINLASH" }}{% if settings.company_tagline_uz %}<br><span>{{ settings.company_tagline_uz }}</span>{% endif %}
+  {% endif %}
+{% else %}
+  {% if lang == 'ru' %}АО O'ZENERGOTA'MINLASH{% elif lang == 'en' %}JSC O'ZENERGOTA'MINLASH{% else %}O'ZENERGOTA'MINLASH<br><span>AKSIYADORLIK JAMIYATI</span>{% endif %}
+{% endif %}

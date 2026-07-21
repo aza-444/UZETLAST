@@ -1,0 +1,8 @@
+{% comment %}Footer qisqa tavsif (admin orqali){% endcomment %}
+{% if settings %}
+  {% if lang == 'ru' %}{{ settings.footer_text_ru|default:settings.footer_text_uz }}
+  {% elif lang == 'en' %}{{ settings.footer_text_en|default:settings.footer_text_uz }}
+  {% else %}{{ settings.footer_text_uz }}{% endif %}
+{% else %}
+  {% if lang == 'uz' %}O'zbekistonda energetika uskunalarini yetkazib berish bo'yicha ishonchli hamkor{% elif lang == 'ru' %}Надёжный партнёр по поставке энергетического оборудования в Узбекистане{% else %}Reliable partner for energy equipment supply in Uzbekistan{% endif %}
+{% endif %}

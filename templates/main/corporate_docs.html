@@ -17,7 +17,7 @@
   {% endif %}
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"/>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css"/>
   <link rel="stylesheet" href="/static/css/style.css"/>
@@ -374,12 +374,10 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <a href="/" style="display:flex;align-items:center;gap:10px;margin-bottom:16px;text-decoration:none;">
-          {% if settings.logo %}<img src="{{ settings.logo.url }}" alt="Logo" class="footer-logo-img" style="margin-bottom:0;"/>{% endif %}
-          <span class="site-name" style="color:var(--text);">
-            {% if lang == 'ru' %}АО O'ZENERGOTA'MINLASH{% elif lang == 'en' %}JSC O'ZENERGOTA'MINLASH{% else %}O'ZENERGOTA'MINLASH<br><span>AKSIYADORLIK JAMIYATI</span>{% endif %}
-          </span>
+          {% if settings and settings.logo %}<img src="{{ settings.logo.url }}" alt="Logo" class="footer-logo-img" style="margin-bottom:0;"/>{% endif %}
+          <span class="site-name" style="color:var(--text);">{% include 'main/_brand_name.html' %}</span>
         </a>
-        <p>{% if lang == 'uz' %}O'zbekistonda energetika uskunalarini yetkazib berish bo'yicha ishonchli hamkor{% elif lang == 'ru' %}Надёжный партнёр по поставке энергетического оборудования в Узбекистане{% else %}Reliable partner for energy equipment supply in Uzbekistan{% endif %}</p>
+        <p>{% include 'main/_footer_text.html' %}</p>
       </div>
       <div class="footer-links">
         <h4>{% if lang == 'uz' %}Havolalar{% elif lang == 'ru' %}Ссылки{% else %}Links{% endif %}</h4>
@@ -391,7 +389,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <p>© {% now "Y" %} O'zenergota'minlash. {% if lang == 'uz' %}Barcha huquqlar himoyalangan{% elif lang == 'ru' %}Все права защищены{% else %}All rights reserved{% endif %}.</p>
+      <p>© {% now "Y" %} {% if settings %}{{ settings.company_name_uz|default:"O'zenergota'minlash" }}{% else %}O'zenergota'minlash{% endif %}. {% if lang == 'uz' %}Barcha huquqlar himoyalangan{% elif lang == 'ru' %}Все права защищены{% else %}All rights reserved{% endif %}.</p>
       <p><a href="/sitemap.xml">Sitemap</a> | <a href="/admin/">Admin</a></p>
     </div>
   </div>

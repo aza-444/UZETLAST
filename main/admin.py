@@ -75,7 +75,7 @@ class SiteSettingsAdmin(admin.ModelAdmin):
             'fields': ('telegram', 'instagram', 'facebook', 'youtube')
         }),
         ('🔍 SEO — O\'zbek', {
-            'fields': ('meta_description_uz',)
+            'fields': ('meta_title_uz', 'meta_description_uz',)
         }),
         ('🔍 SEO — Русский', {
             'classes': ('collapse',),
@@ -91,10 +91,23 @@ class SiteSettingsAdmin(admin.ModelAdmin):
         ('🖼️ Logo va Favicon', {
             'fields': ('logo', 'favicon')
         }),
+        ('🏢 Kompaniya brendi', {
+            'description': 'Navbar va footerda ko\'rinadigan kompaniya nomi va tagline. Bo\'sh qoldirilsa default qiymat ishlatiladi.',
+            'fields': (
+                'company_name_uz', 'company_tagline_uz',
+                'company_name_ru', 'company_tagline_ru',
+                'company_name_en', 'company_tagline_en',
+            )
+        }),
+        ('📝 Footer matni', {
+            'description': 'Footer ostidagi qisqa kompaniya tavsifi (3 tilda).',
+            'fields': ('footer_text_uz', 'footer_text_ru', 'footer_text_en')
+        }),
         ('🎨 Tema Ranglari — To\'liq boshqaruv', {
             'description': (
                 'Har bir rang maydoniga bosib color picker orqali rang tanlang. '
-                'Saqlash tugmasini bosgach saytda darhol aks etadi.<br>'
+                'Saqlash tugmasini bosgach saytda darhol aks etadi. '
+                'Primary va Accent ranglar dark/light rejimlarda brand sifatida ishlaydi.<br>'
                 '<strong>Tavsiya etilgan Premium ranglar:</strong> '
                 + ' '.join(
                     f'<span title="{name}" style="display:inline-block;width:20px;height:20px;'
@@ -111,6 +124,9 @@ class SiteSettingsAdmin(admin.ModelAdmin):
             )
         }),
     )
+
+    list_display = ('__str__', 'color_swatches', 'phone_1', 'email')
+    readonly_fields = ()
 
     def has_add_permission(self, request):
         return not SiteSettings.objects.exists()
@@ -136,7 +152,6 @@ class SiteSettingsAdmin(admin.ModelAdmin):
         return format_html(html)
 
     color_swatches.short_description = "Ranglar"
-    color_swatches.allow_tags = True
 
 
 @admin.register(HeroSection)
@@ -144,15 +159,15 @@ class HeroSectionAdmin(admin.ModelAdmin):
     list_display = ('title_uz', 'is_active')
     fieldsets = (
         ('🇺🇿 O\'zbek tili', {
-            'fields': ('title_uz', 'subtitle_uz', 'btn_catalog_uz', 'btn_contact_uz')
+            'fields': ('title_uz', 'subtitle_uz', 'badge_uz', 'btn_catalog_uz', 'btn_contact_uz')
         }),
         ('🇷🇺 Русский язык', {
             'classes': ('collapse',),
-            'fields': ('title_ru', 'subtitle_ru', 'btn_catalog_ru', 'btn_contact_ru')
+            'fields': ('title_ru', 'subtitle_ru', 'badge_ru', 'btn_catalog_ru', 'btn_contact_ru')
         }),
         ('🇬🇧 English', {
             'classes': ('collapse',),
-            'fields': ('title_en', 'subtitle_en', 'btn_catalog_en', 'btn_contact_en')
+            'fields': ('title_en', 'subtitle_en', 'badge_en', 'btn_catalog_en', 'btn_contact_en')
         }),
         ('🖼️ Fon / Video', {
             'fields': (

@@ -40,6 +40,7 @@ class SiteSettings(models.Model):
     text_color = models.CharField(max_length=7, default='#0b1220', help_text='Asosiy matn rangi (hex)', verbose_name='Text Color')
     text_secondary_color = models.CharField(max_length=7, default='#3d4f66', help_text='Ikkinchi darajali matn rangi (hex)', verbose_name='Secondary Text Color')
     border_color = models.CharField(max_length=40, default='rgba(15,35,60,0.1)', help_text='Chegara rangi — rgba yoki hex (masalan: rgba(0,0,0,0.1))', verbose_name='Chegara rangi')
+    meta_title_uz = models.CharField(max_length=200, blank=True, verbose_name="Meta Title (UZ)")
     meta_title_ru = models.CharField(max_length=200, blank=True, verbose_name="Meta Title (RU)")
     meta_title_en = models.CharField(max_length=200, blank=True, verbose_name="Meta Title (EN)")
     meta_description_uz = models.TextField(blank=True, verbose_name="Meta Description (UZ)")
@@ -55,6 +56,47 @@ class SiteSettings(models.Model):
     logo = models.ImageField(upload_to='settings/', blank=True, verbose_name="Logo")
     favicon = models.ImageField(upload_to='settings/', blank=True, verbose_name="Favicon")
 
+    # Brand / company name (navbar & footer)
+    company_name_uz = models.CharField(
+        max_length=200, blank=True, default="O'ZENERGOTA'MINLASH",
+        verbose_name="Kompaniya nomi (UZ)"
+    )
+    company_name_ru = models.CharField(
+        max_length=200, blank=True, default="АО O'ZENERGOTA'MINLASH",
+        verbose_name="Kompaniya nomi (RU)"
+    )
+    company_name_en = models.CharField(
+        max_length=200, blank=True, default="JSC O'ZENERGOTA'MINLASH",
+        verbose_name="Company name (EN)"
+    )
+    company_tagline_uz = models.CharField(
+        max_length=200, blank=True, default="AKSIYADORLIK JAMIYATI",
+        verbose_name="Tagline (UZ)"
+    )
+    company_tagline_ru = models.CharField(
+        max_length=200, blank=True, default="АКЦИОНЕРНОЕ ОБЩЕСТВО",
+        verbose_name="Tagline (RU)"
+    )
+    company_tagline_en = models.CharField(
+        max_length=200, blank=True, default="JOINT STOCK COMPANY",
+        verbose_name="Tagline (EN)"
+    )
+    footer_text_uz = models.TextField(
+        blank=True,
+        default="O'zbekistonda energetika uskunalarini yetkazib berish bo'yicha ishonchli hamkor",
+        verbose_name="Footer matni (UZ)"
+    )
+    footer_text_ru = models.TextField(
+        blank=True,
+        default="Надёжный партнёр по поставке энергетического оборудования в Узбекистане",
+        verbose_name="Footer matni (RU)"
+    )
+    footer_text_en = models.TextField(
+        blank=True,
+        default="Reliable partner for energy equipment supply in Uzbekistan",
+        verbose_name="Footer text (EN)"
+    )
+
     class Meta:
         verbose_name = "Sayt sozlamalari"
         verbose_name_plural = "Sayt sozlamalari"
@@ -67,14 +109,27 @@ class SiteSettings(models.Model):
         return val if val else self.address_uz
 
     def meta_title(self, lang='uz'):
-        # meta_title_uz maydoni yo'q — UZ uchun aniq fallback
+        val = getattr(self, f'meta_title_{lang}', '') or ''
+        if val:
+            return val
         if lang == 'uz':
             return "O'zenergota'minlash — Energetika uskunalari"
-        val = getattr(self, f'meta_title_{lang}', '') or ''
-        return val if val else (self.meta_title_ru or "O'zenergota'minlash")
+        return self.meta_title_ru or "O'zenergota'minlash"
 
     def meta_description(self, lang='uz'):
-        return getattr(self, f'meta_description_{lang}', self.meta_description_uz)
+        return getattr(self, f'meta_description_{lang}', self.meta_description_uz) or self.meta_description_uz
+
+    def company_name(self, lang='uz'):
+        val = getattr(self, f'company_name_{lang}', '') or ''
+        return val if val else (self.company_name_uz or "O'ZENERGOTA'MINLASH")
+
+    def company_tagline(self, lang='uz'):
+        val = getattr(self, f'company_tagline_{lang}', '') or ''
+        return val if val else (self.company_tagline_uz or '')
+
+    def footer_text(self, lang='uz'):
+        val = getattr(self, f'footer_text_{lang}', '') or ''
+        return val if val else (self.footer_text_uz or '')
 
 
 class HeroSection(models.Model):
@@ -94,6 +149,19 @@ class HeroSection(models.Model):
     btn_contact_uz = models.CharField(max_length=100, default="Bog'lanish", verbose_name="Bog'lanish tugmasi (UZ)")
     btn_contact_ru = models.CharField(max_length=100, default="Связаться", verbose_name="Bog'lanish tugmasi (RU)")
     btn_contact_en = models.CharField(max_length=100, default="Contact Us", verbose_name="Contact button (EN)")
+
+    badge_uz = models.CharField(
+        max_length=120, blank=True, default="Energetika uchun yechimlar",
+        verbose_name="Hero badge (UZ)"
+    )
+    badge_ru = models.CharField(
+        max_length=120, blank=True, default="Решения для энергетики",
+        verbose_name="Hero badge (RU)"
+    )
+    badge_en = models.CharField(
+        max_length=120, blank=True, default="Solutions for Energy",
+        verbose_name="Hero badge (EN)"
+    )
     
     background_image = models.ImageField(upload_to='hero/', blank=True, verbose_name="Fon rasmi (Asosiy/Qorong'i)")
     background_image_light = models.ImageField(upload_to='hero/', blank=True, verbose_name="Fon rasmi (Kunduzgi rejim)")
@@ -131,6 +199,10 @@ class HeroSection(models.Model):
 
     def btn_contact(self, lang='uz'):
         return getattr(self, f'btn_contact_{lang}', self.btn_contact_uz)
+
+    def badge(self, lang='uz'):
+        val = getattr(self, f'badge_{lang}', '') or ''
+        return val if val else (self.badge_uz or '')
 
 
 class AboutSection(models.Model):
