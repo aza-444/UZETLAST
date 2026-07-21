@@ -23,7 +23,8 @@
   --shadow: 0 4px 24px rgba(0,0,0,0.4);
   --shadow-glow: 0 0 30px rgba(245, 158, 11, 0.15);
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --navbar-h: 70px;
+  --navbar-h: 85px;
+  --bg-alt: #0d1220;
 }
 
 [data-theme="light"] {
@@ -31,6 +32,7 @@
   --bg-card: #ffffff;
   --bg-card-hover: #f1f5f9;
   --bg-section: #e2e8f0;
+  --bg-alt: #e2e8f0;
   --primary: #f59e0b;
   --primary-hover: #d97706;
   --primary-glow: rgba(245, 158, 11, 0.15);
@@ -46,7 +48,7 @@
   --shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
   --shadow-glow: 0 0 30px rgba(245, 158, 11, 0.2);
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --navbar-h: 70px;
+  --navbar-h: 85px;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -391,6 +393,8 @@ img { max-width: 100%; }
   padding: 3px;
 }
 
+.lang-switcher-mobile { display: none; }
+
 .lang-btn {
   padding: 4px 6px;
   font-size: 0.85rem;
@@ -517,10 +521,14 @@ img { max-width: 100%; }
 .hero-bg {
   position: absolute;
   inset: 0;
-  background-image: url('/static/img/hero-bg.jpg');
+  background-image: var(--bg-image-dark, url('/static/img/hero-bg.jpg'));
   background-size: cover;
   background-position: center;
   background-color: #060b18;
+}
+
+[data-theme="light"] .hero-bg {
+  background-image: var(--bg-image-light, var(--bg-image-dark, url('/static/img/hero-bg.jpg')));
 }
 
 .hero-overlay {
@@ -1430,6 +1438,9 @@ img { max-width: 100%; }
 }
 
 @media (max-width: 768px) {
+  .header-top-desktop { display: none; }
+  .lang-switcher-mobile { display: flex; }
+
   .about-grid, .contact-grid { grid-template-columns: 1fr; }
   .services-grid, .catalog-grid, .news-grid { grid-template-columns: 1fr; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1444,7 +1455,6 @@ img { max-width: 100%; }
 
 @media (max-width: 480px) {
   .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-  .lang-switcher { display: none; }
   .catalog-tabs { justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 8px; }
 }
 
@@ -1561,28 +1571,6 @@ nav-logo {
     opacity: 1;
     transform: translateX(0);
   }
-}
-
-/* ============================================================
-   LIGHT MODE VARIABLES
-   Clean Slate — Bright, clean, modern corporate (yorqin va toza)
-   ============================================================ */
-[data-theme="light"] {
-  --bg-dark: #f0fdf4;          /* Soft mint green (Green 50) */
-  --bg-card: #ffffff;          /* White cards */
-  --bg-card-hover: var(--bg-section);    /* Green 100 for hover */
-  --bg-section: var(--bg-section);       /* Green 100 for sections */
-  --primary: #f59e0b;          /* Keep amber primary */
-  --primary-hover: #d97706;    
-  --primary-glow: rgba(245, 158, 11, 0.15);
-  --text: #052e16;             /* Dark green text (Green 950) */
-  --text-secondary: #14532d;   /* Green 900 for secondary text */
-  --text-muted: #166534;       /* Green 800 for muted text */
-  --border: var(--border);
-  --border-hover: rgba(245, 158, 11, 0.4);
-  --shadow: 0 4px 20px var(--border);
-  --shadow-glow: 0 0 25px rgba(245, 158, 11, 0.2);
-  --bg-alt: var(--bg-section);           /* Green 200 for alt bg */
 }
 
 [data-theme="light"] body { background: var(--bg-dark); color: var(--text); }

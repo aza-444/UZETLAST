@@ -236,7 +236,7 @@
         <div class="section-label">
           {% if lang == 'uz' %}Biz haqimizda{% elif lang == 'ru' %}О нас{% else %}About Us{% endif %}
         </div>
-        <h2 class="sec tion-title">
+        <h2 class="section-title">
           {% if about %}
             {% if lang == 'uz' %}{{ about.title_uz }}{% elif lang == 'ru' %}{{ about.title_ru|default:about.title_uz }}{% else %}{{ about.title_en|default:about.title_uz }}{% endif %}
           {% else %}
@@ -330,7 +330,7 @@
 </section>
 
 <!-- ===================== SERVICES ===================== -->
-<section id="xizmatlar" class="section services-section" style="background-color: var(--bg-alt);">
+<section id="xizmatlar" class="section services-section">
   <div class="container">
     <div class="section-header" data-aos="fade-up">
       {# <div class="section-label">
@@ -416,72 +416,7 @@
 </section>
 
 <!-- ===================== PARTNERS ===================== -->
-<section id="hamkorlar" class="section partners-section" style="background-color: var(--bg-alt); overflow: hidden;">
-  <style>
-    .marquee-container {
-      width: 100%;
-      overflow: hidden;
-      white-space: nowrap;
-      position: relative;
-      margin-top: 40px;
-      padding: 20px 0;
-    }
-    .marquee-container::before, .marquee-container::after {
-      content: "";
-      position: absolute;
-      top: 0; height: 100%;
-      width: 150px;
-      z-index: 2;
-      pointer-events: none;
-    }
-    .marquee-container::before {
-      left: 0;
-      background: linear-gradient(to right, var(--bg-alt) 0%, transparent 100%);
-    }
-    .marquee-container::after {
-      right: 0;
-      background: linear-gradient(to left, var(--bg-alt) 0%, transparent 100%);
-    }
-    .marquee-content {
-      display: inline-flex;
-      gap: 30px;
-      animation: scroll-marquee 30s linear infinite;
-    }
-    .marquee-content:hover { animation-play-state: paused; }
-    @keyframes scroll-marquee {
-      0%   { transform: translateX(0); }
-      100% { transform: translateX(calc(-50% - 15px)); }
-    }
-    .partner-card {
-      background: #ffffff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.12);
-      transition: all 0.3s ease;
-      width: 180px;
-      height: 120px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      flex-shrink: 0;
-    }
-    .partner-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 28px rgba(0,0,0,0.22);
-    }
-    .partner-logo {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.22));
-      transition: transform 0.3s ease, filter 0.3s ease;
-    }
-    .partner-card:hover .partner-logo {
-      transform: scale(1.08);
-      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.32));
-    }
-  </style>
+<section id="hamkorlar" class="section partners-section">
 
   <div class="container">
     <div class="section-header" data-aos="fade-up">
