@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="{{ lang }}" data-theme="dark">
 <head>
   <meta charset="UTF-8"/>
@@ -7,8 +7,8 @@
     {% if lang == 'uz' %}{{ category.name_uz }}
     {% elif lang == 'ru' %}{{ category.name_ru|default:category.name_uz }}
     {% else %}{{ category.name_en|default:category.name_uz }}{% endif %}
-    — {% if current_year == 'arxiv' %}{% if lang == 'uz' %}Arxiv{% elif lang == 'ru' %}Архив{% else %}Archive{% endif %}{% else %}{{ current_year }}{% endif %}
-    — O'zenergota'minlash
+    вЂ” {% if current_year == 'arxiv' %}{% if lang == 'uz' %}Arxiv{% elif lang == 'ru' %}РђСЂС…РёРІ{% else %}Archive{% endif %}{% else %}{{ current_year }}{% endif %}
+    вЂ” O'zenergota'minlash
   </title>
   {% if settings and settings.favicon %}
   <link rel="icon" type="image/x-icon" href="{{ settings.favicon.url }}"/>
@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css"/>
   <link rel="stylesheet" href="/static/css/style.css"/>
   <style>
-    /* Page hero — dark theme */
+    /* Page hero вЂ” dark theme */
     .corp-page-hero {
       position: relative;
       padding: 140px 0 70px;
@@ -173,6 +173,32 @@
     }
     .corp-empty i { font-size: 3.5rem; display: block; margin-bottom: 16px; color: var(--primary); opacity: 0.3; }
   </style>
+{% if settings %}
+<style>
+/* ── Admin panel orqali boshqariladigan ranglar ── */
+[data-theme="light"] {
+  --primary:        {{ settings.primary_color }};
+  --primary-hover:  {{ settings.primary_color }};
+  --primary-glow:   {{ settings.primary_color }}33;
+  --accent:         {{ settings.accent_color }};
+  --accent-hover:   {{ settings.accent_color }};
+  --bg-dark:        {{ settings.bg_color }};
+  --bg-card:        {{ settings.bg_card_color }};
+  --bg-card-hover:  {{ settings.bg_card_color }};
+  --bg-section:     {{ settings.bg_section_color }};
+  --text:           {{ settings.text_color }};
+  --text-secondary: {{ settings.text_secondary_color }};
+  --border:         {{ settings.border_color }};
+  --border-hover:   {{ settings.primary_color }}66;
+  --shadow-glow:    0 0 30px {{ settings.primary_color }}33;
+}
+[data-theme="light"] .corp-page-title {
+  background: none !important;
+  -webkit-text-fill-color: var(--text) !important;
+  color: var(--text) !important;
+}
+</style>
+{% endif %}
 </head>
 <body>
 
@@ -182,9 +208,9 @@
 <section class="corp-page-hero">
   <div class="container corp-page-hero-content">
     <div class="corp-breadcrumb">
-      <a href="/"><i class="bi bi-house-fill"></i> {% if lang == 'uz' %}Bosh sahifa{% elif lang == 'ru' %}Главная{% else %}Home{% endif %}</a>
+      <a href="/"><i class="bi bi-house-fill"></i> {% if lang == 'uz' %}Bosh sahifa{% elif lang == 'ru' %}Р“Р»Р°РІРЅР°СЏ{% else %}Home{% endif %}</a>
       <i class="bi bi-chevron-right"></i>
-      <a href="/korporativ/">{% if lang == 'uz' %}Korporativ boshqaruv{% elif lang == 'ru' %}Корпоративное управление{% else %}Corporate Governance{% endif %}</a>
+      <a href="/korporativ/">{% if lang == 'uz' %}Korporativ boshqaruv{% elif lang == 'ru' %}РљРѕСЂРїРѕСЂР°С‚РёРІРЅРѕРµ СѓРїСЂР°РІР»РµРЅРёРµ{% else %}Corporate Governance{% endif %}</a>
       <i class="bi bi-chevron-right"></i>
       <span>{% if lang == 'uz' %}{{ category.name_uz }}{% elif lang == 'ru' %}{{ category.name_ru|default:category.name_uz }}{% else %}{{ category.name_en|default:category.name_uz }}{% endif %}</span>
     </div>
@@ -195,7 +221,7 @@
     </h1>
     <div class="corp-year-tag">
       <i class="bi bi-{% if current_year == 'arxiv' %}archive-fill{% else %}calendar-event{% endif %}"></i>
-      {% if current_year == 'arxiv' %}{% if lang == 'uz' %}Arxiv{% elif lang == 'ru' %}Архив{% else %}Archive{% endif %}{% else %}{{ current_year }}{% endif %}
+      {% if current_year == 'arxiv' %}{% if lang == 'uz' %}Arxiv{% elif lang == 'ru' %}РђСЂС…РёРІ{% else %}Archive{% endif %}{% else %}{{ current_year }}{% endif %}
     </div>
   </div>
 </section>
@@ -209,7 +235,7 @@
       <div class="corp-sidebar-card">
         <div class="corp-sidebar-head">
           <i class="bi bi-calendar3"></i>
-          {% if lang == 'uz' %}Yillar{% elif lang == 'ru' %}Годы{% else %}Years{% endif %}
+          {% if lang == 'uz' %}Yillar{% elif lang == 'ru' %}Р“РѕРґС‹{% else %}Years{% endif %}
         </div>
         <ul class="corp-sidebar-list">
           {% for year in years %}
@@ -226,7 +252,7 @@
             <a href="/korporativ/{{ category.slug }}/arxiv/"
                class="corp-sidebar-link {% if current_year == 'arxiv' %}active{% endif %}">
               <i class="bi bi-archive-fill"></i>
-              {% if lang == 'uz' %}Arxiv{% elif lang == 'ru' %}Архив{% else %}Archive{% endif %}
+              {% if lang == 'uz' %}Arxiv{% elif lang == 'ru' %}РђСЂС…РёРІ{% else %}Archive{% endif %}
             </a>
           </li>
           {% endif %}
@@ -235,7 +261,7 @@
         {% if categories_with_url %}
         <div class="corp-sidebar-divider" style="margin:8px 0;"></div>
         <div class="corp-sidebar-group-label">
-          {% if lang == 'uz' %}Boshqa bo'limlar{% elif lang == 'ru' %}Другие разделы{% else %}Other sections{% endif %}
+          {% if lang == 'uz' %}Boshqa bo'limlar{% elif lang == 'ru' %}Р”СЂСѓРіРёРµ СЂР°Р·РґРµР»С‹{% else %}Other sections{% endif %}
         </div>
         <ul class="corp-sidebar-list">
           {% for item in categories_with_url %}
@@ -253,7 +279,7 @@
       <div style="margin-top:16px;">
         <a href="/korporativ/" class="btn btn-outline" style="width:100%;justify-content:center;">
           <i class="bi bi-arrow-left"></i>
-          {% if lang == 'uz' %}Orqaga{% elif lang == 'ru' %}Назад{% else %}Back{% endif %}
+          {% if lang == 'uz' %}Orqaga{% elif lang == 'ru' %}РќР°Р·Р°Рґ{% else %}Back{% endif %}
         </a>
       </div>
     </aside>
@@ -263,11 +289,11 @@
       <div class="corp-docs-header">
         <h2 class="corp-docs-title">
           {% if lang == 'uz' %}{{ category.name_uz }}{% elif lang == 'ru' %}{{ category.name_ru|default:category.name_uz }}{% else %}{{ category.name_en|default:category.name_uz }}{% endif %}
-          —
-          {% if current_year == 'arxiv' %}{% if lang == 'uz' %}Arxiv{% elif lang == 'ru' %}Архив{% else %}Archive{% endif %}{% else %}{{ current_year }}{% endif %}
+          вЂ”
+          {% if current_year == 'arxiv' %}{% if lang == 'uz' %}Arxiv{% elif lang == 'ru' %}РђСЂС…РёРІ{% else %}Archive{% endif %}{% else %}{{ current_year }}{% endif %}
         </h2>
         <div class="corp-docs-meta">
-          <span><i class="bi bi-file-earmark-fill"></i> {{ documents|length }} {% if lang == 'uz' %}ta hujjat{% elif lang == 'ru' %}документ(ов){% else %}document(s){% endif %}</span>
+          <span><i class="bi bi-file-earmark-fill"></i> {{ documents|length }} {% if lang == 'uz' %}ta hujjat{% elif lang == 'ru' %}РґРѕРєСѓРјРµРЅС‚(РѕРІ){% else %}document(s){% endif %}</span>
         </div>
       </div>
 
@@ -302,9 +328,9 @@
       <div class="corp-empty" data-aos="fade-up">
         <i class="bi bi-file-earmark-x"></i>
         <h3 style="margin-bottom:8px;color:var(--text);">
-          {% if lang == 'uz' %}Hujjatlar yo'q{% elif lang == 'ru' %}Нет документов{% else %}No documents{% endif %}
+          {% if lang == 'uz' %}Hujjatlar yo'q{% elif lang == 'ru' %}РќРµС‚ РґРѕРєСѓРјРµРЅС‚РѕРІ{% else %}No documents{% endif %}
         </h3>
-        <p>{% if lang == 'uz' %}Bu bo'limda hali hujjatlar qo'shilmagan{% elif lang == 'ru' %}В этом разделе документы ещё не добавлены{% else %}No documents have been added to this section yet{% endif %}</p>
+        <p>{% if lang == 'uz' %}Bu bo'limda hali hujjatlar qo'shilmagan{% elif lang == 'ru' %}Р’ СЌС‚РѕРј СЂР°Р·РґРµР»Рµ РґРѕРєСѓРјРµРЅС‚С‹ РµС‰С‘ РЅРµ РґРѕР±Р°РІР»РµРЅС‹{% else %}No documents have been added to this section yet{% endif %}</p>
       </div>
       {% endif %}
     </main>
@@ -319,22 +345,22 @@
         <a href="/" style="display:flex;align-items:center;gap:10px;margin-bottom:16px;text-decoration:none;">
           {% if settings.logo %}<img src="{{ settings.logo.url }}" alt="Logo" class="footer-logo-img" style="margin-bottom:0;"/>{% endif %}
           <span class="site-name" style="color:var(--text);">
-            {% if lang == 'ru' %}АО O'ZENERGOTA'MINLASH{% elif lang == 'en' %}JSC O'ZENERGOTA'MINLASH{% else %}O'ZENERGOTA'MINLASH<br><span>AKSIYADORLIK JAMIYATI</span>{% endif %}
+            {% if lang == 'ru' %}РђРћ O'ZENERGOTA'MINLASH{% elif lang == 'en' %}JSC O'ZENERGOTA'MINLASH{% else %}O'ZENERGOTA'MINLASH<br><span>AKSIYADORLIK JAMIYATI</span>{% endif %}
           </span>
         </a>
-        <p>{% if lang == 'uz' %}O'zbekistonda energetika uskunalarini yetkazib berish bo'yicha ishonchli hamkor{% elif lang == 'ru' %}Надёжный партнёр по поставке энергетического оборудования в Узбекистане{% else %}Reliable partner for energy equipment supply in Uzbekistan{% endif %}</p>
+        <p>{% if lang == 'uz' %}O'zbekistonda energetika uskunalarini yetkazib berish bo'yicha ishonchli hamkor{% elif lang == 'ru' %}РќР°РґС‘Р¶РЅС‹Р№ РїР°СЂС‚РЅС‘СЂ РїРѕ РїРѕСЃС‚Р°РІРєРµ СЌРЅРµСЂРіРµС‚РёС‡РµСЃРєРѕРіРѕ РѕР±РѕСЂСѓРґРѕРІР°РЅРёСЏ РІ РЈР·Р±РµРєРёСЃС‚Р°РЅРµ{% else %}Reliable partner for energy equipment supply in Uzbekistan{% endif %}</p>
       </div>
       <div class="footer-links">
-        <h4>{% if lang == 'uz' %}Havolalar{% elif lang == 'ru' %}Ссылки{% else %}Links{% endif %}</h4>
+        <h4>{% if lang == 'uz' %}Havolalar{% elif lang == 'ru' %}РЎСЃС‹Р»РєРё{% else %}Links{% endif %}</h4>
         <ul>{% for anchor, label in menu_items %}<li>{% if anchor == 'korporativ' %}<a href="/korporativ/">{{ label }}</a>{% else %}<a href="/#{{ anchor }}">{{ label }}</a>{% endif %}</li>{% endfor %}</ul>
       </div>
       <div class="footer-contact">
-        <h4>{% if lang == 'uz' %}Aloqa{% elif lang == 'ru' %}Контакты{% else %}Contact{% endif %}</h4>
+        <h4>{% if lang == 'uz' %}Aloqa{% elif lang == 'ru' %}РљРѕРЅС‚Р°РєС‚С‹{% else %}Contact{% endif %}</h4>
         {% if settings %}{% if settings.phone_1 %}<p><i class="bi bi-telephone"></i> <a href="tel:{{ settings.phone_1 }}">{{ settings.phone_1 }}</a></p>{% endif %}{% if settings.email %}<p><i class="bi bi-envelope"></i> <a href="mailto:{{ settings.email }}">{{ settings.email }}</a></p>{% endif %}{% endif %}
       </div>
     </div>
     <div class="footer-bottom">
-      <p>© {% now "Y" %} O'zenergota'minlash. {% if lang == 'uz' %}Barcha huquqlar himoyalangan{% elif lang == 'ru' %}Все права защищены{% else %}All rights reserved{% endif %}.</p>
+      <p>В© {% now "Y" %} O'zenergota'minlash. {% if lang == 'uz' %}Barcha huquqlar himoyalangan{% elif lang == 'ru' %}Р’СЃРµ РїСЂР°РІР° Р·Р°С‰РёС‰РµРЅС‹{% else %}All rights reserved{% endif %}.</p>
       <p><a href="/sitemap.xml">Sitemap</a> | <a href="/admin/">Admin</a></p>
     </div>
   </div>
@@ -344,3 +370,6 @@
 <script src="/static/js/main.js"></script>
 </body>
 </html>
+
+
+

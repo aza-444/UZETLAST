@@ -13,19 +13,24 @@ from .models import (
 #  Premium rang palitrasi (admin da ko'rinadigan swatches)
 # ─────────────────────────────────────────────────────────────
 PREMIUM_LIGHT_COLORS = [
-    # Primary (asosiy rang)
-    ("#f59e0b", "Amber Gold"),
-    ("#0ea5e9", "Sky Blue"),
-    ("#8b5cf6", "Violet"),
-    ("#10b981", "Emerald"),
-    ("#ef4444", "Rose Red"),
-    ("#f97316", "Orange"),
-    ("#06b6d4", "Cyan"),
-    ("#6366f1", "Indigo"),
-    ("#ec4899", "Pink"),
-    ("#14b8a6", "Teal"),
-    ("#84cc16", "Lime"),
-    ("#a855f7", "Purple"),
+    # Corporate & Industrial (ABB / Hitachi Energy inspired)
+    ("#ff000f", "ABB Red"),
+    ("#e60013", "Hitachi Red"),
+    ("#00549f", "Corporate Blue"),
+    ("#333333", "Industrial Gray"),
+    
+    # Backgrounds & Cards
+    ("#ffffff", "Pure White"),
+    ("#f4f4f4", "Light Gray (Cards)"),
+    ("#f8f9fa", "Very Light Gray (Sections)"),
+    ("#e2e8f0", "Slate Gray (Alternate)"),
+    
+    # Texts & Borders
+    ("#111111", "Deep Black (Text)"),
+    ("#212121", "Dark Charcoal (Text)"),
+    ("#555555", "Medium Gray (Secondary Text)"),
+    ("#e0e0e0", "Soft Border"),
+    ("#d1d5db", "Medium Border"),
 ]
 
 
@@ -150,7 +155,7 @@ class HeroSectionAdmin(admin.ModelAdmin):
             'fields': ('title_en', 'subtitle_en', 'btn_catalog_en', 'btn_contact_en')
         }),
         ('🖼️ Fon rasmi', {
-            'fields': ('background_image', 'is_active')
+            'fields': ('background_image', 'background_image_light', 'is_active')
         }),
     )
 

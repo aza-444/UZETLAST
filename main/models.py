@@ -32,14 +32,14 @@ class SiteSettings(models.Model):
     youtube = models.URLField(blank=True, verbose_name="YouTube")
     
     # Theme colors (editable via admin)
-    primary_color = models.CharField(max_length=7, default='#f59e0b', help_text='Asosiy brand rangi (hex)', verbose_name='Primary Color')
-    accent_color = models.CharField(max_length=7, default='#0ea5e9', help_text='Ikkinchi darajali rang (hex)', verbose_name='Accent Color')
-    bg_color = models.CharField(max_length=7, default='#f8fafc', help_text='Sahifa umumiy foni (hex)', verbose_name='Sahifa foni')
-    bg_card_color = models.CharField(max_length=7, default='#ffffff', help_text='Karta/blok foni (hex)', verbose_name='Karta foni')
-    bg_section_color = models.CharField(max_length=7, default='#f1f5f9', help_text='Bo\'lim foni (alternativ, hex)', verbose_name='Bo\'lim foni')
-    text_color = models.CharField(max_length=7, default='#0f172a', help_text='Asosiy matn rangi (hex)', verbose_name='Text Color')
-    text_secondary_color = models.CharField(max_length=7, default='#475569', help_text='Ikkinchi darajali matn rangi (hex)', verbose_name='Secondary Text Color')
-    border_color = models.CharField(max_length=20, default='rgba(0,0,0,0.1)', help_text='Chegara rangi — rgba yoki hex (masalan: rgba(0,0,0,0.1))', verbose_name='Chegara rangi')
+    primary_color = models.CharField(max_length=7, default='#ff000f', help_text='Asosiy brand rangi (hex)', verbose_name='Primary Color')
+    accent_color = models.CharField(max_length=7, default='#cc0000', help_text='Ikkinchi darajali rang (hex)', verbose_name='Accent Color')
+    bg_color = models.CharField(max_length=7, default='#ffffff', help_text='Sahifa umumiy foni (hex)', verbose_name='Sahifa foni')
+    bg_card_color = models.CharField(max_length=7, default='#f4f4f4', help_text='Karta/blok foni (hex)', verbose_name='Karta foni')
+    bg_section_color = models.CharField(max_length=7, default='#f8f9fa', help_text='Bo\'lim foni (alternativ, hex)', verbose_name='Bo\'lim foni')
+    text_color = models.CharField(max_length=7, default='#111111', help_text='Asosiy matn rangi (hex)', verbose_name='Text Color')
+    text_secondary_color = models.CharField(max_length=7, default='#555555', help_text='Ikkinchi darajali matn rangi (hex)', verbose_name='Secondary Text Color')
+    border_color = models.CharField(max_length=20, default='#e0e0e0', help_text='Chegara rangi — rgba yoki hex (masalan: rgba(0,0,0,0.1))', verbose_name='Chegara rangi')
     meta_title_ru = models.CharField(max_length=200, blank=True, verbose_name="Meta Title (RU)")
     meta_title_en = models.CharField(max_length=200, blank=True, verbose_name="Meta Title (EN)")
     meta_description_uz = models.TextField(blank=True, verbose_name="Meta Description (UZ)")
@@ -90,7 +90,8 @@ class HeroSection(models.Model):
     btn_contact_ru = models.CharField(max_length=100, default="Связаться", verbose_name="Кнопка связи (RU)")
     btn_contact_en = models.CharField(max_length=100, default="Contact Us", verbose_name="Contact button (EN)")
     
-    background_image = models.ImageField(upload_to='hero/', blank=True, verbose_name="Fon rasmi")
+    background_image = models.ImageField(upload_to='hero/', blank=True, verbose_name="Fon rasmi (Asosiy/Qorong'i)")
+    background_image_light = models.ImageField(upload_to='hero/', blank=True, verbose_name="Fon rasmi (Kunduzgi rejim)")
     is_active = models.BooleanField(default=True, verbose_name="Faol")
 
     class Meta:

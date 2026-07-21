@@ -162,15 +162,26 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // ============================================================
-  //  PARTICLES
+  //  PARTICLES — Energy themed (dot / spark / ring)
   // ============================================================
   const pc = document.getElementById('particles');
   if (pc) {
-    for (let i = 0; i < 25; i++) {
+    const types = ['type-dot', 'type-spark', 'type-ring'];
+    const count = window.innerWidth < 768 ? 18 : 35;
+    for (let i = 0; i < count; i++) {
       const p = document.createElement('div');
-      p.className = 'particle';
-      const s = Math.random() * 3 + 1;
-      p.style.cssText = `left:${Math.random()*100}%;width:${s}px;height:${s}px;animation-duration:${Math.random()*15+10}s;animation-delay:${Math.random()*10}s;`;
+      const t = types[Math.floor(Math.random() * types.length)];
+      p.className = 'particle ' + t;
+      const dur = (Math.random() * 14 + 8).toFixed(1);
+      const delay = (Math.random() * 12).toFixed(1);
+      const left = (Math.random() * 100).toFixed(1);
+      const size = t === 'type-ring' ? (Math.random() * 6 + 6).toFixed(1)
+                 : t === 'type-spark' ? (Math.random() * 3 + 2).toFixed(1)
+                 : (Math.random() * 3 + 1.5).toFixed(1);
+      p.style.cssText = `left:${left}%;animation-duration:${dur}s;animation-delay:-${delay}s;`
+        + (t === 'type-dot' ? `width:${size}px;height:${size}px;` : '')
+        + (t === 'type-ring' ? `width:${size}px;height:${size}px;` : '')
+        + (t === 'type-spark' ? `width:${size}px;height:${parseFloat(size)*5}px;` : '');
       pc.appendChild(p);
     }
   }

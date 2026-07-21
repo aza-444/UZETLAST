@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="{{ lang }}" data-theme="dark">
 <head>
   <meta charset="UTF-8"/>
@@ -7,7 +7,7 @@
     {% if lang == 'uz' %}{{ doc.title_uz }}
     {% elif lang == 'ru' %}{{ doc.title_ru|default:doc.title_uz }}
     {% else %}{{ doc.title_en|default:doc.title_uz }}
-    {% endif %} — O'zenergota'minlash
+    {% endif %} вЂ” O'zenergota'minlash
   </title>
   {% if settings and settings.favicon %}
   <link rel="icon" type="image/x-icon" href="{{ settings.favicon.url }}"/>
@@ -125,6 +125,32 @@
       opacity: 0.5;
     }
   </style>
+{% if settings %}
+<style>
+/* ── Admin panel orqali boshqariladigan ranglar ── */
+[data-theme="light"] {
+  --primary:        {{ settings.primary_color }};
+  --primary-hover:  {{ settings.primary_color }};
+  --primary-glow:   {{ settings.primary_color }}33;
+  --accent:         {{ settings.accent_color }};
+  --accent-hover:   {{ settings.accent_color }};
+  --bg-dark:        {{ settings.bg_color }};
+  --bg-card:        {{ settings.bg_card_color }};
+  --bg-card-hover:  {{ settings.bg_card_color }};
+  --bg-section:     {{ settings.bg_section_color }};
+  --text:           {{ settings.text_color }};
+  --text-secondary: {{ settings.text_secondary_color }};
+  --border:         {{ settings.border_color }};
+  --border-hover:   {{ settings.primary_color }}66;
+  --shadow-glow:    0 0 30px {{ settings.primary_color }}33;
+}
+[data-theme="light"] .corp-page-title {
+  background: none !important;
+  -webkit-text-fill-color: var(--text) !important;
+  color: var(--text) !important;
+}
+</style>
+{% endif %}
 </head>
 <body>
 
@@ -138,11 +164,11 @@
     </div>
     <div class="doc-toolbar-actions">
       <a href="javascript:history.back()" class="btn-back">
-        <i class="bi bi-arrow-left"></i> {% if lang == 'uz' %}Orqaga{% elif lang == 'ru' %}Назад{% else %}Back{% endif %}
+        <i class="bi bi-arrow-left"></i> {% if lang == 'uz' %}Orqaga{% elif lang == 'ru' %}РќР°Р·Р°Рґ{% else %}Back{% endif %}
       </a>
       {% if file_exists %}
       <a href="{{ doc.file.url }}" class="btn-download" download>
-        <i class="bi bi-download"></i> {% if lang == 'uz' %}Yuklab olish{% elif lang == 'ru' %}Скачать{% else %}Download{% endif %}
+        <i class="bi bi-download"></i> {% if lang == 'uz' %}Yuklab olish{% elif lang == 'ru' %}РЎРєР°С‡Р°С‚СЊ{% else %}Download{% endif %}
       </a>
       {% endif %}
     </div>
@@ -157,8 +183,8 @@
     {% else %}
       <div class="doc-error">
         <i class="bi bi-file-earmark-x"></i>
-        <h3>{% if lang == 'uz' %}Hujjat topilmadi{% elif lang == 'ru' %}Документ не найден{% else %}Document not found{% endif %}</h3>
-        <p>{% if lang == 'uz' %}Kechirasiz, ushbu fayl serverda mavjud emas yoki o'chirilgan.{% elif lang == 'ru' %}Извините, этот файл не существует на сервере или был удален.{% else %}Sorry, this file does not exist on the server or has been deleted.{% endif %}</p>
+        <h3>{% if lang == 'uz' %}Hujjat topilmadi{% elif lang == 'ru' %}Р”РѕРєСѓРјРµРЅС‚ РЅРµ РЅР°Р№РґРµРЅ{% else %}Document not found{% endif %}</h3>
+        <p>{% if lang == 'uz' %}Kechirasiz, ushbu fayl serverda mavjud emas yoki o'chirilgan.{% elif lang == 'ru' %}РР·РІРёРЅРёС‚Рµ, СЌС‚РѕС‚ С„Р°Р№Р» РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚ РЅР° СЃРµСЂРІРµСЂРµ РёР»Рё Р±С‹Р» СѓРґР°Р»РµРЅ.{% else %}Sorry, this file does not exist on the server or has been deleted.{% endif %}</p>
       </div>
     {% endif %}
   </div>
@@ -167,3 +193,6 @@
 <script src="/static/js/main.js"></script>
 </body>
 </html>
+
+
+
