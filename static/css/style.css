@@ -672,7 +672,8 @@ img { max-width: 100%; }
   max-width: 900px;
   letter-spacing: -0.5px;
   white-space: pre-line;
-  color: var(--text) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
   text-shadow: none !important;
   position: relative;
 }
@@ -808,11 +809,11 @@ img { max-width: 100%; }
 }
 
 [data-theme="light"] .hero-title {
-  color: #0f172a !important;
-  text-shadow: none;
+  color: #ffffff !important;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.45) !important;
   background: none !important;
   -webkit-background-clip: unset !important;
-  -webkit-text-fill-color: #0f172a !important;
+  -webkit-text-fill-color: #ffffff !important;
   background-clip: unset !important;
 }
 
@@ -2569,8 +2570,9 @@ img { max-width: 100%; }
 }
 [data-theme="light"] .hero-title,
 [data-theme="light"] .hero-subtitle {
-  color: var(--text) !important;
-  text-shadow: none !important;
+  color: #ffffff !important;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.45) !important;
+  -webkit-text-fill-color: #ffffff !important;
 }
 [data-theme="light"] .hero-badge {
   background: var(--primary-glow);
@@ -2627,15 +2629,15 @@ img { max-width: 100%; }
 [data-theme="light"] .site-header:not(.scrolled):not(.is-subpage) .nav-link,
 [data-theme="light"] .site-header:not(.scrolled):not(.is-subpage) .lang-btn,
 [data-theme="light"] .site-header:not(.scrolled):not(.is-subpage) .nav-action-btn {
-  color: #1a2332 !important;
-  text-shadow: 0 1px 8px rgba(255,255,255,0.7) !important;
+  color: #ffffff !important;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.9), 0 0 16px rgba(0,0,0,0.6) !important;
 }
 [data-theme="light"] .site-header:not(.scrolled):not(.is-subpage) .site-name span {
-  color: #4a5a6e !important;
-  text-shadow: 0 1px 6px rgba(255,255,255,0.65) !important;
+  color: rgba(255,255,255,0.95) !important;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.8) !important;
 }
 [data-theme="light"] .site-header:not(.scrolled):not(.is-subpage) .nav-toggle span {
-  background: #1a2332;
+  background: #ffffff;
 }
 [data-theme="light"] .site-header:not(.scrolled):not(.is-subpage) .header-top {
   background: rgba(255,255,255,0.62);

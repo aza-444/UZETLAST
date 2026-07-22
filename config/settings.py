@@ -6,7 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 _default_key = 'django-insecure-uzenergo-secret-key-change-in-production-2024'
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', _default_key)
 
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+DEBUG = os.environ.get('DEBUG', 'True').lower() in ('true', '1', 't')
 
 _raw_hosts = os.environ.get('ALLOWED_HOSTS', '*')
 ALLOWED_HOSTS = [h.strip() for h in _raw_hosts.split(',')] if _raw_hosts else ['*']
@@ -93,8 +93,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Admin customization
-ADMIN_SITE_HEADER = "UZEnergo Ta'minlash — Admin Panel"
-ADMIN_SITE_TITLE = "UZEnergo Ta'minlash"
+ADMIN_SITE_HEADER = "O'zenergota'minlash — Admin Panel"
+ADMIN_SITE_TITLE = "O'zenergota'minlash"
 ADMIN_INDEX_TITLE = "Sayt boshqaruvi"
 
 # Security settings for production
@@ -105,3 +105,14 @@ CSRF_TRUSTED_ORIGINS = [
     'http://0.0.0.0:8000',
 ]
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 20000
+
+# Production xavfsizlik sozlamalari (Faqat DEBUG=False bo'lganda ishlaydi)
+if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    # SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    # SECURE_HSTS_SECONDS = 31536000  # 1 yil
+    # SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    # SECURE_HSTS_PRELOAD = True
+    # Serveringiz domennini ALLOWED_HOSTS ga qo'shish esdan chiqmasin

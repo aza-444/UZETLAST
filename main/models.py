@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 import os
+import datetime
 from django.core.exceptions import ValidationError
 
 
@@ -263,8 +264,8 @@ class Service(models.Model):
     
     icon = models.CharField(max_length=50, blank=True, default="bi-lightning-charge", verbose_name="Bootstrap Icon klassi")
     image = models.ImageField(upload_to='services/', blank=True, verbose_name="Rasm")
-    order = models.PositiveIntegerField(default=0, verbose_name="Tartib")
-    is_active = models.BooleanField(default=True, verbose_name="Faol")
+    order = models.PositiveIntegerField(default=0, db_index=True, verbose_name="Tartib")
+    is_active = models.BooleanField(default=True, db_index=True, verbose_name="Faol")
 
     class Meta:
         verbose_name = "Xizmat"
@@ -294,8 +295,8 @@ class CatalogItem(models.Model):
     description_en = models.TextField(blank=True, verbose_name="Description (EN)")
     
     image = models.ImageField(upload_to='catalog/', blank=True, verbose_name="Rasm")
-    order = models.PositiveIntegerField(default=0, verbose_name="Tartib")
-    is_active = models.BooleanField(default=True, verbose_name="Faol")
+    order = models.PositiveIntegerField(default=0, db_index=True, verbose_name="Tartib")
+    is_active = models.BooleanField(default=True, db_index=True, verbose_name="Faol")
 
     class Meta:
         verbose_name = "Katalog bo'limi"
@@ -325,8 +326,8 @@ class News(models.Model):
     content_en = models.TextField(blank=True, verbose_name="Text (EN)")
     
     image = models.ImageField(upload_to='news/', blank=True, verbose_name="Rasm")
-    published_at = models.DateTimeField(default=timezone.now, verbose_name="Sana")
-    is_active = models.BooleanField(default=True, verbose_name="Faol")
+    published_at = models.DateTimeField(default=timezone.now, db_index=True, verbose_name="Sana")
+    is_active = models.BooleanField(default=True, db_index=True, verbose_name="Faol")
     slug = models.SlugField(max_length=300, unique=True, blank=True, verbose_name="URL (slug)")
 
     class Meta:
@@ -367,8 +368,8 @@ class CorporateCategory(models.Model):
     name_ru = models.CharField(max_length=200, blank=True, verbose_name="Nomi (RU)")
     name_en = models.CharField(max_length=200, blank=True, verbose_name="Name (EN)")
     slug = models.SlugField(max_length=200, unique=True, verbose_name="URL (slug)")
-    order = models.PositiveIntegerField(default=0, verbose_name="Tartib")
-    is_active = models.BooleanField(default=True, verbose_name="Faol")
+    order = models.PositiveIntegerField(default=0, db_index=True, verbose_name="Tartib")
+    is_active = models.BooleanField(default=True, db_index=True, verbose_name="Faol")
 
     class Meta:
         verbose_name = "Korporativ kategoriya"
@@ -401,6 +402,9 @@ class CorporateDocument(models.Model):
     """Korporativ hujjat"""
     ARCHIVE_YEAR = 0  # Arxiv uchun maxsus qiymat
 
+    def current_year():
+        return datetime.date.today().year
+
     category = models.ForeignKey(
         CorporateCategory,
         on_delete=models.CASCADE,
@@ -413,13 +417,14 @@ class CorporateDocument(models.Model):
 
     file = models.FileField(upload_to='corporate_docs/', verbose_name="Fayl (PDF/DOC)")
     year = models.PositiveIntegerField(
-        default=2026,
+        default=current_year,
+        db_index=True,
         verbose_name="Yil (0 = Arxiv)"
     )
-    is_archive = models.BooleanField(default=False, verbose_name="Arxivda")
-    published_date = models.DateField(default=timezone.now, verbose_name="Sana")
-    order = models.PositiveIntegerField(default=0, verbose_name="Tartib")
-    is_active = models.BooleanField(default=True, verbose_name="Faol")
+    is_archive = models.BooleanField(default=False, db_index=True, verbose_name="Arxivda")
+    published_date = models.DateField(default=timezone.now, db_index=True, verbose_name="Sana")
+    order = models.PositiveIntegerField(default=0, db_index=True, verbose_name="Tartib")
+    is_active = models.BooleanField(default=True, db_index=True, verbose_name="Faol")
 
     class Meta:
         verbose_name = "Korporativ hujjat"
@@ -427,7 +432,8 @@ class CorporateDocument(models.Model):
         ordering = ['order', '-published_date']
 
     def __str__(self):
-        return f"{self.category.name_uz} — {self.title_uz} ({self.display_year})"
+        cat_name = self.category.name_uz if self.category else ''
+        return f"{cat_name} — {self.title_uz} ({self.display_year})"
 
     @property
     def display_year(self):
@@ -453,8 +459,8 @@ class ContactMessage(models.Model):
     phone = models.CharField(max_length=50, verbose_name="Telefon")
     email = models.EmailField(blank=True, verbose_name="Email")
     message = models.TextField(verbose_name="Xabar")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Yuborilgan vaqt")
-    is_read = models.BooleanField(default=False, verbose_name="O'qilgan")
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name="Yuborilgan vaqt")
+    is_read = models.BooleanField(default=False, db_index=True, verbose_name="O'qilgan")
 
     class Meta:
         verbose_name = "Xabar"
@@ -474,8 +480,8 @@ class Partner(models.Model):
         verbose_name="Logotip (Rasm yoki SVG)"
     )
     link = models.URLField(blank=True, verbose_name="Saytga havola")
-    order = models.PositiveIntegerField(default=0, verbose_name="Tartib")
-    is_active = models.BooleanField(default=True, verbose_name="Faol")
+    order = models.PositiveIntegerField(default=0, db_index=True, verbose_name="Tartib")
+    is_active = models.BooleanField(default=True, db_index=True, verbose_name="Faol")
 
     class Meta:
         verbose_name = "Hamkor"

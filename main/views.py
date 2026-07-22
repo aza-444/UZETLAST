@@ -18,17 +18,17 @@ def get_lang(request):
 
 
 def get_corporate_nav_data():
-    """Navbar dropdown uchun kategoriyalar va yillar"""
+    """Navbar dropdown uchun kategoriyalar va yillar (prefetch_related bilan optimizatsiyalangan)"""
     from .models import CorporateCategory
-    cats = CorporateCategory.objects.filter(is_active=True)
+    cats = CorporateCategory.objects.filter(is_active=True).prefetch_related('documents')
     result = []
     for cat in cats:
-        docs = cat.documents.filter(is_active=True)
+        active_docs = [d for d in cat.documents.all() if d.is_active]
         years = sorted(
-            docs.filter(is_archive=False).values_list('year', flat=True).distinct(),
+            {d.year for d in active_docs if not d.is_archive},
             reverse=True
         )
-        has_archive = docs.filter(is_archive=True).exists()
+        has_archive = any(d.is_archive for d in active_docs)
         result.append({'category': cat, 'years': years, 'has_archive': has_archive})
     return result
 
@@ -76,26 +76,48 @@ def set_language(request, lang):
 
 @require_POST
 def contact_submit(request):
+    from django.core.validators import validate_email
+    from django.core.exceptions import ValidationError
+
     name = request.POST.get('name', '').strip()
     phone = request.POST.get('phone', '').strip()
     email = request.POST.get('email', '').strip()
     message_text = request.POST.get('message', '').strip()
 
-    if name and phone and message_text:
-        ContactMessage.objects.create(
-            name=name,
-            phone=phone,
-            email=email,
-            message=message_text,
-        )
+    # Uzunlik va mavjudlik tekshiruvlari
+    if not (name and phone and message_text):
+        err = "Iltimos, barcha majburiy maydonlarni to'ldiring."
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            return JsonResponse({'success': True})
-        messages.success(request, 'Xabaringiz yuborildi! Tez orada bog\'lanamiz.')
-    else:
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            return JsonResponse({'success': False, 'error': 'Barcha maydonlarni to\'ldiring'})
-        messages.error(request, 'Iltimos, barcha majburiy maydonlarni to\'ldiring.')
+            return JsonResponse({'success': False, 'error': err})
+        messages.error(request, err)
+        return redirect('/#aloqa')
 
+    if len(name) > 150 or len(phone) > 50 or len(message_text) > 5000 or len(email) > 254:
+        err = "Kiritilgan ma'lumotlar uzunlik me'yoridan oshib ketdi."
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': False, 'error': err})
+        messages.error(request, err)
+        return redirect('/#aloqa')
+
+    if email:
+        try:
+            validate_email(email)
+        except ValidationError:
+            err = "Email manzili noto'g'ri shaklda kiritildi."
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': False, 'error': err})
+            messages.error(request, err)
+            return redirect('/#aloqa')
+
+    ContactMessage.objects.create(
+        name=name,
+        phone=phone,
+        email=email,
+        message=message_text,
+    )
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({'success': True})
+    messages.success(request, 'Xabaringiz yuborildi! Tez orada bog\'lanamiz.')
     return redirect('/#aloqa')
 
 
@@ -136,17 +158,7 @@ def corporate_index(request):
     """Korporativ boshqaruv bosh sahifasi"""
     lang = get_lang(request)
     settings_obj = SiteSettings.objects.first()
-    categories = CorporateCategory.objects.filter(is_active=True)
-
-    cat_data = []
-    for cat in categories:
-        docs = cat.documents.filter(is_active=True)
-        years = sorted(
-            docs.filter(is_archive=False).values_list('year', flat=True).distinct(),
-            reverse=True
-        )
-        has_archive = docs.filter(is_archive=True).exists()
-        cat_data.append({'category': cat, 'years': years, 'has_archive': has_archive})
+    cat_data = get_corporate_nav_data()
 
     context = {
         'lang': lang,
@@ -173,7 +185,6 @@ def corporate_documents(request, cat_slug, year_or_arxiv):
         try:
             year_int = int(year_or_arxiv)
         except (ValueError, TypeError):
-            # Noto'g'ri yil — eng so'nggi yilga yo'naltirish yoki bo'sh ro'yxat
             latest = (
                 category.documents.filter(is_active=True, is_archive=False)
                 .order_by('-year')
@@ -186,28 +197,26 @@ def corporate_documents(request, cat_slug, year_or_arxiv):
         )
         current_year = year_int
 
-    # Sidebar: barcha yillar ro'yxati
-    all_docs = category.documents.filter(is_active=True)
+    all_docs = list(category.documents.filter(is_active=True))
     years = sorted(
-        all_docs.filter(is_archive=False).values_list('year', flat=True).distinct(),
+        {d.year for d in all_docs if not d.is_archive},
         reverse=True
     )
-    has_archive = all_docs.filter(is_archive=True).exists()
+    has_archive = any(d.is_archive for d in all_docs)
 
-    # Barcha kategoriyalar (sidebar "Boshqa bo'limlar" uchun)
-    all_categories = CorporateCategory.objects.filter(is_active=True)
+    all_categories = CorporateCategory.objects.filter(is_active=True).prefetch_related('documents')
     categories_with_url = []
     for c in all_categories:
         if c.slug == cat_slug:
-            continue  # joriy kategoriyani o'tkazib yuboramiz
-        c_docs = c.documents.filter(is_active=True)
+            continue
+        c_docs = [d for d in c.documents.all() if d.is_active]
         c_years = sorted(
-            c_docs.filter(is_archive=False).values_list('year', flat=True).distinct(),
+            {d.year for d in c_docs if not d.is_archive},
             reverse=True
         )
         if c_years:
             first_url = f'/korporativ/{c.slug}/{c_years[0]}/'
-        elif c_docs.filter(is_archive=True).exists():
+        elif any(d.is_archive for d in c_docs):
             first_url = f'/korporativ/{c.slug}/arxiv/'
         else:
             first_url = f'/korporativ/{c.slug}/'
@@ -238,8 +247,9 @@ Sitemap: {scheme}://{host}/sitemap.xml
 """.format(scheme=request.scheme, host=request.get_host())
     return HttpResponse(content, content_type='text/plain')
 
+
 def document_viewer(request, doc_id):
-    import os
+    from pathlib import Path
     from django.conf import settings as django_settings
     from django.urls import reverse
 
@@ -254,9 +264,10 @@ def document_viewer(request, doc_id):
     file_exists = False
     file_url = ''
     if doc.file and doc.file.name:
-        file_path = os.path.join(django_settings.MEDIA_ROOT, doc.file.name)
-        file_exists = os.path.exists(file_path)
-        if file_exists:
+        media_root = Path(django_settings.MEDIA_ROOT).resolve()
+        file_path = (media_root / doc.file.name).resolve()
+        if file_path.is_relative_to(media_root) and file_path.is_file():
+            file_exists = True
             file_url = request.build_absolute_uri(doc.file.url)
 
     ext = doc.file_extension() if file_exists else ''
@@ -270,7 +281,6 @@ def document_viewer(request, doc_id):
     elif ext in ('png', 'jpg', 'jpeg', 'gif', 'webp'):
         preview_kind = 'image'
 
-    # Ishonchli chiqish URL: kategoriya + yil (history.back ishonchsiz)
     if doc.is_archive:
         year_or_arxiv = 'arxiv'
     else:
@@ -300,48 +310,52 @@ def document_viewer(request, doc_id):
 
 
 def document_download(request, doc_id):
-    """Force file download (Excel/PDF/Word) — works in all browsers."""
+    """Force file download (Excel/PDF/Word) — with Path Traversal protection."""
     import mimetypes
-    import os
+    from pathlib import Path
     from django.conf import settings as django_settings
 
     doc = get_object_or_404(CorporateDocument, id=doc_id, is_active=True)
     if not doc.file or not doc.file.name:
         raise Http404
-    file_path = os.path.join(django_settings.MEDIA_ROOT, doc.file.name)
-    if not os.path.exists(file_path):
+
+    media_root = Path(django_settings.MEDIA_ROOT).resolve()
+    file_path = (media_root / doc.file.name).resolve()
+    if not file_path.is_relative_to(media_root) or not file_path.is_file():
         raise Http404
 
-    content_type, _ = mimetypes.guess_type(file_path)
+    content_type, _ = mimetypes.guess_type(str(file_path))
     if not content_type:
         content_type = 'application/octet-stream'
 
-    filename = os.path.basename(doc.file.name)
-    response = FileResponse(open(file_path, 'rb'), content_type=content_type)
+    filename = file_path.name
+    response = FileResponse(file_path.open('rb'), content_type=content_type)
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
     return response
 
 
 @xframe_options_exempt
 def document_file(request, doc_id):
-    """Inline file stream for in-browser preview (PDF.js / SheetJS fetch)."""
+    """Inline file stream for in-browser preview — with Path Traversal protection."""
     import mimetypes
-    import os
+    from pathlib import Path
     from django.conf import settings as django_settings
 
     doc = get_object_or_404(CorporateDocument, id=doc_id, is_active=True)
     if not doc.file or not doc.file.name:
         raise Http404
-    file_path = os.path.join(django_settings.MEDIA_ROOT, doc.file.name)
-    if not os.path.exists(file_path):
+
+    media_root = Path(django_settings.MEDIA_ROOT).resolve()
+    file_path = (media_root / doc.file.name).resolve()
+    if not file_path.is_relative_to(media_root) or not file_path.is_file():
         raise Http404
 
-    content_type, _ = mimetypes.guess_type(file_path)
+    content_type, _ = mimetypes.guess_type(str(file_path))
     if not content_type:
         content_type = 'application/octet-stream'
 
-    filename = os.path.basename(doc.file.name)
-    response = FileResponse(open(file_path, 'rb'), content_type=content_type)
+    filename = file_path.name
+    response = FileResponse(file_path.open('rb'), content_type=content_type)
     response['Content-Disposition'] = f'inline; filename="{filename}"'
     response['X-Content-Type-Options'] = 'nosniff'
     return response
