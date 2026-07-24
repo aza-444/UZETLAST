@@ -1,0 +1,211 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="{{ lang|default:'uz' }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    {% if lang == 'uz' %}{{ news_item.title_uz }}
+    {% elif lang == 'ru' %}{{ news_item.title_ru|default:news_item.title_uz }}
+    {% else %}{{ news_item.title_en|default:news_item.title_uz }}{% endif %} — {{ settings.meta_title }}
+  </title>
+
+  <!-- Google Fonts & Bootstrap Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
+  <!-- Core CSS -->
+  <link rel="stylesheet" href="/static/css/style.css">
+
+  <style>
+    /* Premium Detail Page Styles */
+    .detail-hero {
+      padding: 140px 0 60px;
+      background: var(--bg-dark);
+      border-bottom: 1px solid var(--border-color);
+      text-align: center;
+    }
+    .detail-breadcrumb {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 8px 16px; border-radius: 30px;
+      background: var(--primary-glow);
+      color: var(--primary); font-size: 0.85rem; font-weight: 600;
+      margin-bottom: 24px;
+    }
+    .detail-breadcrumb a { color: inherit; text-decoration: none; }
+    .detail-breadcrumb a:hover { text-decoration: underline; }
+    .detail-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800; color: var(--text-dark);
+      line-height: 1.2; margin-bottom: 24px;
+      max-width: 900px; margin-inline: auto;
+    }
+    .detail-meta {
+      display: flex; align-items: center; justify-content: center; gap: 20px;
+      font-size: 0.95rem; color: var(--text-muted);
+    }
+    .detail-meta span { display: flex; align-items: center; gap: 6px; }
+
+    .detail-content-wrap {
+      padding: 80px 0;
+      background: var(--bg-light);
+    }
+    .detail-content {
+      max-width: 800px; margin: 0 auto;
+      font-size: 1.1rem; line-height: 1.8; color: var(--text-light);
+    }
+    .detail-content p { margin-bottom: 1.5rem; }
+
+    /* Main Image */
+    .detail-main-img {
+      max-width: 1000px; width: 100%; height: auto;
+      border-radius: 16px; margin: 40px auto; display: block;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    }
+
+    /* Gallery Grid */
+    .detail-gallery {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px; margin: 40px 0;
+    }
+    .detail-gallery.single-image {
+      grid-template-columns: 1fr;
+      max-width: 600px;
+      margin-inline: auto;
+    }
+    .detail-gallery img {
+      width: 100%; height: 280px; object-fit: cover;
+      border-radius: 12px; cursor: zoom-in;
+      transition: transform 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .detail-gallery img:hover {
+      transform: scale(1.02);
+    }
+
+    /* Files List */
+    .detail-files {
+      margin-top: 50px;
+      background: #fff; padding: 30px; border-radius: 16px;
+      border: 1px solid var(--border-color);
+    }
+    .detail-files h3 {
+      font-family: 'Outfit', sans-serif; font-size: 1.5rem;
+      color: var(--text-dark); margin-bottom: 20px;
+    }
+    .file-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px; border: 1px solid var(--border-color);
+      border-radius: 10px; margin-bottom: 12px;
+      transition: var(--transition);
+      background: var(--bg-dark);
+    }
+    .file-item:hover {
+      border-color: var(--primary); background: #fff;
+    }
+    .file-info { display: flex; align-items: center; gap: 16px; }
+    .file-icon {
+      width: 48px; height: 48px; border-radius: 10px;
+      background: var(--primary-glow); color: var(--primary);
+      display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+    }
+    .file-name { font-weight: 600; color: var(--text-dark); font-size: 1.05rem; }
+    .file-btn {
+      padding: 8px 16px; border-radius: 8px; background: var(--primary);
+      color: #000; font-weight: 600; text-decoration: none; font-size: 0.9rem;
+      transition: var(--transition);
+    }
+    .file-btn:hover { background: var(--text-dark); color: #fff; }
+  </style>
+
+</head>
+<body>
+
+{% include 'main/_navbar.html' with is_subpage=True %}
+
+<!-- HERO -->
+<section class="detail-hero">
+  <div class="container" data-aos="fade-up">
+    <div class="detail-breadcrumb">
+      <a href="/"><i class="bi bi-house-fill"></i> {% if lang == 'uz' %}Bosh sahifa{% elif lang == 'ru' %}Главная{% else %}Home{% endif %}</a>
+      <i class="bi bi-chevron-right"></i>
+      <span>{% if lang == 'uz' %}Yangiliklar{% elif lang == 'ru' %}Новости{% else %}News{% endif %}</span>
+    </div>
+    <h1 class="detail-title">
+      {% if lang == 'uz' %}{{ news_item.title_uz }}
+      {% elif lang == 'ru' %}{{ news_item.title_ru|default:news_item.title_uz }}
+      {% else %}{{ news_item.title_en|default:news_item.title_uz }}{% endif %}
+    </h1>
+    <div class="detail-meta">
+      <span><i class="bi bi-calendar3"></i> {{ news_item.published_at|date:"d.m.Y, H:i" }}</span>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN CONTENT -->
+<section class="detail-content-wrap">
+  <div class="container">
+    {% if news_item.image %}
+    <img src="{{ news_item.image.url }}" alt="Main image" class="detail-main-img" data-aos="fade-up">
+    {% endif %}
+
+    <div class="detail-content" data-aos="fade-up">
+      {% if lang == 'uz' %}{{ news_item.content_uz|linebreaks }}
+      {% elif lang == 'ru' %}{{ news_item.content_ru|default:news_item.content_uz|linebreaks }}
+      {% else %}{{ news_item.content_en|default:news_item.content_uz|linebreaks }}{% endif %}
+    </div>
+
+    <!-- GALLERY -->
+    {% if news_item.images.all %}
+    <div class="detail-gallery {% if news_item.images.count == 1 %}single-image{% endif %}" data-aos="fade-up">
+      {% for img in news_item.images.all %}
+      <a href="{{ img.image.url }}" target="_blank">
+        <img src="{{ img.image.url }}" alt="{% if lang == 'uz' %}Galereya rasmi{% elif lang == 'ru' %}Изображение галереи{% else %}Gallery Image{% endif %}">
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- FILES -->
+    {% if news_item.files.all %}
+    <div class="detail-files" data-aos="fade-up">
+      <h3><i class="bi bi-paperclip"></i> {% if lang == 'uz' %}Ilova qilingan fayllar{% elif lang == 'ru' %}Прикрепленные файлы{% else %}Attached Files{% endif %}</h3>
+      {% for file_obj in news_item.files.all %}
+      <div class="file-item">
+        <div class="file-info">
+          <div class="file-icon"><i class="bi bi-file-earmark-fill"></i></div>
+          <div class="file-name">
+            {% if lang == 'uz' %}{{ file_obj.name_uz }}
+            {% elif lang == 'ru' %}{{ file_obj.name_ru|default:file_obj.name_uz }}
+            {% else %}{{ file_obj.name_en|default:file_obj.name_uz }}{% endif %}
+          </div>
+        </div>
+        <a href="{{ file_obj.file.url }}" class="file-btn" target="_blank" download>
+          <i class="bi bi-download"></i> {% if lang == 'uz' %}Yuklab olish{% elif lang == 'ru' %}Скачать{% else %}Download{% endif %}
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-bottom" style="text-align:center; padding: 20px 0; border-top: 1px solid rgba(255,255,255,0.1); color: var(--text-muted);">
+      <p>© {% now "Y" %} {% if settings %}{{ settings.company_name_uz|default:"O'zenergota'minlash" }}{% else %}O'zenergota'minlash{% endif %}. {% if lang == 'uz' %}Barcha huquqlar himoyalangan{% elif lang == 'ru' %}Все права защищены{% else %}All rights reserved{% endif %}.</p>
+      <p><a href="/sitemap.xml" style="color:inherit; text-decoration:none;">Sitemap</a></p>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script src="/static/js/main.js"></script>
+</body>
+</html>

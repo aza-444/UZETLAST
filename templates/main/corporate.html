@@ -14,7 +14,7 @@
   {% else %}
   <link rel="icon" type="image/x-icon" href="/static/favicon.ico"/>
   {% endif %}
-  <meta name="description" content="Korporativ boshqaruv hujjatlari va qarorlari"/>
+  <meta name="description" content="{% if lang == 'uz' %}Korporativ boshqaruv hujjatlari va qarorlari{% elif lang == 'ru' %}Корпоративные документы и решения компании{% else %}Corporate governance documents and company resolutions{% endif %}"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"/>
@@ -268,7 +268,7 @@
     </div>
     <div class="footer-bottom">
       <p>© {% now "Y" %} {% if settings %}{{ settings.company_name_uz|default:"O'zenergota'minlash" }}{% else %}O'zenergota'minlash{% endif %}. {% if lang == 'uz' %}Barcha huquqlar himoyalangan{% elif lang == 'ru' %}Все права защищены{% else %}All rights reserved{% endif %}.</p>
-      <p><a href="/sitemap.xml">Sitemap</a> | <a href="/admin/">Admin</a></p>
+      <p><a href="/sitemap.xml">Sitemap</a></p>
     </div>
   </div>
 </footer>

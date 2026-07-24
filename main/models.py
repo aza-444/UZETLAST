@@ -328,6 +328,7 @@ class News(models.Model):
     image = models.ImageField(upload_to='news/', blank=True, verbose_name="Rasm")
     published_at = models.DateTimeField(default=timezone.now, db_index=True, verbose_name="Sana")
     is_active = models.BooleanField(default=True, db_index=True, verbose_name="Faol")
+    is_detailed = models.BooleanField(default=False, db_index=True, verbose_name="Batafsil maqola (detail sahifa)")
     slug = models.SlugField(max_length=300, unique=True, blank=True, verbose_name="URL (slug)")
 
     class Meta:
@@ -360,6 +361,30 @@ class News(models.Model):
                 n += 1
             self.slug = slug
         super().save(*args, **kwargs)
+
+
+class NewsImage(models.Model):
+    news = models.ForeignKey(News, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='news/gallery/', verbose_name="Rasm")
+    order = models.PositiveIntegerField(default=0, db_index=True, verbose_name="Tartib")
+    
+    class Meta:
+        ordering = ['order', 'id']
+        verbose_name = "Yangilik rasmi"
+        verbose_name_plural = "Yangilik rasmlari"
+
+class NewsFile(models.Model):
+    news = models.ForeignKey(News, on_delete=models.CASCADE, related_name='files')
+    file = models.FileField(upload_to='news/files/', verbose_name="Fayl")
+    name_uz = models.CharField(max_length=200, verbose_name="Fayl nomi (UZ)")
+    name_ru = models.CharField(max_length=200, blank=True, verbose_name="Fayl nomi (RU)")
+    name_en = models.CharField(max_length=200, blank=True, verbose_name="Fayl nomi (EN)")
+    order = models.PositiveIntegerField(default=0, db_index=True, verbose_name="Tartib")
+    
+    class Meta:
+        ordering = ['order', 'id']
+        verbose_name = "Yangilik fayli"
+        verbose_name_plural = "Yangilik fayllari"
 
 
 class CorporateCategory(models.Model):
@@ -415,7 +440,12 @@ class CorporateDocument(models.Model):
     title_ru = models.CharField(max_length=300, blank=True, verbose_name="Sarlavha (RU)")
     title_en = models.CharField(max_length=300, blank=True, verbose_name="Title (EN)")
 
-    file = models.FileField(upload_to='corporate_docs/', verbose_name="Fayl (PDF/DOC)")
+    content_uz = models.TextField(blank=True, verbose_name="Matn (UZ)")
+    content_ru = models.TextField(blank=True, verbose_name="Matn (RU)")
+    content_en = models.TextField(blank=True, verbose_name="Matn (EN)")
+    is_detailed = models.BooleanField(default=False, db_index=True, verbose_name="Batafsil maqola (detail sahifa)")
+
+    file = models.FileField(upload_to='corporate_docs/', verbose_name="Fayl (PDF/DOC)", blank=True, null=True)
     year = models.PositiveIntegerField(
         default=current_year,
         db_index=True,
@@ -451,6 +481,31 @@ class CorporateDocument(models.Model):
             _, ext = os.path.splitext(self.file.name)
             return ext.lower().strip('.')
         return ''
+
+
+class CorporateDocumentImage(models.Model):
+    document = models.ForeignKey(CorporateDocument, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='corporate_docs/gallery/', verbose_name="Rasm")
+    order = models.PositiveIntegerField(default=0, db_index=True, verbose_name="Tartib")
+
+    class Meta:
+        ordering = ['order', 'id']
+        verbose_name = "Hujjat rasmi"
+        verbose_name_plural = "Hujjat rasmlari"
+
+
+class CorporateDocumentFile(models.Model):
+    document = models.ForeignKey(CorporateDocument, on_delete=models.CASCADE, related_name='files')
+    file = models.FileField(upload_to='corporate_docs/files/', verbose_name="Fayl")
+    name_uz = models.CharField(max_length=200, verbose_name="Fayl nomi (UZ)")
+    name_ru = models.CharField(max_length=200, blank=True, verbose_name="Fayl nomi (RU)")
+    name_en = models.CharField(max_length=200, blank=True, verbose_name="Fayl nomi (EN)")
+    order = models.PositiveIntegerField(default=0, db_index=True, verbose_name="Tartib")
+
+    class Meta:
+        ordering = ['order', 'id']
+        verbose_name = "Qo'shimcha fayl"
+        verbose_name_plural = "Qo'shimcha fayllar"
 
 
 class ContactMessage(models.Model):

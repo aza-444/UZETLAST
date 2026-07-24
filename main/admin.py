@@ -6,7 +6,8 @@ from django.utils.safestring import mark_safe
 from .models import (
     SiteSettings, HeroSection, AboutSection,
     Service, CatalogItem, News, ContactMessage,
-    CorporateCategory, CorporateDocument, Partner
+    CorporateCategory, CorporateDocument, Partner,
+    NewsImage, NewsFile, CorporateDocumentImage, CorporateDocumentFile
 )
 
 
@@ -255,13 +256,23 @@ class AboutSectionAdmin(admin.ModelAdmin):
     )
 
 
+class NewsImageInline(admin.TabularInline):
+    model = NewsImage
+    extra = 1
+
+class NewsFileInline(admin.TabularInline):
+    model = NewsFile
+    extra = 1
+
+
 @admin.register(News)
 class NewsAdmin(admin.ModelAdmin):
-    list_display = ('title_uz', 'published_at', 'is_active', 'image_preview')
-    list_editable = ('is_active',)
-    list_filter = ('is_active', 'published_at')
+    list_display = ('title_uz', 'published_at', 'is_detailed', 'is_active', 'image_preview')
+    list_editable = ('is_active', 'is_detailed')
+    list_filter = ('is_active', 'is_detailed', 'published_at')
     search_fields = ('title_uz', 'title_ru', 'title_en')
     readonly_fields = ('slug',)
+    inlines = [NewsImageInline, NewsFileInline]
     fieldsets = (
         ('🇺🇿 O\'zbek tili', {
             'fields': ('title_uz', 'content_uz')
@@ -275,7 +286,7 @@ class NewsAdmin(admin.ModelAdmin):
             'fields': ('title_en', 'content_en')
         }),
         ('⚙️ Qo\'shimcha', {
-            'fields': ('image', 'published_at', 'is_active', 'slug')
+            'fields': ('image', 'published_at', 'is_detailed', 'is_active', 'slug')
         }),
     )
 
@@ -315,7 +326,7 @@ class PartnerAdmin(admin.ModelAdmin):
 class CorporateDocumentInline(admin.TabularInline):
     model = CorporateDocument
     extra = 1
-    fields = ('title_uz', 'title_ru', 'title_en', 'year', 'is_archive', 'published_date', 'file', 'order', 'is_active')
+    fields = ('title_uz', 'year', 'is_archive', 'published_date', 'file', 'order', 'is_detailed', 'is_active')
     ordering = ['order', '-published_date']
 
 
@@ -348,22 +359,35 @@ class CorporateCategoryAdmin(admin.ModelAdmin):
     doc_count.short_description = "Hujjatlar"
 
 
+class CorporateDocumentImageInline(admin.TabularInline):
+    model = CorporateDocumentImage
+    extra = 1
+
+class CorporateDocumentFileInline(admin.TabularInline):
+    model = CorporateDocumentFile
+    extra = 1
+
+
 @admin.register(CorporateDocument)
 class CorporateDocumentAdmin(admin.ModelAdmin):
-    list_display = ('title_uz', 'category', 'display_year_col', 'is_archive', 'published_date', 'file_preview', 'is_active')
-    list_editable = ('is_active', 'is_archive')
+    list_display = ('title_uz', 'category', 'display_year_col', 'is_archive', 'published_date', 'file_preview', 'is_detailed', 'is_active')
+    list_editable = ('is_active', 'is_archive', 'is_detailed')
     list_display_links = ('title_uz',)
-    list_filter = ('category', 'is_archive', 'year', 'is_active')
+    list_filter = ('category', 'is_archive', 'is_detailed', 'year', 'is_active')
     search_fields = ('title_uz', 'title_ru', 'title_en')
+    inlines = [CorporateDocumentImageInline, CorporateDocumentFileInline]
     fieldsets = (
         ('📄 Sarlavha', {
             'fields': ('category', 'title_uz', 'title_ru', 'title_en')
+        }),
+        ('📝 Matn (Faqat batafsil maqola bo\'lsa)', {
+            'fields': ('content_uz', 'content_ru', 'content_en')
         }),
         ('📁 Fayl va vaqt', {
             'fields': ('file', 'year', 'is_archive', 'published_date')
         }),
         ('⚙️ Sozlamalar', {
-            'fields': ('order', 'is_active')
+            'fields': ('order', 'is_detailed', 'is_active')
         }),
     )
 

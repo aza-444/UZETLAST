@@ -308,9 +308,15 @@
               </div>
             </div>
             <div class="corp-doc-actions">
+              {% if doc.is_detailed %}
+              <a href="{% url 'corporate_detail' doc.id %}" class="corp-doc-action-btn" title="{% if lang == 'uz' %}Batafsil{% elif lang == 'ru' %}Подробнее{% else %}Details{% endif %}">
+                <i class="bi bi-eye-fill"></i>
+              </a>
+              {% else %}
               <a href="{% url 'document_viewer' doc.id %}" class="corp-doc-action-btn" title="{% if lang == 'uz' %}Ko'rish{% elif lang == 'ru' %}Смотреть{% else %}View{% endif %}">
                 <i class="bi bi-eye-fill"></i>
               </a>
+              {% endif %}
               <a href="{% url 'document_download' doc.id %}" class="corp-doc-action-btn" title="{% if lang == 'uz' %}Yuklab olish{% elif lang == 'ru' %}Скачать{% else %}Download{% endif %}">
                 <i class="bi bi-download"></i>
               </a>
@@ -355,7 +361,7 @@
     </div>
     <div class="footer-bottom">
       <p>© {% now "Y" %} {% if settings %}{{ settings.company_name_uz|default:"O'zenergota'minlash" }}{% else %}O'zenergota'minlash{% endif %}. {% if lang == 'uz' %}Barcha huquqlar himoyalangan{% elif lang == 'ru' %}Все права защищены{% else %}All rights reserved{% endif %}.</p>
-      <p><a href="/sitemap.xml">Sitemap</a> | <a href="/admin/">Admin</a></p>
+      <p><a href="/sitemap.xml">Sitemap</a></p>
     </div>
   </div>
 </footer>

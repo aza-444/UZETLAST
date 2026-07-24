@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, FileResponse, Http404
 from django.views.decorators.http import require_POST
 from django.views.decorators.clickjacking import xframe_options_exempt
+from django_ratelimit.decorators import ratelimit
 from django.contrib import messages
 from .models import (
     SiteSettings, HeroSection, AboutSection,
@@ -75,6 +76,7 @@ def set_language(request, lang):
 
 
 @require_POST
+@ratelimit(key='ip', rate='3/m', method='POST', block=True)
 def contact_submit(request):
     from django.core.validators import validate_email
     from django.core.exceptions import ValidationError
@@ -360,3 +362,42 @@ def document_file(request, doc_id):
     response['X-Content-Type-Options'] = 'nosniff'
     return response
 
+
+def news_detail(request, slug):
+    lang = get_lang(request)
+    news_item = get_object_or_404(
+        News.objects.prefetch_related('images', 'files'),
+        slug=slug,
+        is_active=True,
+        is_detailed=True
+    )
+    settings_obj = SiteSettings.objects.first()
+    context = {
+        'lang': lang,
+        'settings': settings_obj,
+        'menu_items': get_menu_items(lang),
+        'corp_nav': get_corporate_nav_data(),
+        'news_item': news_item,
+        'is_subpage': True,
+    }
+    return render(request, 'main/news_detail.html', context)
+
+
+def corporate_detail(request, doc_id):
+    lang = get_lang(request)
+    doc = get_object_or_404(
+        CorporateDocument.objects.prefetch_related('images', 'files'),
+        id=doc_id,
+        is_active=True,
+        is_detailed=True
+    )
+    settings_obj = SiteSettings.objects.first()
+    context = {
+        'lang': lang,
+        'settings': settings_obj,
+        'menu_items': get_menu_items(lang),
+        'corp_nav': get_corporate_nav_data(),
+        'doc': doc,
+        'is_subpage': True,
+    }
+    return render(request, 'main/corporate_detail.html', context)

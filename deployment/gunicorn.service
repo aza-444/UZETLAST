@@ -1,0 +1,18 @@
+[Unit]
+Description=gunicorn daemon for UZEnergoTaminlash
+Requires=gunicorn.socket
+After=network.target
+
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory=/var/www/uzenergotaminlash
+EnvironmentFile=/var/www/uzenergotaminlash/.env
+ExecStart=/var/www/uzenergotaminlash/.venv/bin/gunicorn \
+          --access-logfile - \
+          --workers 3 \
+          --bind unix:/run/gunicorn.sock \
+          config.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
