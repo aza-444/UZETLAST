@@ -9,10 +9,10 @@ sudo apt install python3-pip python3-venv nginx git curl -y
 ```
 
 ## 2. Loyihani yuklash va muhitni tayyorlash
-Loyiha fayllarini serverning `/var/www/uzenergotaminlash` papkasiga yuklaganingizdan (yoki git orqali clone qilganingizdan) so'ng:
+Loyiha fayllarini serverning `/var/www/systemc/UZETLAST` papkasiga yuklaganingizdan (yoki git orqali clone qilganingizdan) so'ng:
 
 ```bash
-cd /var/www/uzenergotaminlash
+cd /var/www/systemc/UZETLAST
 
 # Virtual muhit yaratish
 python3 -m venv .venv

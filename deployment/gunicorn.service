@@ -6,9 +6,9 @@ After=network.target
 [Service]
 User=ubuntu
 Group=www-data
-WorkingDirectory=/var/www/uzenergotaminlash
-EnvironmentFile=/var/www/uzenergotaminlash/.env
-ExecStart=/var/www/uzenergotaminlash/.venv/bin/gunicorn \
+WorkingDirectory=/var/www/systemc/UZETLAST
+EnvironmentFile=/var/www/systemc/UZETLAST/.env
+ExecStart=/var/www/systemc/UZETLAST/.venv/bin/gunicorn \
           --access-logfile - \
           --workers 3 \
           --bind unix:/run/gunicorn.sock \
