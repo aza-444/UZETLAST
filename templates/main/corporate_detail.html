@@ -25,7 +25,7 @@
     .detail-hero {
       padding: 140px 0 60px;
       background: var(--bg-dark);
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border);
       text-align: center;
     }
     .detail-breadcrumb {
@@ -40,7 +40,7 @@
     .detail-title {
       font-family: 'Outfit', sans-serif;
       font-size: clamp(1.8rem, 4vw, 2.8rem);
-      font-weight: 800; color: var(--text-dark);
+      font-weight: 800; color: var(--text);
       line-height: 1.2; margin-bottom: 24px;
       max-width: 900px; margin-inline: auto;
     }
@@ -52,11 +52,11 @@
 
     .detail-content-wrap {
       padding: 80px 0;
-      background: var(--bg-light);
+      background: var(--bg-section);
     }
     .detail-content {
       max-width: 800px; margin: 0 auto;
-      font-size: 1.1rem; line-height: 1.8; color: var(--text-light);
+      font-size: 1.1rem; line-height: 1.8; color: var(--text-secondary);
     }
     .detail-content p { margin-bottom: 1.5rem; }
 
@@ -83,22 +83,22 @@
     /* Files List */
     .detail-files {
       margin-top: 50px;
-      background: #fff; padding: 30px; border-radius: 16px;
-      border: 1px solid var(--border-color);
+      background: var(--bg-card); padding: 30px; border-radius: 16px;
+      border: 1px solid var(--border);
     }
     .detail-files h3 {
       font-family: 'Outfit', sans-serif; font-size: 1.5rem;
-      color: var(--text-dark); margin-bottom: 20px;
+      color: var(--text); margin-bottom: 20px;
     }
     .file-item {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 16px; border: 1px solid var(--border-color);
+      padding: 16px; border: 1px solid var(--border);
       border-radius: 10px; margin-bottom: 12px;
       transition: var(--transition);
       background: var(--bg-dark);
     }
     .file-item:hover {
-      border-color: var(--primary); background: #fff;
+      border-color: var(--primary); background: var(--bg-card-hover);
     }
     .file-info { display: flex; align-items: center; gap: 16px; }
     .file-icon {
@@ -106,13 +106,13 @@
       background: var(--primary-glow); color: var(--primary);
       display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
     }
-    .file-name { font-weight: 600; color: var(--text-dark); font-size: 1.05rem; }
+    .file-name { font-weight: 600; color: var(--text); font-size: 1.05rem; }
     .file-btn {
       padding: 8px 16px; border-radius: 8px; background: var(--primary);
       color: #000; font-weight: 600; text-decoration: none; font-size: 0.9rem;
       transition: var(--transition);
     }
-    .file-btn:hover { background: var(--text-dark); color: #fff; }
+    .file-btn:hover { background: var(--text); color: var(--bg-dark); }
   </style>
 
 </head>

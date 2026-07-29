@@ -2651,3 +2651,197 @@ img { max-width: 100%; }
 @media (max-width: 992px) { html { font-size: 15px; } }
 @media (max-width: 768px) { html { font-size: 14px; } }
 @media (max-width: 576px) { html { font-size: 13px; } }
+
+/* =============================================================
+   LIGHT MODE — Keng qamrovli overridelar (to'liq tuzatish)
+   ============================================================= */
+
+/* Nav toggle (hamburger) chiziqlar */
+[data-theme="light"] .nav-toggle span {
+  background: #ffffff;
+}
+[data-theme="light"] .site-header.scrolled .nav-toggle span,
+[data-theme="light"] .site-header.is-subpage .nav-toggle span {
+  background: var(--text);
+}
+
+/* Mobile nav menu overlay */
+@media (max-width: 1200px) {
+  [data-theme="light"] .nav-links {
+    background: rgba(250, 250, 248, 0.98);
+    border-bottom-color: var(--border);
+  }
+  [data-theme="light"] .nav-links .nav-link {
+    color: var(--text);
+    text-shadow: none;
+  }
+  [data-theme="light"] .nav-links .nav-link:hover,
+  [data-theme="light"] .nav-links .nav-link.active {
+    color: var(--primary);
+    background: var(--primary-glow);
+  }
+  [data-theme="light"] .nav-item.has-dropdown .nav-dropdown {
+    border-left-color: var(--border-hover);
+  }
+  [data-theme="light"] .nav-item.has-dropdown .nav-subdropdown {
+    border-left-color: rgba(15, 23, 42, 0.1);
+  }
+  [data-theme="light"] .nav-dropdown-link {
+    color: var(--text);
+  }
+  [data-theme="light"] .nav-subdropdown-link {
+    color: var(--text-secondary);
+  }
+}
+
+/* Stats section — hardcoded gradient */
+[data-theme="light"] .stats-section {
+  background: var(--bg-section) !important;
+  border-top-color: var(--border);
+  border-bottom-color: var(--border);
+}
+[data-theme="light"] .stat-card {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.08);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+}
+[data-theme="light"] .stat-card:hover {
+  background: var(--primary-glow);
+  border-color: var(--border-hover);
+}
+
+/* nav-toggle span — hero rasm ustida */
+[data-theme="light"] .site-header:not(.scrolled):not(.is-subpage) .nav-toggle span {
+  background: #ffffff;
+}
+
+/* btn-outline — light modeda */
+[data-theme="light"] .btn-outline {
+  color: var(--text);
+  border-color: rgba(15, 23, 42, 0.2);
+  background: transparent;
+}
+[data-theme="light"] .btn-outline:hover {
+  color: var(--primary);
+  border-color: var(--primary);
+  background: var(--primary-glow);
+}
+
+/* About section placeholder */
+[data-theme="light"] .about-img-placeholder {
+  background: linear-gradient(145deg, #e2e8f0, #cbd5e1);
+  color: #94a3b8;
+}
+
+/* Catalog placeholder */
+[data-theme="light"] .catalog-img-placeholder {
+  background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+  color: #94a3b8;
+}
+
+/* News img placeholder */
+[data-theme="light"] .news-img-placeholder {
+  background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+  color: #94a3b8;
+}
+
+/* Nav action buttons — hero ustida */
+[data-theme="light"] .site-header:not(.scrolled):not(.is-subpage) .nav-action-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+}
+[data-theme="light"] .site-header:not(.scrolled):not(.is-subpage) .nav-action-btn:hover {
+  background: rgba(255, 255, 255, 0.28);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #ffffff;
+}
+
+/* Lang switcher — hero ustida */
+[data-theme="light"] .site-header:not(.scrolled):not(.is-subpage) .lang-switcher {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+[data-theme="light"] .site-header:not(.scrolled):not(.is-subpage) .lang-btn {
+  color: #ffffff;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+}
+[data-theme="light"] .site-header:not(.scrolled):not(.is-subpage) .lang-btn.active {
+  background: var(--primary);
+  color: #000;
+  text-shadow: none;
+}
+
+/* Scroll indicator */
+[data-theme="light"] .scroll-mouse {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Footer — hardcoded #060b18 */
+[data-theme="light"] .footer {
+  background: var(--bg-section) !important;
+  border-top-color: var(--border);
+}
+
+/* Messages */
+[data-theme="light"] .message-success {
+  background: rgba(34, 197, 94, 0.08);
+  border-color: rgba(34, 197, 94, 0.2);
+  color: #16a34a;
+}
+[data-theme="light"] .message-error {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.2);
+  color: #dc2626;
+}
+
+/* Form inputs */
+[data-theme="light"] .form-group input,
+[data-theme="light"] .form-group textarea {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.15);
+  color: var(--text);
+}
+[data-theme="light"] .form-group input:focus,
+[data-theme="light"] .form-group textarea:focus {
+  background: #ffffff;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+/* Subdropdown badge */
+[data-theme="light"] .subdropdown-badge.archive {
+  background: rgba(15, 23, 42, 0.1);
+  color: var(--text-secondary);
+}
+
+/* Nav dropdown divider */
+[data-theme="light"] .nav-dropdown-divider {
+  background: rgba(15, 23, 42, 0.06);
+}
+
+/* Section title gradient line */
+[data-theme="light"] .section-header .section-title::after,
+[data-theme="light"] .about-content .section-title::after {
+  background: linear-gradient(90deg, var(--primary), #0ea5e9);
+  box-shadow: 0 0 12px var(--primary-glow);
+}
+
+/* Cat tab filter */
+[data-theme="light"] .cat-tab {
+  color: var(--text-secondary);
+  border-color: rgba(15, 23, 42, 0.12);
+  background: transparent;
+}
+[data-theme="light"] .cat-tab:hover,
+[data-theme="light"] .cat-tab.active {
+  background: var(--primary);
+  color: #000;
+  border-color: var(--primary);
+}
+
+/* Scroll-to-top button */
+[data-theme="light"] .scroll-top {
+  box-shadow: 0 4px 16px rgba(217, 119, 6, 0.3);
+}
