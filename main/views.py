@@ -3,6 +3,7 @@ from django.http import JsonResponse, FileResponse, Http404
 from django.views.decorators.http import require_POST
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django_ratelimit.decorators import ratelimit
+
 from django.contrib import messages
 from .models import (
     SiteSettings, HeroSection, AboutSection,
@@ -76,10 +77,17 @@ def set_language(request, lang):
 
 
 @require_POST
-@ratelimit(key='ip', rate='3/m', method='POST', block=True)
+@ratelimit(key='ip', rate='3/m', method='POST', block=False)
 def contact_submit(request):
     from django.core.validators import validate_email
     from django.core.exceptions import ValidationError
+
+    if getattr(request, 'ratelimit', None) and request.ratelimit.was_limited:
+        err = "Siz juda ko'p xabar yubordingiz. Iltimos, birozdan so'ng qayta urinib ko'ring."
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': False, 'error': err})
+        messages.error(request, err)
+        return redirect('/#aloqa')
 
     name = request.POST.get('name', '').strip()
     phone = request.POST.get('phone', '').strip()
@@ -117,6 +125,28 @@ def contact_submit(request):
         email=email,
         message=message_text,
     )
+    
+    # Email yuborish
+    try:
+        from django.core.mail import send_mail
+        from django.conf import settings as django_settings
+        
+        settings_obj = SiteSettings.objects.first()
+        to_email = settings_obj.email if settings_obj and settings_obj.email else getattr(django_settings, 'DEFAULT_FROM_EMAIL', None)
+        
+        if to_email:
+            subject = f"Saytdan yangi xabar: {name}"
+            body = f"Ism: {name}\nTelefon: {phone}\nEmail: {email}\n\nXabar:\n{message_text}"
+            send_mail(
+                subject,
+                body,
+                getattr(django_settings, 'DEFAULT_FROM_EMAIL', 'webmaster@localhost'),
+                [to_email],
+                fail_silently=True,
+            )
+    except Exception as e:
+        # Email yuborishda xatolik bo'lsa ham foydalanuvchiga muammo sezilmasligi uchun pass qilamiz
+        pass
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         return JsonResponse({'success': True})
     messages.success(request, 'Xabaringiz yuborildi! Tez orada bog\'lanamiz.')
