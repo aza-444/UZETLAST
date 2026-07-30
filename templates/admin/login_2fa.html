@@ -60,6 +60,15 @@
   <div class="form-row">
       <p>Tasdiqlash kodi elektron pochtangizga ({{ email|default:"pochtangizga" }}) yuborildi. Kod 5 daqiqa davomida amal qiladi.</p>
   </div>
+  
+  {% if email_error %}
+  <div class="form-row" style="color: red; margin-top: 10px; padding: 10px; background: #fff3f3; border: 1px solid red; border-radius: 4px;">
+    <strong>⚠️ Email xatolik:</strong> {{ email_error }}
+    {% if debug_code %}
+    <br><strong>DEBUG (faqat test uchun) kod:</strong> <code>{{ debug_code }}</code>
+    {% endif %}
+  </div>
+  {% endif %}
 </form>
 
 </div>

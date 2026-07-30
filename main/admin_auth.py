@@ -61,16 +61,30 @@ def custom_admin_login(request, extra_context=None):
             request.session['2fa_user_id'] = user.id
             request.session['2fa_expire'] = (timezone.now() + timedelta(minutes=5)).isoformat()
             
-            try:
-                send_mail(
-                    'Admin Panelga kirish kodi',
-                    f'Sizning tasdiqlash kodingiz: {code}\nKod 5 daqiqa davomida amal qiladi.',
-                    settings.DEFAULT_FROM_EMAIL,
-                    [user.email],
-                    fail_silently=True,
-                )
-            except Exception as e:
-                print("Email yuborishda xatolik:", e)
+            email_error = None
+            if not user.email:
+                email_error = "Superuser emaili mavjud emas! Admin paneldan email qo'shing."
+                print(f"[2FA] Superuser (id={user.id}) emaili yo'q!")
+            else:
+                try:
+                    send_mail(
+                        'Admin Panelga kirish kodi',
+                        f'Sizning tasdiqlash kodingiz: {code}\nKod 5 daqiqa davomida amal qiladi.',
+                        settings.DEFAULT_FROM_EMAIL,
+                        [user.email],
+                        fail_silently=False,
+                    )
+                    print(f"[2FA] Kod {user.email} ga muvaffaqiyatli yuborildi.")
+                except Exception as e:
+                    email_error = f"Email yuborishda xatolik: {e}"
+                    print(f"[2FA] Email xatolik: {e}")
+                
+            if email_error:
+                return render(request, 'admin/login_2fa.html', {
+                    'email': user.email,
+                    'email_error': email_error,
+                    'debug_code': code if settings.DEBUG else None,
+                })
                 
             return render(request, 'admin/login_2fa.html', {'email': user.email})
             
