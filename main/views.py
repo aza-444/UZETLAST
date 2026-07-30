@@ -211,7 +211,7 @@ def corporate_documents(request, cat_slug, year_or_arxiv):
     if year_or_arxiv == 'arxiv':
         documents = CorporateDocument.objects.filter(
             category=category, is_archive=True, is_active=True
-        )
+        ).prefetch_related('files')
         current_year = 'arxiv'
     else:
         try:
@@ -226,7 +226,7 @@ def corporate_documents(request, cat_slug, year_or_arxiv):
             year_int = latest if latest is not None else 0
         documents = CorporateDocument.objects.filter(
             category=category, year=year_int, is_archive=False, is_active=True
-        )
+        ).prefetch_related('files')
         current_year = year_int
 
     all_docs = list(category.documents.filter(is_active=True))
@@ -286,10 +286,13 @@ def document_viewer(request, doc_id):
     from django.urls import reverse
 
     doc = get_object_or_404(
-        CorporateDocument.objects.select_related('category'),
+        CorporateDocument.objects.select_related('category').prefetch_related('files'),
         id=doc_id,
         is_active=True,
     )
+    if doc.is_detailed or doc.files.all():
+        from django.urls import reverse
+        return redirect(reverse('corporate_detail', args=[doc.id]))
     lang = get_lang(request)
     settings_obj = SiteSettings.objects.first()
 
@@ -418,8 +421,7 @@ def corporate_detail(request, doc_id):
     doc = get_object_or_404(
         CorporateDocument.objects.prefetch_related('images', 'files'),
         id=doc_id,
-        is_active=True,
-        is_detailed=True
+        is_active=True
     )
     settings_obj = SiteSettings.objects.first()
     context = {
