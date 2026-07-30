@@ -3,6 +3,13 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# .env faylini avtomatik yuklash
+try:
+    from dotenv import load_dotenv
+    load_dotenv(BASE_DIR / '.env')
+except ImportError:
+    pass  # python-dotenv o'rnatilmagan bo'lsa, os.environ dan o'qiladi
+
 _default_key = 'django-insecure-uzenergo-secret-key-change-in-production-2024'
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', _default_key)
 
@@ -110,6 +117,8 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.repl.co',
     'http://localhost:8000',
     'http://0.0.0.0:8000',
+    'https://uzenergotaminlash.uz',
+    'https://www.uzenergotaminlash.uz',
 ]
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 20000
 
